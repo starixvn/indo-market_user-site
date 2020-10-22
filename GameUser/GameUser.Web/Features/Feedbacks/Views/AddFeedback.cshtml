@@ -1,0 +1,35 @@
+﻿@using GameUser.Web.Features.Feedbacks.ViewModels;
+@model InsertFeedbackViewModel;
+
+@section Styles {
+    <link href="~/scss/feedback.min.css" rel="stylesheet" asp-append-version="true" />
+}
+
+<div class="feedback">
+    <form asp-action="AddFeedback" asp-controller="Feedback" method="post" id="gameForm">
+         <div class="form-group row">
+             <div class="col-lg-12 row-item">
+                <label asp-for="@Model.Feedback.Category" class="control-label">
+                    Please first let us know what you'd like to do:
+                </label>
+            </div>
+            <div class="col-lg-12 row-item">
+                <select asp-for="@Model.Feedback.Category" required asp-items="@Model.FeedbackTypeOptions" class="form-control"></select>
+            </div>
+             <div class="col-lg-12 row-item">
+                <label asp-for="@Model.Feedback.Category" class="control-label">
+                    Description
+                </label>
+                 <input type="file" id="myfile" name="myfile">
+            </div>           
+             <div class="col-lg-12 row-item">
+                <textarea type="text" asp-for="@Model.Feedback.Description" class="form-control desc-input" cols="50" rows="12">
+                </textarea>
+                <span asp-validation-for="@Model.Feedback.Description" class="text-danger"></span>
+            </div>       
+             <div class="col-lg-12 row-item">
+                 <button type="submit" class="btn-gray" data-dismiss="modal">Submit</button>
+             </div>
+        </div>
+    </form>
+</div>

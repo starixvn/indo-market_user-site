@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GameUser.Web.Features.Feedbacks.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Sentry;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GameUser.Web.Features.Feedbacks
@@ -27,6 +30,24 @@ namespace GameUser.Web.Features.Feedbacks
             var configs = await feedbackService.GetTypes();
 
             return Ok(configs);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AddFeedback()
+        {
+            var feedbackTypes = await feedbackService.GetTypes();
+            var model = new InsertFeedbackViewModel { 
+                Feedback = new GameUser.Features.Feedbacks.Feedback(),
+                FeedbackTypeOptions = feedbackTypes.Select(t => new SelectListItem { Text = t.DisplayName, Value = t.Value}).ToList()
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddFeedback(InsertFeedbackViewModel model)
+        {
+
+            return Json(new { success = true });
         }
     }
 }
