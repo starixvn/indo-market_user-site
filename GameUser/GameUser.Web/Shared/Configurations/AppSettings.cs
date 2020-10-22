@@ -1,0 +1,43 @@
+﻿using Microsoft.Extensions.Configuration;
+using System;
+using System.ComponentModel;
+
+namespace GameUser.Web.Shared.Configurations
+{
+    public interface IAppSettings
+    {
+        string ApiHost { get; }
+
+       
+    }
+    public class AppSettings : IAppSettings
+    {
+        private readonly IConfiguration configuration;
+
+        public AppSettings(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+
+            ApiHost = GetValue<string>(nameof(ApiHost));
+           
+        }
+
+        public string ApiHost { get; }
+
+        public T GetValue<T>(string key)
+        {
+            try
+            {
+                var value = configuration[key];
+
+                TypeConverter typeConverter = TypeDescriptor.GetConverter(typeof(T));
+
+                return (T)typeConverter.ConvertFromString(value);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidCastException($"Key: {key}", ex);
+            }
+        }
+    }
+}

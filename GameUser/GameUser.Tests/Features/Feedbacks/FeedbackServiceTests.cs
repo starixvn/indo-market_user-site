@@ -1,0 +1,87 @@
+﻿using AutoFixture;
+using FluentAssertions;
+using GameUser.DataAccess.Entities.Feedbacks;
+using GameUser.DataAccess.Repositories;
+using GameUser.Features.Feedbacks;
+using NSubstitute;
+using Sentry;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Xunit;
+
+namespace GameUser.Tests.Features.Feedbacks
+{
+    public class FeedbackServiceTests
+    {
+        private readonly Fixture fixture = new Fixture();
+
+        [Fact]
+        public async Task GetTypes_WhenCalled_ReturnListOfFeedbackTypes()
+        {
+            // Arrange             
+            var sentryClient = Substitute.For<ISentryClient>();
+            var feedbackRepository = Substitute.For<IGenericRepository<FeedbackEntity>>();
+            var service = new FeedbackService(feedbackRepository, sentryClient);
+
+            var expectedResult = new List<string> {
+                "Request a new game",
+                "Report a bug",
+                "Report other issues"
+            };
+
+            // Act
+            var result = await service.GetTypes();
+
+            // Assert
+            var feedbackTypes = result.Select(f => f.DisplayName);
+            feedbackTypes.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Fact]
+        public async Task AddFeedback_WhenSuccess_CallInsert()
+        {
+            // Arrange             
+            var sentryClient = Substitute.For<ISentryClient>();
+            var feedbackRepository = Substitute.For<IGenericRepository<FeedbackEntity>>();
+            var service = new FeedbackService(feedbackRepository, sentryClient);
+
+            var feedback = fixture.Create<Feedback>();
+
+            FeedbackEntity entity = null;
+            await feedbackRepository.InsertOneAsync(Arg.Do<FeedbackEntity>(x => entity = x));
+
+            // Act
+            var result = await service.AddFeedback(feedback);
+
+            // Assert
+            result.Should().Be(true);
+            entity.Category.Should().Be(feedback.Category);
+            entity.Description.Should().Be(feedback.Description);
+            entity.MemberId.Should().Be(feedback.MemberId);
+            entity.MemberName.Should().Be(feedback.MemberName);
+        }
+
+        [Fact]
+        public async Task AddFeedback_WhenFailed_LogErrors()
+        {
+            // Arrange             
+            var sentryClient = Substitute.For<ISentryClient>();
+            var feedbackRepository = Substitute.For<IGenericRepository<FeedbackEntity>>();
+            var service = new FeedbackService(feedbackRepository, sentryClient);
+
+            var feedback = fixture.Create<Feedback>();
+
+            feedbackRepository.InsertOneAsync(Arg.Any<FeedbackEntity>())
+                .Returns(Task.FromException<List<object>>(new Exception("some error"))); ;
+
+            // Act
+            var result = await service.AddFeedback(feedback);
+
+            // Assert
+            result.Should().Be(false);
+            sentryClient.Received().CaptureException(Arg.Any<Exception>());
+        }
+    }
+}
