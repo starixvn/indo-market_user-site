@@ -2,6 +2,7 @@
 using GameUser.Web.Shared;
 using GameUser.Web.Shared.Configurations;
 using GameUser.Web.Shared.Middlewares;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -51,6 +52,14 @@ namespace GameUser.Web
                       options.ViewLocationFormats.Add("/Features/_Shared/Components/{0}.cshtml");
                       options.ViewLocationExpanders.Add(new FeatureViewLocationExpander());
                   });
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                 .AddCookie(options =>
+                 {
+                     options.ExpireTimeSpan = TimeSpan.FromHours(1);
+                     options.LoginPath = "/Error/NotAuthorized";
+                     options.AccessDeniedPath = "/Error/NotAuthorized";
+                 });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

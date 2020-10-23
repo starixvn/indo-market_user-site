@@ -8,8 +8,8 @@ namespace GameUser.Web.Shared.Configurations
     public interface IAppSettings
     {
         string ApiHost { get; }
-
         IdentityServerAuth IdentityServerAuth { get; }
+        public string ResultUrl { get; }
     }
     public class AppSettings : IAppSettings
     {
@@ -21,7 +21,10 @@ namespace GameUser.Web.Shared.Configurations
 
             ApiHost = GetValue<string>(nameof(ApiHost));
             IdentityServerAuth = configuration.GetSection(nameof(IdentityServerAuth)).Get<IdentityServerAuth>();
+            ResultUrl = GetValue<string>(nameof(ResultUrl));
         }
+
+        public string ResultUrl { get; }
 
         public string ApiHost { get; }
 
