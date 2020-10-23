@@ -45,8 +45,10 @@ namespace GameUser.Web.Features.Feedbacks
 
         [HttpPost]
         public async Task<IActionResult> AddFeedback(InsertFeedbackViewModel model)
-        {           
-            return Json(new { success = true });
+        {
+            var result = await feedbackService.AddFeedback(model.Feedback);
+
+            return Json(new { success = result});
         }
     }
 }
