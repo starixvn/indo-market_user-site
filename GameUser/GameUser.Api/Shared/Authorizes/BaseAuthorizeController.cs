@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GameUser.Api.Shared.Authorizes
 {
-    [ApiController]//[ApiController, Authorize]
+    [ApiController, Authorize]
     public abstract class BaseAuthorizeController : ControllerBase
     {
     }

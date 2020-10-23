@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using GameUser.Web.Shared.IdentityServer;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.ComponentModel;
 
@@ -8,7 +9,7 @@ namespace GameUser.Web.Shared.Configurations
     {
         string ApiHost { get; }
 
-       
+        IdentityServerAuth IdentityServerAuth { get; }
     }
     public class AppSettings : IAppSettings
     {
@@ -19,10 +20,12 @@ namespace GameUser.Web.Shared.Configurations
             this.configuration = configuration;
 
             ApiHost = GetValue<string>(nameof(ApiHost));
-           
+            IdentityServerAuth = configuration.GetSection(nameof(IdentityServerAuth)).Get<IdentityServerAuth>();
         }
 
         public string ApiHost { get; }
+
+        public IdentityServerAuth IdentityServerAuth { get; }
 
         public T GetValue<T>(string key)
         {

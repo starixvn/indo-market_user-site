@@ -19,20 +19,6 @@ namespace GameUser.Web.Features.Feedbacks
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetTypes()
-        {
-            var configs = await feedbackService.GetTypes();
-
-            return Ok(configs);
-        }
-
-        [HttpGet]
         public async Task<IActionResult> AddFeedback()
         {
             var feedbackTypes = await feedbackService.GetTypes();
