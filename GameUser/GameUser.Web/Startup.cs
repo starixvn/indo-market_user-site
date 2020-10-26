@@ -46,9 +46,8 @@ namespace GameUser.Web
             services.AddSingleton<IMongoClient>(mongoClient);
             services.AddSingleton(mongoClient.GetDatabase(dbSettings["DatabaseName"]));
 
-            services.AddServices();// (appSettings);
-            //services.AddAuthentication(Configuration);
-            services.AddEmail(Configuration);
+            services.AddServices();
+            services.AddEmail(Configuration);            
 
             services.AddMvc(o => o.Conventions.Add(new FeatureConvention()))
                   .AddRazorOptions(options =>
@@ -95,6 +94,8 @@ namespace GameUser.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
