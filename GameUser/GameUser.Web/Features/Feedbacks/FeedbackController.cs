@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace GameUser.Web.Features.Feedbacks
 {
-    [Authorize]
+    //[Authorize]
     public class FeedbackController : Controller
     {
         private readonly ISentryClient sentryClient;
