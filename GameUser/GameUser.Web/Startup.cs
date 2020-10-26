@@ -48,6 +48,7 @@ namespace GameUser.Web
 
             services.AddServices();// (appSettings);
             //services.AddAuthentication(Configuration);
+            services.AddEmail(Configuration);
 
             services.AddMvc(o => o.Conventions.Add(new FeatureConvention()))
                   .AddRazorOptions(options =>
