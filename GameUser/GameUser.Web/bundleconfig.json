@@ -1,0 +1,8 @@
+[
+  {
+    "outputFileName": "wwwroot/js/feedback.min.js",
+    "inputFiles": [
+      "wwwroot/js/feedback.js"
+    ]
+  }
+]

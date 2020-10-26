@@ -1,11 +1,46 @@
 ﻿.feedback {
+    padding: 30px;
     color: red;
 
     .row-item {
         padding: 5px 0;
 
-        .desc-input{
+        .desc-input {
             padding: 5px;
+        }
+    }
+
+    .image-container {
+        height: 80px;
+        background: gray;
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0 0 0 2px;
+
+            li {
+                display: inline-block;
+                padding-left: 3px;
+            }
+
+
+            .to-add-image {
+                cursor: pointer;
+                img {
+                    background: url('../images/img1.png') no-repeat;
+                    width: 120px;
+                    height: 70px;
+                }
+            }
+
+            .added-image {
+                img {
+                    background: url('../images/img2.png') no-repeat;
+                    width: 120px;
+                    height: 70px;
+                }
+            }
         }
     }
 }
