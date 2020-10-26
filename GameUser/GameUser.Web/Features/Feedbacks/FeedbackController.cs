@@ -1,4 +1,5 @@
-﻿using GameUser.Web.Features.Feedbacks.ViewModels;
+﻿using GameUser.Features.Feedbacks;
+using GameUser.Web.Features.Feedbacks.ViewModels;
 using GameUser.Web.Shared.Configurations;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;

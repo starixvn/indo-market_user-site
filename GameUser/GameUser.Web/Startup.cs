@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GameUser.Shared.Middlewares;
 using GameUser.Web.Shared;
 using GameUser.Web.Shared.Configurations;
 using GameUser.Web.Shared.Middlewares;
@@ -8,6 +9,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -33,7 +36,17 @@ namespace GameUser.Web
 
             services.AddSettings(Configuration);
 
-            services.AddServices(appSettings);
+            var dbSettings = Configuration.GetSection(nameof(DatabaseSettings));
+            services.Configure<DatabaseSettings>(dbSettings);
+
+            services.AddSingleton<IDatabaseSettings>(sp =>
+                sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
+
+            var mongoClient = new MongoClient(dbSettings["ConnectionString"]);
+            services.AddSingleton<IMongoClient>(mongoClient);
+            services.AddSingleton(mongoClient.GetDatabase(dbSettings["DatabaseName"]));
+
+            services.AddServices();// (appSettings);
             //services.AddAuthentication(Configuration);
 
             services.AddMvc(o => o.Conventions.Add(new FeatureConvention()))

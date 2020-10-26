@@ -4,17 +4,17 @@ using System.Threading.Tasks;
 
 namespace GameUser.Web.Features.Feedbacks
 {
-    public interface IFeedbackService
+    public interface IFeedbackServices
     {
         Task<IEnumerable<FeedbackType>> GetTypes();
         Task<bool> AddFeedback(Feedback feedback);
     }
 
-    public class FeedbackService : IFeedbackService
+    public class FeedbackServices : IFeedbackServices
     {
         private readonly IFeedbackApi feedbackApi;
 
-        public FeedbackService(IFeedbackApi feedbackApi)
+        public FeedbackServices(IFeedbackApi feedbackApi)
         {
             this.feedbackApi = feedbackApi;
         }
