@@ -16,25 +16,25 @@ namespace GameUser.Features.Mail
 
     public  class EmailService : NETCore.MailKit.Core.EmailService, IAppEmailService
     {
-        private readonly IMailKitProvider _mailKitProvider;
+        private readonly IMailKitProvider mailKitProvider;
 
         public EmailService(IMailKitProvider provider) : base(provider)
         {
-            _mailKitProvider = provider;
+            mailKitProvider = provider;
         }
 
         public async Task SendAsync(MimeMessage message)
         {
-            message.From.Add(MailboxAddress.Parse(_mailKitProvider.Options.SenderEmail));
+            message.From.Add(MailboxAddress.Parse(mailKitProvider.Options.SenderEmail));
 
-            using (var emailClient = _mailKitProvider.SmtpClient)
+            using (var emailClient = mailKitProvider.SmtpClient)
             {
                 if (!emailClient.IsConnected)
                 {
-                    await emailClient.AuthenticateAsync(_mailKitProvider.Options.Account,
-                    _mailKitProvider.Options.Password);
-                    await emailClient.ConnectAsync(_mailKitProvider.Options.Server,
-                    _mailKitProvider.Options.Port, _mailKitProvider.Options.Security);
+                    await emailClient.AuthenticateAsync(mailKitProvider.Options.Account,
+                    mailKitProvider.Options.Password);
+                    await emailClient.ConnectAsync(mailKitProvider.Options.Server,
+                    mailKitProvider.Options.Port, mailKitProvider.Options.Security);
                 }
 
                 await emailClient.SendAsync(message);
