@@ -52,7 +52,7 @@ namespace GameUser.Shared.Middlewares
                 optionBuilder.UseMailKit(mailKitOptions);
             });
 
-            services.AddScoped<IAppEmailService, EmailService>();
+            services.AddScoped<IEmailService, EmailService>();
 
             return services;
         }

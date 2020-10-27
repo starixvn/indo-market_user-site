@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace GameUser.Features.Mail
 {
-    public interface IAppEmailService
+    public interface IEmailService
     {
         Task SendAsync(MimeMessage message);
 
         Task SendAsync(EmailRequest emailRequest);
     }
 
-    public  class EmailService : NETCore.MailKit.Core.EmailService, IAppEmailService
+    public  class EmailService : NETCore.MailKit.Core.EmailService, IEmailService
     {
         private readonly IMailKitProvider mailKitProvider;
 
@@ -45,9 +45,20 @@ namespace GameUser.Features.Mail
         public async Task SendAsync(EmailRequest emailRequest)
         {
             var builder = new BodyBuilder { HtmlBody = emailRequest.Body };
+            var mimeMessage = new MimeMessage();
+            var mailToList = new InternetAddressList();
+            var mailToAddress = emailRequest.ToAddress.Split(new char[] { ',', ';' });
 
-            MimeMessage mimeMessage = new MimeMessage();
-            mimeMessage.To.Add(MailboxAddress.Parse(emailRequest.ToAddress));
+            if(mailToAddress != null && mailToAddress.Any())
+            {
+                foreach(var mailto in mailToAddress)
+                {
+                    mailToList.Add(MailboxAddress.Parse(mailto));
+                }                
+            }
+
+            mimeMessage.To.AddRange(mailToList);
+
             mimeMessage.Subject = emailRequest.Subject;
             
             if (emailRequest.Attachments != null && emailRequest.Attachments.Any())
@@ -57,6 +68,7 @@ namespace GameUser.Features.Mail
                     using (MemoryStream memoryStream = new MemoryStream())
                     {
                         await attachment.CopyToAsync(memoryStream);
+
                         builder.Attachments.Add(attachment.FileName, memoryStream.ToArray());
                     }
                 }

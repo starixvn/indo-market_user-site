@@ -17,6 +17,8 @@ namespace GameUser.Web.Shared.Configurations
         public string Env { get; }
 
         public string StoreFileFullPath();
+
+        public Email Email { get; set; }
     }
     public class AppSettings : IAppSettings
     {
@@ -31,6 +33,7 @@ namespace GameUser.Web.Shared.Configurations
             ResultUrl = GetValue<string>(nameof(ResultUrl));
             StoreFilePath = GetValue<string>(nameof(StoreFilePath));
             Env = GetValue<string>(nameof(Env));
+            Email = configuration.GetSection(nameof(Email)).Get<Email>();
         }
 
         public string ResultUrl { get; }
@@ -50,6 +53,9 @@ namespace GameUser.Web.Shared.Configurations
         }
 
         public IdentityServerAuth IdentityServerAuth { get; }
+
+
+        public Email Email { get; set; }
 
         public T GetValue<T>(string key)
         {

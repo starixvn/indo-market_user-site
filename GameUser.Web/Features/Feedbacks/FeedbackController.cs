@@ -1,5 +1,6 @@
 ﻿using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
+using GameUser.Features.Mail;
 using GameUser.Web.Features.Feedbacks.ViewModels;
 using GameUser.Web.Shared.Configurations;
 using Microsoft.AspNetCore.Authentication;
@@ -27,28 +28,32 @@ namespace GameUser.Web.Features.Feedbacks
         private const int dataProtectorLifeTimeSecond = 1000;
         private readonly IAppSettings appSetting;
         private readonly IFileUploadService fileUploadService;
+        private readonly IEmailService emailService;
 
         public FeedbackController(
-            ISentryClient sentryClient, 
+            ISentryClient sentryClient,
             IFeedbackService feedbackService,
             IDataProtectionProvider dataProtectionProvider,
             IAppSettings appSetting,
-            IFileUploadService fileUploadService)
+            IFileUploadService fileUploadService,
+            IEmailService emailService)
         {
             this.sentryClient = sentryClient;
             this.feedbackService = feedbackService;
             dataProtector = dataProtectionProvider.CreateProtector(dataProtectorKey).ToTimeLimitedDataProtector();
             this.appSetting = appSetting;
             this.fileUploadService = fileUploadService;
+            this.emailService = emailService;
         }
 
         [HttpGet]
         public async Task<IActionResult> AddFeedback()
         {
             var feedbackTypes = await feedbackService.GetTypes();
-            var model = new InsertFeedbackViewModel { 
+            var model = new InsertFeedbackViewModel
+            {
                 Feedback = new GameUser.Features.Feedbacks.Feedback(),
-                FeedbackTypeOptions = feedbackTypes.Select(t => new SelectListItem { Text = t.DisplayName, Value = t.Value}).ToList()
+                FeedbackTypeOptions = feedbackTypes.Select(t => new SelectListItem { Text = t.DisplayName, Value = t.Value }).ToList()
             };
             return View(model);
         }
@@ -57,9 +62,19 @@ namespace GameUser.Web.Features.Feedbacks
         public async Task<IActionResult> AddFeedback(InsertFeedbackViewModel model)
         {
             var result = await feedbackService.AddFeedback(model.Feedback);
-            var uploadedFiles = await fileUploadService.UploadFiles(model.Feedback.Files, appSetting.StoreFileFullPath());
 
-            return Json(new { success = result});
+            if (result)
+            {
+                if(model.Feedback.Files.Any())
+                {
+                    await fileUploadService.UploadFiles(model.Feedback.Files, appSetting.StoreFileFullPath());
+                }                
+
+                var email = GenerateEmail(model, "your nickname");
+                await emailService.SendAsync(email);
+            }
+
+            return Json(new { success = result });
         }
 
         [HttpPost]
@@ -90,7 +105,7 @@ namespace GameUser.Web.Features.Feedbacks
         {
             try
             {
-                var sessionId = dataProtector.Unprotect(token);                
+                var sessionId = dataProtector.Unprotect(token);
                 var client = GetClient(sessionId);
 
                 if (client != null)
@@ -122,6 +137,20 @@ namespace GameUser.Web.Features.Feedbacks
             }
 
             return BadRequest();
+        }
+
+        private EmailRequest GenerateEmail(InsertFeedbackViewModel model, string nickName = null)
+        {
+            var subject = $"Saba_Club_[{DateTime.Now:dd/MM/yyyy}]_{nickName}_{model.Feedback.Category}";
+            var body = $"Dear SB club, </br></br> {model.Feedback.Description} </br></br>This is an automated email. Please do not reply to it.</br>Best regards,";
+
+            return new EmailRequest
+            {
+                Subject = subject,
+                Body = body,
+                Attachments = model.Feedback.Files,
+                ToAddress = appSetting.Email.RecieverEmail
+            };
         }
 
         private string GetClient(string session)

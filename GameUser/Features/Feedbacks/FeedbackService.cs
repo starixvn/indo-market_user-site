@@ -39,6 +39,7 @@ namespace GameUser.Features.Feedbacks
                 };
 
                 await feedbackRepository.InsertOneAsync(feedbackEntity);
+
                 return true;
             }
             catch (Exception e)
