@@ -23,4 +23,8 @@
     <ProjectReference Include="..\GameUser.DataAccess\GameUser.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Shared\Consts\" />
+  </ItemGroup>
+
 </Project>

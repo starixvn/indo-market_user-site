@@ -1,4 +1,5 @@
 ﻿using GameUser.Features.Feedbacks;
+using GameUser.Features.FileUploads;
 using GameUser.Web.Features.Feedbacks.ViewModels;
 using GameUser.Web.Shared.Configurations;
 using Microsoft.AspNetCore.Authentication;
@@ -25,17 +26,20 @@ namespace GameUser.Web.Features.Feedbacks
         private const string dataProtectorKey = "game-round-result-data-key";
         private const int dataProtectorLifeTimeSecond = 1000;
         private readonly IAppSettings appSetting;
+        private readonly IFileUploadService fileUploadService;
 
         public FeedbackController(
             ISentryClient sentryClient, 
             IFeedbackService feedbackService,
             IDataProtectionProvider dataProtectionProvider,
-            IAppSettings appSetting)
+            IAppSettings appSetting,
+            IFileUploadService fileUploadService)
         {
             this.sentryClient = sentryClient;
             this.feedbackService = feedbackService;
             dataProtector = dataProtectionProvider.CreateProtector(dataProtectorKey).ToTimeLimitedDataProtector();
             this.appSetting = appSetting;
+            this.fileUploadService = fileUploadService;
         }
 
         [HttpGet]
@@ -53,6 +57,7 @@ namespace GameUser.Web.Features.Feedbacks
         public async Task<IActionResult> AddFeedback(InsertFeedbackViewModel model)
         {
             var result = await feedbackService.AddFeedback(model.Feedback);
+            var uploadedFiles = await fileUploadService.UploadFiles(model.Feedback.Files, appSetting.StoreFileFullPath());
 
             return Json(new { success = result});
         }

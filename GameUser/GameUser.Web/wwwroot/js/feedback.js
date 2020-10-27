@@ -6,12 +6,15 @@
             return;
         }
 
+        let formData = new FormData(modal[0]);     
         modal.find('#submitBtn').prop('disabled', true);
         $.ajax({
             method: "POST",
             url: "/feedback/AddFeedback",
-            dataType: 'json',
-            data: modal.serialize(),
+            //dataType: 'json',
+            data: formData,// modal.serialize(),
+            processData: false,  // tell jQuery not to process the data
+            contentType: false
         }).done(function (result) {
             if (result.success) {
                 modal.find('#failedMsg').hide();
@@ -50,18 +53,19 @@
     }
 
     openSelectFile() {
-        $('#myfile').trigger('click');
+        $('.to-add-input').trigger('click');
+    }
+
+    onFileInputChanged(e) {
+        $(e).removeClass('to-add-input');
+        $(e).parent().removeAttr('hidden');
+        $('<li class="added-image" hidden><img /><input type="file" class="to-add-input" name="Feedback.Files" hidden onchange="feedback.onFileInputChanged(this)"></li>').insertBefore('.to-add-image');
+    }
+
+    onDescKeyUp() {
+        console.log("upp");
+        feedback.validateContent($('#gameForm'));
     }
 }
 
 var feedback = new Feedback();
-$("#descText").keyup(function () {
-    feedback.validateContent($('#gameForm'));
-});
-var chosenFiles = [];
-$('#myfile').on('change', function (e) {
-    var file = e.target.files[0];
-    chosenFiles.push(file);
-    console.log(file.name);
-    console.log(chosenFiles);
-});

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
 
 namespace GameUser.Features.Feedbacks
 {
@@ -9,5 +11,6 @@ namespace GameUser.Features.Feedbacks
         public string Description { get; set; }
         public int MemberId { get; set; }
         public string MemberName { get; set; }
+        public List<IFormFile> Files { get; set; }
     }
 }

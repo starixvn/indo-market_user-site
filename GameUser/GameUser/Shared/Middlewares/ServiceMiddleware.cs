@@ -1,5 +1,6 @@
 ﻿using GameUser.DataAccess.Repositories;
 using GameUser.Features.Feedbacks;
+using GameUser.Features.FileUploads;
 using GameUser.Features.Mail;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,8 +15,8 @@ namespace GameUser.Shared.Middlewares
         public static void AddServices(this IServiceCollection services)
         {
             services.AddSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
             services.AddScoped<IFeedbackService, FeedbackService>();
+            services.AddScoped<IFileUploadService, FileUploadService>();
         }
 
         public static IServiceCollection AddEmail(this IServiceCollection services, IConfiguration configuration)

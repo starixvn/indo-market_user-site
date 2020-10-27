@@ -6,7 +6,7 @@
 }
 
 <div class="feedback">
-    <form asp-action="AddFeedback" asp-controller="Feedback" method="post" id="gameForm">
+    <form asp-action="AddFeedback" asp-controller="Feedback" method="post" id="gameForm" enctype = "multipart/form-data">
          <div class="form-group row">
              <div class="col-lg-12 row-item">
                 <label asp-for="@Model.Feedback.Category" class="control-label">
@@ -23,27 +23,29 @@
                  <span id="failedMsg"><i class="icon-cancel"></i><span id="failedMsgContent"></span></span>
             </div>                        
              <div class="col-lg-12 row-item">
-                <textarea id="descText" type="text" asp-for="@Model.Feedback.Description" class="form-control desc-input" cols="50" rows="12">
+                <textarea id="descText" type="text" asp-for="@Model.Feedback.Description" 
+                          class="form-control desc-input" cols="50" rows="12"
+                          OnKeyUp="feedback.onDescKeyUp()">
                 </textarea>
                 <span asp-validation-for="@Model.Feedback.Description" class="text-danger"></span>
             </div>       
              <div class="col-lg-12 row-item image-container" >
                  <ul id="imageContainer">
-                     <li class="added-image"><img /></li>
-                     <li class="to-add-image" onclick="feedback.openSelectFile()"><img /></li>
-                     
+                     <li class="added-image" hidden>
+                        <img />
+                         <input type="file" class="to-add-input" name="Feedback.Files" hidden onchange="feedback.onFileInputChanged(this)">
+                     </li>
+                     <li class="to-add-image" onclick="feedback.openSelectFile()">
+                         <img />                         
+                     </li>                     
                  </ul>
              </div>
              <div class="col-lg-12 row-item">
                  <button type="button" class="btn-gray" data-dismiss="modal" onclick="feedback.submit()" id="submitBtn">Submit</button>
              </div>
         </div>
-    </form>
-    <div id="toAddImageTemplate"></div>
-    <div id="addedImageTemplate"></div>
-    <div>
-        <input type="file" id="myfile" name="myfile" hidden>
-    </div>
+    </form>     
+    
 </div>
 
 <div class="modal fade edit-modal" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
