@@ -1,12 +1,16 @@
 ﻿.feedback {
     padding: 30px;
-    color: red;
+
 
     .row-item {
         padding: 5px 0;
 
         .desc-input {
             padding: 5px;
+        }
+
+        .failed-message {
+            color: red;
         }
     }
 
@@ -27,6 +31,7 @@
 
             .to-add-image {
                 cursor: pointer;
+
                 img {
                     background: url('../images/img1.png') no-repeat;
                     width: 120px;

@@ -1,10 +1,11 @@
 ﻿.feedback {
-  padding: 30px;
-  color: red; }
+  padding: 30px; }
   .feedback .row-item {
     padding: 5px 0; }
     .feedback .row-item .desc-input {
       padding: 5px; }
+    .feedback .row-item .failed-message {
+      color: red; }
   .feedback .image-container {
     height: 80px;
     background: gray; }

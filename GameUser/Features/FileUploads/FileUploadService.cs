@@ -21,28 +21,29 @@ namespace GameUser.Features.FileUploads
             this.sentryClient = sentryClient;
         }
 
-
         public async Task<IEnumerable<UploadedFile>> UploadFiles(List<IFormFile> files, string baseDirectory)
         {
             var result = new List<UploadedFile>();
-            foreach(var file in files)
+            if (files != null)
             {
-                var r = await SaveFile(file, baseDirectory);
-                result.Add(r);
+                Directory.CreateDirectory(baseDirectory);
+                foreach (var file in files)
+                {
+                    var r = await SaveFile(file, baseDirectory);
+                    result.Add(r);
+                }
             }
 
             return result;
         }
 
-        private async Task<UploadedFile> SaveFile(IFormFile file, string BaseDirectory)
+        private async Task<UploadedFile> SaveFile(IFormFile file, string baseDirectory)
         {
             var uploadedFile = new UploadedFile { File = file };
             try
             {
                 var name = Guid.NewGuid().ToString();
-                var filePath = Path.Combine(BaseDirectory, name);
-                Directory.CreateDirectory(BaseDirectory);
-                //File.Create(Path.Combine(BaseDirectory, name));
+                var filePath = Path.Combine(baseDirectory, name);                
 
                 using (Stream fileStream = new FileStream(filePath, FileMode.Create))
                 {
