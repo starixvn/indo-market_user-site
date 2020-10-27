@@ -65,7 +65,7 @@ namespace GameUser.Web.Features.Feedbacks
 
             if (result)
             {
-                if(model.Feedback.Files.Any())
+                if(model.Feedback.Files != null && model.Feedback.Files.Any())
                 {
                     await fileUploadService.UploadFiles(model.Feedback.Files, appSetting.StoreFileFullPath());
                 }                
@@ -142,7 +142,11 @@ namespace GameUser.Web.Features.Feedbacks
         private EmailRequest GenerateEmail(InsertFeedbackViewModel model, string nickName = null)
         {
             var subject = $"Saba_Club_[{DateTime.Now:dd/MM/yyyy}]_{nickName}_{model.Feedback.Category}";
-            var body = $"Dear SB club, </br></br> {model.Feedback.Description} </br></br>This is an automated email. Please do not reply to it.</br>Best regards,";
+            var body = $"Dear SB club, " +
+                $"{Environment.NewLine}{Environment.NewLine}" +
+                $"{model.Feedback.Description} " +
+                $"{Environment.NewLine}{Environment.NewLine}" +
+                $"This is an automated email. Please do not reply to it.";
 
             return new EmailRequest
             {

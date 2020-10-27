@@ -44,7 +44,7 @@ namespace GameUser.Features.Mail
 
         public async Task SendAsync(EmailRequest emailRequest)
         {
-            var builder = new BodyBuilder { HtmlBody = emailRequest.Body };
+            var builder = new BodyBuilder { TextBody = emailRequest.Body };
             var mimeMessage = new MimeMessage();
             var mailToList = new InternetAddressList();
             var mailToAddress = emailRequest.ToAddress.Split(new char[] { ',', ';' });
