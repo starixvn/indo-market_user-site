@@ -14,7 +14,7 @@ namespace GameUser.Features.Mail
         Task SendAsync(EmailRequest emailRequest);
     }
 
-    public  class EmailService : NETCore.MailKit.Core.EmailService, IEmailService
+    public class EmailService : NETCore.MailKit.Core.EmailService, IEmailService
     {
         private readonly IMailKitProvider mailKitProvider;
 
@@ -31,10 +31,14 @@ namespace GameUser.Features.Mail
             {
                 if (!emailClient.IsConnected)
                 {
-                    await emailClient.AuthenticateAsync(mailKitProvider.Options.Account,
-                    mailKitProvider.Options.Password);
-                    await emailClient.ConnectAsync(mailKitProvider.Options.Server,
-                    mailKitProvider.Options.Port, mailKitProvider.Options.Security);
+                    await emailClient.AuthenticateAsync(
+                        mailKitProvider.Options.Account, 
+                        mailKitProvider.Options.Password);
+
+                    await emailClient.ConnectAsync(
+                        mailKitProvider.Options.Server,
+                        mailKitProvider.Options.Port, 
+                        mailKitProvider.Options.Security);
                 }
 
                 await emailClient.SendAsync(message);
@@ -49,18 +53,18 @@ namespace GameUser.Features.Mail
             var mailToList = new InternetAddressList();
             var mailToAddress = emailRequest.ToAddress.Split(new char[] { ',', ';' });
 
-            if(mailToAddress != null && mailToAddress.Any())
+            if (mailToAddress != null && mailToAddress.Any())
             {
-                foreach(var mailto in mailToAddress)
+                foreach (var mailto in mailToAddress)
                 {
                     mailToList.Add(MailboxAddress.Parse(mailto));
-                }                
+                }
             }
 
             mimeMessage.To.AddRange(mailToList);
 
             mimeMessage.Subject = emailRequest.Subject;
-            
+
             if (emailRequest.Attachments != null && emailRequest.Attachments.Any())
             {
                 foreach (var attachment in emailRequest.Attachments)

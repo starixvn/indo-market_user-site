@@ -28,7 +28,7 @@ namespace GameUser.Web.Features.Feedbacks
         private const string dataProtectorKey = "game-round-result-data-key";
         private const int dataProtectorLifeTimeSecond = 1000;
         private readonly IAppSettings appSetting;
-        private readonly IAppConfigs gameUserConfigs;
+        private readonly IEmailConfigs emailConfigs;
 
         private readonly IFileUploadService fileUploadService;
         private readonly IEmailService emailService;
@@ -40,7 +40,7 @@ namespace GameUser.Web.Features.Feedbacks
             IAppSettings appSetting,
             IFileUploadService fileUploadService,
             IEmailService emailService,
-            IAppConfigs gameUserConfigs)
+            IEmailConfigs emailConfigs)
         {
             this.sentryClient = sentryClient;
             this.feedbackService = feedbackService;
@@ -48,7 +48,7 @@ namespace GameUser.Web.Features.Feedbacks
             this.appSetting = appSetting;
             this.fileUploadService = fileUploadService;
             this.emailService = emailService;
-            this.gameUserConfigs = gameUserConfigs;
+            this.emailConfigs = emailConfigs;
         }
 
         [HttpGet]
@@ -158,7 +158,7 @@ namespace GameUser.Web.Features.Feedbacks
                 Subject = subject,
                 Body = body,
                 Attachments = model.Feedback.Files,
-                ToAddress = this.gameUserConfigs.RecieverEmail
+                ToAddress = this.emailConfigs.RecieverEmail
             };
         }
 

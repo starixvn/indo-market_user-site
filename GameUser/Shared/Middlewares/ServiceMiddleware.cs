@@ -1,15 +1,14 @@
-﻿using GameUser.DataAccess.Repositories;
-using GameUser.Features.Feedbacks;
-using GameUser.Features.FileUploads;
-using GameUser.Features.Mail;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using NETCore.MailKit.Extensions;
-using NETCore.MailKit.Infrastructure.Internal;
-using System;
-
-namespace GameUser.Shared.Middlewares
+﻿namespace GameUser.Shared.Middlewares
 {
+    using GameUser.DataAccess.Repositories;
+    using GameUser.Features.Feedbacks;
+    using GameUser.Features.FileUploads;
+    using GameUser.Features.Mail;
+    using Microsoft.Extensions.DependencyInjection;
+    using NETCore.MailKit.Extensions;
+    using NETCore.MailKit.Infrastructure.Internal;
+    using System;
+
     public static class ServiceMiddleware
     {
         public static void AddServices(this IServiceCollection services)
@@ -19,7 +18,7 @@ namespace GameUser.Shared.Middlewares
             services.AddScoped<IFileUploadService, FileUploadService>();
         }
 
-        public static IServiceCollection AddEmail(this IServiceCollection services, IAppConfigs configuration)
+        public static IServiceCollection AddEmail(this IServiceCollection services, IEmailConfigs configuration)
         {
             services.AddMailKit(optionBuilder =>
             {
@@ -32,7 +31,6 @@ namespace GameUser.Shared.Middlewares
                     Account = configuration.Account,
                     Password = configuration.Password,
                     Security = configuration.Security
-
                     //Server = configuration.GetValue<string>("Email:Server"),
                     //Port = configuration.GetValue<int>("Email:Port"),
                     //SenderName = configuration.GetValue<string>("Email:SenderName"),
