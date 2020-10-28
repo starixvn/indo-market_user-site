@@ -11,7 +11,8 @@
   .feedback .row-item {
     padding: 0; }
     .feedback .row-item .desc-input {
-      padding: 5px; }
+      padding: 5px;
+      resize: none; }
     .feedback .row-item .failed-message {
       color: red; }
     .feedback .row-item .control-label {
@@ -82,3 +83,29 @@
         width: 120px;
         overflow: hidden;
         text-overflow: ellipsis; }
+
+.success-modal .modal-dialog {
+  width: 300px; }
+
+.success-modal .header {
+  background: #343d7e; }
+  .success-modal .header .header-content {
+    text-align: center;
+    color: white;
+    padding: 15px; }
+    .success-modal .header .header-content img {
+      background: url(../images/success.png) no-repeat;
+      width: 100px;
+      height: 100px; }
+
+.success-modal .content {
+  text-align: center; }
+
+.success-modal .close-icon {
+  background: url(../images/remove.png) no-repeat;
+  width: 40px;
+  height: 40px;
+  position: relative;
+  float: right;
+  margin-right: -15px;
+  margin-top: -15px; }

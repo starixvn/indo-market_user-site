@@ -15,6 +15,7 @@ html, body {
 
         .desc-input {
             padding: 5px;
+            resize: none;
         }
 
         .failed-message {
@@ -120,3 +121,38 @@ html, body {
     }
 }
 
+.success-modal {
+    .modal-dialog{
+        width: 300px;
+    }
+        
+    .header {
+        background: #343d7e;
+
+        .header-content {
+            text-align: center;
+            color: white;
+            padding: 15px;
+
+            img {
+                background: url(../images/success.png) no-repeat;
+                width: 100px;
+                height: 100px;
+            }
+        }
+    }
+
+    .content {
+        text-align: center;
+    }
+
+    .close-icon {
+        background: url(../images/remove.png) no-repeat;
+        width: 40px;
+        height: 40px;
+        position: relative;
+        float: right;
+        margin-right: -15px;
+        margin-top: -15px;
+    }
+}

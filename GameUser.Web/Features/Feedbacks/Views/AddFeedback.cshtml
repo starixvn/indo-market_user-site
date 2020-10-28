@@ -57,17 +57,19 @@
     
 </div>
 
-<div class="modal fade edit-modal" id="successModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade success-modal" id="successModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Notice</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="feedback.closeSuccessModal()">
-                    <span aria-hidden="true">&times;</span>
+            <div class="header">
+                <button type="button" class="close close-icon" data-dismiss="modal" aria-label="Close" onclick="feedback.closeSuccessModal()">
                 </button>
+                <div class="header-content">
+                    <div><img /></div>
+                    <div>Successfully</div>
+                </div>
             </div>
-            <div class="modal-body details-content" id="editdetails">
-                Successfully
+            <div class="modal-body content" >
+                Thank you! Your request has been successfully sent
             </div>            
         </div>
     </div>
