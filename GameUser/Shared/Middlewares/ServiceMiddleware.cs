@@ -19,20 +19,28 @@ namespace GameUser.Shared.Middlewares
             services.AddScoped<IFileUploadService, FileUploadService>();
         }
 
-        public static IServiceCollection AddEmail(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddEmail(this IServiceCollection services, IAppConfigs configuration)
         {
             services.AddMailKit(optionBuilder =>
             {
                 var mailKitOptions = new MailKitOptions()
-                {                    
-                    Server = configuration.GetValue<string>("Email:Server"),
-                    Port = configuration.GetValue<int>("Email:Port"),
-                    SenderName = configuration.GetValue<string>("Email:SenderName"),
-                    SenderEmail = configuration.GetValue<string>("Email:SenderEmail"),
-                    // can be optional with no authentication 
-                    Account = configuration.GetValue<string>("Email:Account"),
-                    Password = configuration.GetValue<string>("Email:Password"),
-                    Security = configuration.GetValue<bool>("Email:Security")
+                {
+                    Server = configuration.Server,
+                    Port = configuration.Port,
+                    SenderName = configuration.SenderName,
+                    SenderEmail = configuration.SenderEmail,
+                    Account = configuration.Account,
+                    Password = configuration.Password,
+                    Security = configuration.Security
+
+                    //Server = configuration.GetValue<string>("Email:Server"),
+                    //Port = configuration.GetValue<int>("Email:Port"),
+                    //SenderName = configuration.GetValue<string>("Email:SenderName"),
+                    //SenderEmail = configuration.GetValue<string>("Email:SenderEmail"),
+                    //// can be optional with no authentication 
+                    //Account = configuration.GetValue<string>("Email:Account"),
+                    //Password = configuration.GetValue<string>("Email:Password"),
+                    //Security = configuration.GetValue<bool>("Email:Security")
                 };
 
                 if (mailKitOptions.Server == null)

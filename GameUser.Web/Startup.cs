@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GameUser.Shared;
 using GameUser.Shared.Middlewares;
 using GameUser.Web.Shared;
 using GameUser.Web.Shared.Configurations;
@@ -34,6 +35,9 @@ namespace GameUser.Web
             var appSettings = new AppSettings(Configuration);
             services.AddSingleton<IAppSettings>(appSettings);
 
+            var gameUserConfigs = new AppConfigs(Configuration);
+            services.AddSingleton<IAppConfigs>(gameUserConfigs);
+
             services.AddSettings(Configuration);
 
             var dbSettings = Configuration.GetSection(nameof(DatabaseSettings));
@@ -47,7 +51,7 @@ namespace GameUser.Web
             services.AddSingleton(mongoClient.GetDatabase(dbSettings["DatabaseName"]));
 
             services.AddServices();
-            services.AddEmail(Configuration);            
+            services.AddEmail(gameUserConfigs);            
 
             services.AddMvc(o => o.Conventions.Add(new FeatureConvention()))
                   .AddRazorOptions(options =>

@@ -1,5 +1,4 @@
 ﻿using GameUser.Web.Shared.IdentityServer;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.ComponentModel;
@@ -11,14 +10,16 @@ namespace GameUser.Web.Shared.Configurations
     public interface IAppSettings
     {
         string ApiHost { get; }
+
         IdentityServerAuth IdentityServerAuth { get; }
+
         public string ResultUrl { get; }
+
         public string StoreFilePath { get; }
+
         public string Env { get; }
 
         public string StoreFileFullPath();
-
-        public Email Email { get; set; }
     }
     public class AppSettings : IAppSettings
     {
@@ -32,8 +33,7 @@ namespace GameUser.Web.Shared.Configurations
             IdentityServerAuth = configuration.GetSection(nameof(IdentityServerAuth)).Get<IdentityServerAuth>();
             ResultUrl = GetValue<string>(nameof(ResultUrl));
             StoreFilePath = GetValue<string>(nameof(StoreFilePath));
-            Env = GetValue<string>(nameof(Env));
-            Email = configuration.GetSection(nameof(Email)).Get<Email>();
+            Env = GetValue<string>(nameof(Env));            
         }
 
         public string ResultUrl { get; }
@@ -41,6 +41,7 @@ namespace GameUser.Web.Shared.Configurations
         public string ApiHost { get; }
 
         public string StoreFilePath { get; }
+
         public string StoreFileFullPath()
         {
             return IsDevelopmentEnv() ? Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), StoreFilePath) : StoreFilePath;            
@@ -53,9 +54,6 @@ namespace GameUser.Web.Shared.Configurations
         }
 
         public IdentityServerAuth IdentityServerAuth { get; }
-
-
-        public Email Email { get; set; }
 
         public T GetValue<T>(string key)
         {

@@ -1,6 +1,7 @@
 ﻿using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
 using GameUser.Features.Mail;
+using GameUser.Shared;
 using GameUser.Web.Features.Feedbacks.ViewModels;
 using GameUser.Web.Shared.Configurations;
 using Microsoft.AspNetCore.Authentication;
@@ -27,6 +28,8 @@ namespace GameUser.Web.Features.Feedbacks
         private const string dataProtectorKey = "game-round-result-data-key";
         private const int dataProtectorLifeTimeSecond = 1000;
         private readonly IAppSettings appSetting;
+        private readonly IAppConfigs gameUserConfigs;
+
         private readonly IFileUploadService fileUploadService;
         private readonly IEmailService emailService;
 
@@ -36,7 +39,8 @@ namespace GameUser.Web.Features.Feedbacks
             IDataProtectionProvider dataProtectionProvider,
             IAppSettings appSetting,
             IFileUploadService fileUploadService,
-            IEmailService emailService)
+            IEmailService emailService,
+            IAppConfigs gameUserConfigs)
         {
             this.sentryClient = sentryClient;
             this.feedbackService = feedbackService;
@@ -44,6 +48,7 @@ namespace GameUser.Web.Features.Feedbacks
             this.appSetting = appSetting;
             this.fileUploadService = fileUploadService;
             this.emailService = emailService;
+            this.gameUserConfigs = gameUserConfigs;
         }
 
         [HttpGet]
@@ -153,7 +158,7 @@ namespace GameUser.Web.Features.Feedbacks
                 Subject = subject,
                 Body = body,
                 Attachments = model.Feedback.Files,
-                ToAddress = appSetting.Email.RecieverEmail
+                ToAddress = this.gameUserConfigs.RecieverEmail
             };
         }
 
