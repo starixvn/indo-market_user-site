@@ -24,45 +24,51 @@
             </div>                        
              <div class="col-lg-12 row-item">
                 <textarea id="descText" type="text" asp-for="@Model.Feedback.Description" 
-                          class="form-control desc-input" cols="50" rows="12"
+                          class="form-control desc-input" cols="50" rows="7"
                           OnKeyUp="feedback.onDescKeyUp()">
                 </textarea>
                 <span asp-validation-for="@Model.Feedback.Description" class="text-danger"></span>
             </div>       
-             <div class="col-lg-12 row-item image-container" >
-                 <ul id="imageContainer">
-                     <li class="added-image" hidden>
-                        <img />
-                         <input type="file" class="to-add-input" name="Feedback.Files" hidden onchange="feedback.onFileInputChanged(this)">
-                     </li>
-                     <li class="to-add-image" onclick="feedback.openSelectFile()">
-                         <img />                         
-                     </li>                     
-                 </ul>
-             </div>
              <div class="col-lg-12 row-item">
-                 <button type="button" class="btn-gray" data-dismiss="modal" onclick="feedback.submit()" id="submitBtn">Submit</button>
+                 <label class="control-label">
+                    Attachment
+                </label>
+                 <span class="attachment-count">0</span>
+             </div>
+             <div class="col-lg-12 row-item image-container" >                 
+                <ul id="imageContainer">
+                    <li class="added-image" hidden>
+                        <div>
+                            <img class="attach-img"/><img class="remove-img" onclick="feedback.removeAttachment(this)"/><br/>
+                            <span class="to-add-name"></span>
+                            <input type="file" accept="image/x-png,image/gif,image/jpeg" class="to-add-input" name="Feedback.Files" hidden onchange="feedback.onFileInputChanged(this)">
+                        </div>
+                    </li>
+                    <li class="to-add-image" onclick="feedback.openSelectFile()">
+                        <img />                         
+                    </li>                     
+                </ul>                 
+             </div>
+             <div class="col-lg-12 row-item text-center mt-4">
+                 <button type="button" class="btn-gray btn-submit" data-dismiss="modal" onclick="feedback.submit()" id="submitBtn">Submit</button>
              </div>
         </div>
     </form>     
     
 </div>
 
-<div class="modal fade edit-modal" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade edit-modal" id="successModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Notice</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="feedback.closeSuccessModal()">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body details-content" id="editdetails">
                 Successfully
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-gray" data-dismiss="modal">OK</button>                
-            </div>
+            </div>            
         </div>
     </div>
 </div>
