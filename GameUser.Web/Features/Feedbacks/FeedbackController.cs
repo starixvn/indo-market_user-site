@@ -146,7 +146,11 @@ namespace GameUser.Web.Features.Feedbacks
 
         private EmailRequest GenerateEmail(InsertFeedbackViewModel model, string nickName = null)
         {
-            var subject = $"Saba_Club_[{DateTime.Now:dd/MM/yyyy}]_{nickName}_{model.Feedback.Category}";
+            var feedbackTypes = feedbackService.GetTypes().Result;
+
+            var category = feedbackTypes.FirstOrDefault(x => x.Value == model.Feedback.Category).DisplayName;
+
+            var subject = $"Saba_Club_[{DateTime.Now:dd/MM/yyyy}]_{nickName}_{category}";
             var body = $"Dear SB club, " +
                 $"{Environment.NewLine}{Environment.NewLine}" +
                 $"{model.Feedback.Description} " +
