@@ -1,10 +1,9 @@
-﻿namespace GameUser.Web
+namespace GameUser.Web
 {
     using AutoMapper;
     using GameUser.Shared;
     using GameUser.Shared.Middlewares;
     using GameUser.Web.Shared;
-    using GameUser.Web.Shared.Configurations;
     using GameUser.Web.Shared.Middlewares;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
@@ -12,8 +11,6 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Options;
-    using MongoDB.Driver;
     using System;
 
     public class Startup
@@ -30,23 +27,12 @@
         {
             services.AddAutoMapper(typeof(Startup));
 
-            var appSettings = new AppSettings(Configuration);
-            services.AddSingleton<IAppSettings>(appSettings);
-
+            
             var emailConfigs = new EmailConfigs(Configuration);
             services.AddSingleton<IEmailConfigs>(emailConfigs);
 
-            services.AddSettings(Configuration);
-
-            var dbSettings = Configuration.GetSection(nameof(DatabaseSettings));
-            services.Configure<DatabaseSettings>(dbSettings);
-
-            services.AddSingleton<IDatabaseSettings>(sp => sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
-
-            var mongoClient = new MongoClient(dbSettings["ConnectionString"]);
-            services.AddSingleton<IMongoClient>(mongoClient);
-            services.AddSingleton(mongoClient.GetDatabase(dbSettings["DatabaseName"]));
-
+            services.AddAppSettings(Configuration);
+            services.ConfigMongoDB(Configuration);
             services.AddServices();
             services.AddEmail(emailConfigs);
 
