@@ -46,7 +46,12 @@ namespace GameUser.Tests.Features.Feedbacks
             var feedbackRepository = Substitute.For<IGenericRepository<FeedbackEntity>>();
             var service = new FeedbackService(feedbackRepository, sentryClient);
 
-            var feedback = fixture.Create<Feedback>();
+            var feedback = new Feedback { 
+                 Category = "ss",
+                 Description = "ff",
+                 MemberId = 12,
+                 MemberName = "abc"
+            };
 
             FeedbackEntity entity = null;
             await feedbackRepository.InsertOneAsync(Arg.Do<FeedbackEntity>(x => entity = x));
@@ -70,10 +75,10 @@ namespace GameUser.Tests.Features.Feedbacks
             var feedbackRepository = Substitute.For<IGenericRepository<FeedbackEntity>>();
             var service = new FeedbackService(feedbackRepository, sentryClient);
 
-            var feedback = fixture.Create<Feedback>();
+            var feedback = new Feedback();
 
             feedbackRepository.InsertOneAsync(Arg.Any<FeedbackEntity>())
-                .Returns(Task.FromException<List<object>>(new Exception("some error"))); ;
+                .Returns(Task.FromException<List<object>>(new Exception("some error")));
 
             // Act
             var result = await service.AddFeedback(feedback);

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GameUser.Shared.Wrapper;
+using Microsoft.AspNetCore.Http;
 using Sentry;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,12 @@ namespace GameUser.Features.FileUploads
     public class FileUploadService : IFileUploadService
     {
         private readonly ISentryClient sentryClient;
+        private readonly ISystemIOWrapper systemIOWrapper;
 
-        public FileUploadService(ISentryClient sentryClient)
+        public FileUploadService(ISentryClient sentryClient, ISystemIOWrapper systemIOWrapper)
         {
             this.sentryClient = sentryClient;
+            this.systemIOWrapper = systemIOWrapper;
         }
 
         public async Task<IEnumerable<UploadedFile>> UploadFiles(List<IFormFile> files, string baseDirectory)
@@ -26,7 +29,7 @@ namespace GameUser.Features.FileUploads
             var result = new List<UploadedFile>();
             if (files != null)
             {
-                Directory.CreateDirectory(baseDirectory);
+                systemIOWrapper.CreateDirectory(baseDirectory);
                 foreach (var file in files)
                 {
                     var r = await SaveFile(file, baseDirectory);
@@ -43,12 +46,9 @@ namespace GameUser.Features.FileUploads
             try
             {
                 var name = Guid.NewGuid().ToString();
-                var filePath = Path.Combine(baseDirectory, name);                
+                var filePath = Path.Combine(baseDirectory, name);
 
-                using (Stream fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(fileStream);
-                }
+                await systemIOWrapper.WriteFile(file, filePath);                
 
                 uploadedFile.Name = name;
                 uploadedFile.FullPath = filePath;
