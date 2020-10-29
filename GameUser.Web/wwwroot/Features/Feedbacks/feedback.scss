@@ -42,7 +42,7 @@ html, body {
         }
 
         .btn-submit {
-            background: url("../images/Button-Submit.png");
+            background: url("./Images/submit-button.png");
             height: 46px;
             width: 115px;
             border: none;
@@ -84,7 +84,7 @@ html, body {
                 cursor: pointer;
 
                 img {
-                    background: url('../images/img1.png') no-repeat;
+                    background: url('./Images/toadd-attachment.png') no-repeat;
                     width: 120px;
                     height: 70px;
                 }
@@ -92,13 +92,13 @@ html, body {
 
             .added-image {
                 .attach-img {
-                    background: url('../images/img2.png') no-repeat;
+                    background: url('./Images/added-attachment.png') no-repeat;
                     width: 120px;
                     height: 70px;
                 }
 
                 .remove-img {
-                    background: url('../images/remove.png') no-repeat;
+                    background: url('./Images/remove.png') no-repeat;
                     width: 40px;
                     height: 40px;
                     background-size: contain;
@@ -122,10 +122,10 @@ html, body {
 }
 
 .success-modal {
-    .modal-dialog{
+    .modal-dialog {
         width: 300px;
     }
-        
+
     .header {
         background: #343d7e;
 
@@ -135,7 +135,7 @@ html, body {
             padding: 15px;
 
             img {
-                background: url(../images/success.png) no-repeat;
+                background: url(./Images/success.png) no-repeat;
                 width: 100px;
                 height: 100px;
             }
@@ -147,7 +147,7 @@ html, body {
     }
 
     .close-icon {
-        background: url(../images/remove.png) no-repeat;
+        background: url(./Images/remove.png) no-repeat;
         width: 40px;
         height: 40px;
         position: relative;

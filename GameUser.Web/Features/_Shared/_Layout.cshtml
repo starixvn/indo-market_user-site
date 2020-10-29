@@ -10,17 +10,17 @@
     <title>@ViewData["Title"]</title>
     <link rel="icon" href="favicon.ico">
 
-    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/Shared/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
     @RenderSection("Styles", false)
 </head>
 <body>
     @RenderBody()   
     
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/detectmobilebrowser.js"></script>
+    <script src="~/Shared/jquery/dist/jquery.min.js"></script>
+    <script src="~/Shared/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/Shared/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Shared/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Shared/detectmobilebrowser.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

@@ -4,5 +4,11 @@
     "inputFiles": [
       "wwwroot/js/feedback.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/Features/Feedbacks/feedback.min.js",
+    "inputFiles": [
+      "wwwroot/Features/Feedbacks/feedback.js"
+    ]
   }
 ]

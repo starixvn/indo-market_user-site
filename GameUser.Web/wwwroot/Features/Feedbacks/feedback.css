@@ -31,7 +31,7 @@
       font-weight: bold;
       text-align: center; }
     .feedback .row-item .btn-submit {
-      background: url("../images/Button-Submit.png");
+      background: url("Images/submit-button.png");
       height: 46px;
       width: 115px;
       border: none;
@@ -60,15 +60,15 @@
       .feedback .image-container ul .to-add-image {
         cursor: pointer; }
         .feedback .image-container ul .to-add-image img {
-          background: url("../images/img1.png") no-repeat;
+          background: url("Images/toadd-attachment.png") no-repeat;
           width: 120px;
           height: 70px; }
       .feedback .image-container ul .added-image .attach-img {
-        background: url("../images/img2.png") no-repeat;
+        background: url("Images/added-attachment.png") no-repeat;
         width: 120px;
         height: 70px; }
       .feedback .image-container ul .added-image .remove-img {
-        background: url("../images/remove.png") no-repeat;
+        background: url("Images/remove.png") no-repeat;
         width: 40px;
         height: 40px;
         background-size: contain;
@@ -94,7 +94,7 @@
     color: white;
     padding: 15px; }
     .success-modal .header .header-content img {
-      background: url(../images/success.png) no-repeat;
+      background: url(Images/success.png) no-repeat;
       width: 100px;
       height: 100px; }
 
@@ -102,7 +102,7 @@
   text-align: center; }
 
 .success-modal .close-icon {
-  background: url(../images/remove.png) no-repeat;
+  background: url(Images/remove.png) no-repeat;
   width: 40px;
   height: 40px;
   position: relative;

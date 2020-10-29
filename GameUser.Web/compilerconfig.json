@@ -2,5 +2,9 @@
   {
     "outputFile": "wwwroot/scss/feedback.css",
     "inputFile": "wwwroot/scss/feedback.scss"
+  },
+  {
+    "outputFile": "wwwroot/Features/Feedbacks/feedback.css",
+    "inputFile": "wwwroot/Features/Feedbacks/feedback.scss"
   }
 ]
