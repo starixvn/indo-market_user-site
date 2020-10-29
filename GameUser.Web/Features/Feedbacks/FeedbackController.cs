@@ -51,7 +51,7 @@ namespace GameUser.Web.Features.Feedbacks
         }
 
         [HttpGet]
-        public async Task<IActionResult> AddFeedback()
+        public async Task<IActionResult> Add()
         {
             var feedbackTypes = await feedbackService.GetTypes();
             var model = new InsertFeedbackViewModel
@@ -63,7 +63,7 @@ namespace GameUser.Web.Features.Feedbacks
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddFeedback(InsertFeedbackViewModel model)
+        public async Task<IActionResult> Add(InsertFeedbackViewModel model)
         {
             var result = await feedbackService.AddFeedback(model.Feedback);
 

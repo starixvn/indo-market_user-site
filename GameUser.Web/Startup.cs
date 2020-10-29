@@ -82,7 +82,7 @@ namespace GameUser.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Feedback}/{action=AddFeedback}");
+                    pattern: "{controller=Feedback}/{action=Add}");
             });
         }
     }

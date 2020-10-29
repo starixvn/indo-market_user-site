@@ -13,6 +13,8 @@
     .feedback .row-item .desc-input {
       padding: 5px;
       resize: none; }
+    .feedback .row-item .error-border {
+      border: solid 2px red; }
     .feedback .row-item .failed-message {
       color: red; }
     .feedback .row-item .control-label {

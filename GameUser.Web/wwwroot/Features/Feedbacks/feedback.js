@@ -37,10 +37,12 @@
         if (desc === "") {
             modal.find('#failedMsg').show();
             modal.find('#failedMsgContent').html("(The description can't be empty)");
+            $('#descText').addClass('error-border')
             return false;
         }
 
         modal.find('#failedMsg').hide();
+        $('#descText').removeClass('error-border')
         return true;
     }
 
