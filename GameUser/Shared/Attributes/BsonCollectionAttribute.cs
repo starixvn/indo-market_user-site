@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GameUser.Attributes
+namespace GameUser.Shared.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class BsonCollectionAttribute : Attribute

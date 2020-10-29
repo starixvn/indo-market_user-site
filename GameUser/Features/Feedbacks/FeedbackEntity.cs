@@ -1,4 +1,4 @@
-﻿using GameUser.Attributes;
+﻿using GameUser.Shared.Attributes;
 using GameUser.Shared.Entities;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
