@@ -74,7 +74,8 @@ namespace GameUser.Web.Features.Feedbacks
                     await fileUploadService.UploadFiles(model.Feedback.Files, appSetting.StoreFileFullPath());
                 }                
 
-                var email = GenerateEmail(model, "your nickname");
+                var email = await feedbackService.GenerateEmail(model.Feedback, "your nickname", emailConfigs);
+
                 await emailService.SendAsync(email);
             }
 
@@ -141,29 +142,7 @@ namespace GameUser.Web.Features.Feedbacks
             }
 
             return BadRequest();
-        }
-
-        private EmailRequest GenerateEmail(InsertFeedbackViewModel model, string nickName = null)
-        {
-            var feedbackTypes = feedbackService.GetTypes().Result;
-
-            var category = feedbackTypes.FirstOrDefault(x => x.Value == model.Feedback.Category).DisplayName;
-
-            var subject = $"Saba_Club_[{DateTime.Now:dd/MM/yyyy}]_{nickName}_{category}";
-            var body = $"Dear SB club, " +
-                $"{Environment.NewLine}{Environment.NewLine}" +
-                $"{model.Feedback.Description} " +
-                $"{Environment.NewLine}{Environment.NewLine}" +
-                $"This is an automated email. Please do not reply to it.";
-
-            return new EmailRequest
-            {
-                Subject = subject,
-                Body = body,
-                Attachments = model.Feedback.Files,
-                ToAddress = this.emailConfigs.RecieverEmail
-            };
-        }
+        }        
 
         private string GetClient(string session)
         {

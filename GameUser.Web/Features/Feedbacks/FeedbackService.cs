@@ -7,6 +7,7 @@ namespace GameUser.Web.Features.Feedbacks
     public interface IFeedbackServices
     {
         Task<IEnumerable<FeedbackType>> GetTypes();
+
         Task<bool> AddFeedback(Feedback feedback);
     }
 
@@ -22,7 +23,7 @@ namespace GameUser.Web.Features.Feedbacks
         public Task<bool> AddFeedback(Feedback feedback)
         {
             return feedbackApi.AddFeedback(feedback);
-        }
+        }        
 
         public async Task<IEnumerable<FeedbackType>> GetTypes()
         {
