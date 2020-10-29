@@ -1,6 +1,5 @@
-﻿using GameUser.DataAccess.Entities.Feedbacks;
-using GameUser.DataAccess.Repositories;
-using GameUser.Shared.Enumerations;
+﻿using GameUser.Shared.Enumerations;
+using GameUser.Shared.Repositories;
 using Sentry;
 using System;
 using System.Collections.Generic;

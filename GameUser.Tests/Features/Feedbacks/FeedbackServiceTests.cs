@@ -1,8 +1,7 @@
 ﻿using AutoFixture;
 using FluentAssertions;
-using GameUser.DataAccess.Entities.Feedbacks;
-using GameUser.DataAccess.Repositories;
 using GameUser.Features.Feedbacks;
+using GameUser.Shared.Repositories;
 using NSubstitute;
 using Sentry;
 using System;

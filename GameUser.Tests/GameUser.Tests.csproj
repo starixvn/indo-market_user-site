@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GameUser.DataAccess\GameUser.DataAccess.csproj" />
     <ProjectReference Include="..\GameUser\GameUser.csproj" />
   </ItemGroup>
 

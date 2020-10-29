@@ -1,9 +1,9 @@
 ﻿namespace GameUser.Shared.Middlewares
 {
-    using GameUser.DataAccess.Repositories;
     using GameUser.Features.Feedbacks;
     using GameUser.Features.FileUploads;
     using GameUser.Features.Mail;
+    using GameUser.Shared.Repositories;
     using Microsoft.Extensions.DependencyInjection;
     using NETCore.MailKit.Extensions;
     using NETCore.MailKit.Infrastructure.Internal;
