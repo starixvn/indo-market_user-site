@@ -1,7 +1,6 @@
 namespace GameUser.Web
 {
     using AutoMapper;
-    using GameUser.Shared;
     using GameUser.Shared.Middlewares;
     using GameUser.Web.Shared;
     using GameUser.Web.Shared.Middlewares;
@@ -26,15 +25,10 @@ namespace GameUser.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Startup));
-
-            
-            var emailConfigs = new EmailConfigs(Configuration);
-            services.AddSingleton<IEmailConfigs>(emailConfigs);
-
             services.AddAppSettings(Configuration);
             services.ConfigMongoDB(Configuration);
-            services.AddServices();
-            services.AddEmail(emailConfigs);
+
+            services.ConfigGameUser(Configuration);            
 
             services.AddMvc(o => o.Conventions.Add(new FeatureConvention()))
                   .AddRazorOptions(options =>

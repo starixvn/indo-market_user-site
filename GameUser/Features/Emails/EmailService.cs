@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GameUser.Features.Mail
+namespace GameUser.Features.Emails
 {
     public interface IEmailService
     {

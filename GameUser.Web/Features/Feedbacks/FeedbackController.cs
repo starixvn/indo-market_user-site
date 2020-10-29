@@ -1,7 +1,6 @@
-﻿using GameUser.Features.Feedbacks;
+﻿using GameUser.Features.Emails;
+using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
-using GameUser.Features.Mail;
-using GameUser.Shared;
 using GameUser.Web.Features.Feedbacks.ViewModels;
 using GameUser.Web.Shared.Configurations;
 using Microsoft.AspNetCore.Authentication;

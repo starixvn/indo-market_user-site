@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace GameUser.Features.Mail
+namespace GameUser.Features.Emails
 {
     public class EmailRequest
     {

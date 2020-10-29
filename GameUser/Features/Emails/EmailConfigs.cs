@@ -1,5 +1,6 @@
-﻿namespace GameUser.Shared
+﻿namespace GameUser.Features.Emails
 {
+    using GameUser.Shared;
     using Microsoft.Extensions.Configuration;
 
     public interface IEmailConfigs
