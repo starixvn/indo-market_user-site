@@ -20,11 +20,12 @@
             contentType: false
         }).done(function (result) {
             if (result.success) {
-                feedback.postToParentFromIframe({ showSuccess: true });
+                
 
                 modal.find('#failedMsg').hide();
                 feedback.showSuccessModal();
                 modal.find('#submitBtn').prop('disabled', false);
+                feedback.postToParentFromIframe({ showSuccess: true });
             }
             else {
                 modal.find('#failedMsg').show();
@@ -32,6 +33,11 @@
                 modal.find('#submitBtn').prop('disabled', false);
             }            
         });
+    }
+
+    resetForm() {
+        $('#Feedback_Category').val('newgame');
+        $('#descText').val('');
     }
 
     validateContent(modal) {
@@ -53,6 +59,7 @@
     }
 
     closeSuccessModal() {
+        feedback.resetForm();
         feedback.postToParentFromIframe({ closeSuccess: true });
     }
 
