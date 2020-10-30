@@ -18,9 +18,7 @@ html, body {
             resize: none;
         }
 
-        .error-border{
-            border: solid 2px red;
-        }
+
 
         .failed-message {
             color: red;
@@ -45,6 +43,8 @@ html, body {
             text-align: center;
         }
 
+
+
         .btn-submit {
             background: url("./Images/submit-button.png");
             height: 46px;
@@ -63,6 +63,10 @@ html, body {
         .btn-submit:active {
             transform: scale(1.1);
         }
+    }
+
+    .error-border {
+        border: solid 2px red;
     }
 
     .image-container {
@@ -158,5 +162,16 @@ html, body {
         float: right;
         margin-right: -15px;
         margin-top: -15px;
+    }
+}
+
+.loading-modal {
+    .modal-dialog {
+        width: 100px;
+    }
+
+
+    .content {
+        text-align: center;
     }
 }

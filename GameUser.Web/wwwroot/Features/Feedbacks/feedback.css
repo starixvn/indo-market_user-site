@@ -13,8 +13,6 @@
     .feedback .row-item .desc-input {
       padding: 5px;
       resize: none; }
-    .feedback .row-item .error-border {
-      border: solid 2px red; }
     .feedback .row-item .failed-message {
       color: red; }
     .feedback .row-item .control-label {
@@ -45,6 +43,8 @@
       outline: none; }
     .feedback .row-item .btn-submit:active {
       transform: scale(1.1); }
+  .feedback .error-border {
+    border: solid 2px red; }
   .feedback .image-container {
     height: 100px;
     background: white;
@@ -111,3 +111,9 @@
   float: right;
   margin-right: -15px;
   margin-top: -15px; }
+
+.loading-modal .modal-dialog {
+  width: 100px; }
+
+.loading-modal .content {
+  text-align: center; }
