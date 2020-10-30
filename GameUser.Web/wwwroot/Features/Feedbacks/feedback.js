@@ -1,4 +1,8 @@
 ﻿class Feedback {
+    postToParentFromIframe(data) {
+        parent.postMessage(data, "*");
+    }
+
     submit() {
         const modal = $('#gameForm');
 
@@ -10,22 +14,20 @@
         modal.find('#submitBtn').prop('disabled', true);
         $.ajax({
             method: "POST",
-            url: "/feedback/AddFeedback",
-            //dataType: 'json',
-            data: formData,// modal.serialize(),
-            processData: false,  // tell jQuery not to process the data
+            url: "/feedback/Add",
+            data: formData,
+            processData: false,
             contentType: false
         }).done(function (result) {
             if (result.success) {
+                feedback.postToParentFromIframe({ showSuccess: true });
+
                 modal.find('#failedMsg').hide();
-                //parent.postMessage("------------hello!-----cocos---------", "*")
-                parent.postMessage({ showSuccess: true }, "*")
-                feedback.showSuccessModal('');
+                feedback.showSuccessModal();
                 modal.find('#submitBtn').prop('disabled', false);
             }
             else {
                 modal.find('#failedMsg').show();
-
                 modal.find('#failedMsgContent').html(result.message);
                 modal.find('#submitBtn').prop('disabled', false);
             }            
@@ -46,18 +48,12 @@
         return true;
     }
 
-    showSuccessModal(text) {
-        const modal = $('#successModal');
-        if (!name) {
-            name = "";
-        }
-
-        modal.modal('show');
+    showSuccessModal() {
+        $('#successModal').modal('show');
     }
 
     closeSuccessModal() {
-        console.log("close");
-        parent.postMessage({closeSuccess: true}, "*")
+        feedback.postToParentFromIframe({ closeSuccess: true });
     }
 
     openSelectFile() {
@@ -90,10 +86,13 @@
     updateAttachmentCount() {
         $('.attachment-count').html($('.added-image').length - 1);
     }
+
+    registerEventHandlers() {
+        $('#successModal').on('hidden.bs.modal', function () {
+            feedback.closeSuccessModal();
+        });
+    }
 }
 
 var feedback = new Feedback();
-
-$('#successModal').on('hidden.bs.modal', function () {
-    feedback.closeSuccessModal();
-});
+feedback.registerEventHandlers();
