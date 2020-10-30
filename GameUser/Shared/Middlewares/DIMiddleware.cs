@@ -3,6 +3,7 @@
     using GameUser.Features.Emails;
     using GameUser.Features.Feedbacks;
     using GameUser.Features.FileUploads;
+    using GameUser.Features.UserSessions;
     using GameUser.Shared.Repositories;
     using GameUser.Shared.Wrapper;
     using Microsoft.Extensions.Configuration;
@@ -16,6 +17,7 @@
             services.InitEmail(configuration);
             services.InitFeedback(configuration);
             services.InitFileUpload(configuration);
+            services.InitUserSession(configuration);
         }
 
         public static void AddSharedServices(this IServiceCollection services)

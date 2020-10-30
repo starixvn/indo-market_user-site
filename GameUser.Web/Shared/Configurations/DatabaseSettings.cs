@@ -10,6 +10,10 @@ namespace GameUser.Web.Shared.Configurations
         string ConnectionString { get; set; }
 
         string DatabaseName { get; set; }
+
+        public string Username { get; set; }
+
+        public string Password { get; set; }
     }
 
     public class DatabaseSettings : IDatabaseSettings
@@ -17,5 +21,9 @@ namespace GameUser.Web.Shared.Configurations
         public string ConnectionString { get; set; }
 
         public string DatabaseName { get; set; }
+
+        public string Username { get; set; }
+
+        public string Password { get; set; }
     }
 }

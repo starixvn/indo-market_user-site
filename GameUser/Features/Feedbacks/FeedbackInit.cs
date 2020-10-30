@@ -8,6 +8,7 @@ namespace GameUser.Features.Feedbacks
         public static void InitFeedback(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IFeedbackService, FeedbackService>();
+            services.AddScoped<IFeedbackRepository, FeedbackRepository>();
         }
     }
 }

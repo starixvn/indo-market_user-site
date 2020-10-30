@@ -2,6 +2,7 @@
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
 using GameUser.Web.Features.Feedbacks.ViewModels;
+using GameUser.Web.Shared;
 using GameUser.Web.Shared.Configurations;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -18,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace GameUser.Web.Features.Feedbacks
 {
-    //[Authorize]
+    //[Authorize]    
     public class FeedbackController : Controller
     {
         private readonly ISentryClient sentryClient;
@@ -50,8 +51,9 @@ namespace GameUser.Web.Features.Feedbacks
             this.emailConfigs = emailConfigs;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Add()
+        [UserSession]
+        [HttpGet]        
+        public async Task<IActionResult> Add(FeedbackRequest feedbackRequest)
         {
             var feedbackTypes = await feedbackService.GetTypes();
             var model = new InsertFeedbackViewModel
