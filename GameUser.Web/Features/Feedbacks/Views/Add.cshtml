@@ -6,10 +6,11 @@
 }
 
 <div class="feedback">
-    <form asp-action="Add" asp-controller="Feedback" method="post" id="gameForm" enctype = "multipart/form-data">
-         <input type="hidden" asp-for="@Model.NickName" value="@Model.NickName" />
-         <div class="form-group row">
-             <div class="col-lg-12 row-item">
+    <form asp-action="Add" asp-controller="Feedback" method="post" id="gameForm" enctype="multipart/form-data">
+        <input type="hidden" asp-for="@Model.NickName" value="@Model.NickName" />
+        <input type="hidden" asp-for="@Model.SessionId" value="@Model.SessionId" />
+        <div class="form-group row">
+            <div class="col-lg-12 row-item">
                 <label asp-for="@Model.Feedback.Category" class="control-label">
                     Please first let us know what you'd like to do:
                 </label>
@@ -17,43 +18,43 @@
             <div class="col-lg-12 row-item">
                 <select asp-for="@Model.Feedback.Category" required asp-items="@Model.FeedbackTypeOptions" class="form-control"></select>
             </div>
-             <div class="col-lg-12 row-item">
+            <div class="col-lg-12 row-item">
                 <label asp-for="@Model.Feedback.Category" class="control-label">
                     Description
                 </label>
-                 <span id="descErrors" class="failed-message"><i class="icon-cancel"></i><span id="descErrorsContent"></span></span>
-            </div>                        
-             <div class="col-lg-12 row-item">
-                <textarea id="descText" type="text" asp-for="@Model.Feedback.Description" 
+                <span id="descErrors" class="failed-message"><i class="icon-cancel"></i><span id="descErrorsContent"></span></span>
+            </div>
+            <div class="col-lg-12 row-item">
+                <textarea id="descText" type="text" asp-for="@Model.Feedback.Description"
                           class="form-control desc-input" cols="50" rows="7"
                           OnKeyUp="feedback.onDescKeyUp()" OnPaste="feedback.onDescPaste()">
                 </textarea>
                 <span asp-validation-for="@Model.Feedback.Description" class="text-danger"></span>
-            </div>       
-             <div class="col-lg-12 row-item">
-                 <label class="control-label">
+            </div>
+            <div class="col-lg-12 row-item">
+                <label class="control-label">
                     Attachment
                 </label>
-                 <span class="attachment-count">0</span>
-                 <span id="attachmentErrors" class="failed-message"><i class="icon-cancel"></i><span id="attachmentErrorsContent"></span></span>
-             </div>
-             <div class="col-lg-12 row-item image-container" >                 
+                <span class="attachment-count">0</span>
+                <span id="attachmentErrors" class="failed-message"><i class="icon-cancel"></i><span id="attachmentErrorsContent"></span></span>
+            </div>
+            <div class="col-lg-12 row-item image-container">
                 <ul id="imageContainer">
                     <li class="added-image" hidden>
                         <div>
-                            <img class="attach-img"/><img class="remove-img" onclick="feedback.removeAttachment(this)"/><br/>
+                            <img class="attach-img" /><img class="remove-img" onclick="feedback.removeAttachment(this)" /><br />
                             <span class="to-add-name"></span>
                             <input type="file" accept="image/x-png,image/gif,image/jpeg" class="to-add-input" name="Feedback.Files" hidden onchange="feedback.onFileInputChanged(this)">
                         </div>
                     </li>
                     <li class="to-add-image" onclick="feedback.openSelectFile()">
-                        <img />                         
-                    </li>                     
-                </ul>                 
-             </div>
-             <div class="col-lg-12 row-item text-center mt-4">
-                 <button type="button" class="btn-gray btn-submit" data-dismiss="modal" onclick="feedback.submit()" id="submitBtn">Submit</button>
-             </div>
+                        <img />
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-12 row-item text-center mt-4">
+                <button type="button" class="btn-gray btn-submit" data-dismiss="modal" onclick="feedback.submit()" id="submitBtn">Submit</button>
+            </div>
         </div>
     </form>     
     

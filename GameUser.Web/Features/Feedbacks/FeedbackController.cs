@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace GameUser.Web.Features.Feedbacks
 {
-    //[Authorize]    
+    [UserSession]
     public class FeedbackController : Controller
     {
         private readonly ISentryClient sentryClient;
@@ -50,8 +50,7 @@ namespace GameUser.Web.Features.Feedbacks
             this.emailService = emailService;
             this.emailConfigs = emailConfigs;
         }
-
-        [UserSession]
+       
         [HttpGet]        
         public async Task<IActionResult> Add(FeedbackRequest feedbackRequest)
         {
