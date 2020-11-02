@@ -59,8 +59,10 @@ namespace GameUser.Web.Features.Feedbacks
             var model = new InsertFeedbackViewModel
             {
                 Feedback = new GameUser.Features.Feedbacks.Feedback(),
-                FeedbackTypeOptions = feedbackTypes.Select(t => new SelectListItem { Text = t.DisplayName, Value = t.Value }).ToList()
+                FeedbackTypeOptions = feedbackTypes.Select(t => new SelectListItem { Text = t.DisplayName, Value = t.Value }).ToList(),
+                NickName = feedbackRequest.NickName                 
             };
+
             return View(model);
         }
 
@@ -76,7 +78,7 @@ namespace GameUser.Web.Features.Feedbacks
                     await fileUploadService.UploadFiles(model.Feedback.Files, appSetting.StoreFileFullPath());
                 }                
 
-                var email = await feedbackService.GenerateEmail(model.Feedback, "your nickname", emailConfigs);
+                var email = await feedbackService.GenerateEmail(model.Feedback, model.NickName, emailConfigs);
 
                 await emailService.SendAsync(email);
             }

@@ -16,6 +16,9 @@ namespace GameUser.Web.Features.Feedbacks.ViewModels
         }
 
         public List<SelectListItem> FeedbackTypeOptions { get; set; }
+
         public Feedback Feedback { get; set; }
+
+        public string NickName { get; set; }
     }
 }
