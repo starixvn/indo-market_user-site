@@ -22,7 +22,7 @@ namespace GameUser.Web.Shared
 
             if (!(context.ActionContext.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor))
             {
-                throw new NullReferenceException("ControllerActionDescriptor cannot be null.");
+                throw new ArgumentNullException(nameof(viewLocations));
             }
 
             string featureName = controllerActionDescriptor.Properties["feature"] as string;
@@ -34,6 +34,7 @@ namespace GameUser.Web.Shared
 
         public void PopulateValues(ViewLocationExpanderContext context)
         {
+            // no implementation
         }
     }
 }

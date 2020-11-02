@@ -15,7 +15,11 @@ namespace GameUser.Web.Shared
         private string GetFeatureName(TypeInfo controllerType)
         {
             string[] tokens = controllerType.FullName.Split('.');
-            if (!tokens.Any(t => t == "Features")) return "";
+            if (!tokens.Any(t => t == "Features")) 
+            { 
+                return string.Empty; 
+            }
+
             string featureName = tokens
               .SkipWhile(t => !t.Equals("features",
                 StringComparison.CurrentCultureIgnoreCase))

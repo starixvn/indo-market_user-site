@@ -1,5 +1,4 @@
-﻿using GameUser.Web.Shared.IdentityServer;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -10,8 +9,6 @@ namespace GameUser.Web.Shared.Configurations
     public interface IAppSettings
     {
         string ApiHost { get; }
-
-        IdentityServerAuth IdentityServerAuth { get; }
 
         public string ResultUrl { get; }
 
@@ -30,7 +27,6 @@ namespace GameUser.Web.Shared.Configurations
             this.configuration = configuration;
 
             ApiHost = GetValue<string>(nameof(ApiHost));
-            IdentityServerAuth = configuration.GetSection(nameof(IdentityServerAuth)).Get<IdentityServerAuth>();
             ResultUrl = GetValue<string>(nameof(ResultUrl));
             StoreFilePath = GetValue<string>(nameof(StoreFilePath));
             Env = GetValue<string>(nameof(Env));            
@@ -52,8 +48,6 @@ namespace GameUser.Web.Shared.Configurations
         {
             return Env == Constant.DevEnv;
         }
-
-        public IdentityServerAuth IdentityServerAuth { get; }
 
         public T GetValue<T>(string key)
         {
