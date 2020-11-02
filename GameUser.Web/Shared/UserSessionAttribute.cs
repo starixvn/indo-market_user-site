@@ -16,15 +16,25 @@
 
             if (string.IsNullOrWhiteSpace(sessionId))
             {
-                context.Result = new UnauthorizedResult();                
+                context.Result = new RedirectResult("/Error/NotAuthorized");
+                return;
             }                                 
             
             var userSession = await userSessionService.GetUserSession(sessionId);
 
             if (userSession == null)
             {
-                context.Result = new UnauthorizedResult();                
-            }                                  
+                context.Result = new RedirectResult("/Error/NotAuthorized");
+            }
+            else
+            {
+                var totalMinutes = (int)DateTime.Now.Subtract(userSession.ReCheckInTime).TotalMinutes;
+
+                if (totalMinutes > 3)
+                {
+                    context.Result = new RedirectResult("/Error/NotAuthorized");
+                }
+            }
         }
     }
 }

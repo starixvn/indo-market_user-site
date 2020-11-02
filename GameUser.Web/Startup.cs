@@ -65,7 +65,7 @@ namespace GameUser.Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error/NotAuthorized");
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
