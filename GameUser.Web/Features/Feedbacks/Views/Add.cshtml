@@ -27,7 +27,7 @@
             <div class="col-lg-12 row-item">
                 <textarea id="descText" type="text" asp-for="@Model.Feedback.Description"
                           class="form-control desc-input" cols="50" rows="7"
-                          OnKeyUp="feedback.onDescKeyUp()" OnPaste="feedback.onDescPaste()">
+                          >
                 </textarea>
                 <span asp-validation-for="@Model.Feedback.Description" class="text-danger"></span>
             </div>
@@ -42,18 +42,18 @@
                 <ul id="imageContainer">
                     <li class="added-image" hidden>
                         <div>
-                            <img class="attach-img" /><img class="remove-img" onclick="feedback.removeAttachment(this)" /><br />
+                            <img class="attach-img" /><img class="remove-img"  /><br />
                             <span class="to-add-name"></span>
-                            <input type="file" accept="image/x-png,image/gif,image/jpeg" class="to-add-input" name="Feedback.Files" hidden onchange="feedback.onFileInputChanged(this)">
+                            <input type="file" accept="image/x-png,image/gif,image/jpeg" class="to-add-input" name="Feedback.Files" hidden >
                         </div>
                     </li>
-                    <li class="to-add-image" onclick="feedback.openSelectFile()">
+                    <li class="to-add-image">
                         <img />
                     </li>
                 </ul>
             </div>
             <div class="col-lg-12 row-item text-center mt-4">
-                <button type="button" class="btn-gray btn-submit" data-dismiss="modal" onclick="feedback.submit()" id="submitBtn">Submit</button>
+                <button type="button" class="btn-gray btn-submit" data-dismiss="modal" id="submitBtn">Submit</button>
             </div>
         </div>
     </form>     

@@ -57,7 +57,7 @@ namespace GameUser.Tests.Features.Feedbacks
             await feedbackRepository.InsertOneAsync(Arg.Do<FeedbackEntity>(x => entity = x));
 
             // Act
-            var result = await service.AddFeedback(feedback);
+            var result = await service.AddFeedbackAsync(feedback);
 
             // Assert
             result.Should().Be(true);
@@ -81,7 +81,7 @@ namespace GameUser.Tests.Features.Feedbacks
                 .Returns(Task.FromException<List<object>>(new Exception("some error")));
 
             // Act
-            var result = await service.AddFeedback(feedback);
+            var result = await service.AddFeedbackAsync(feedback);
 
             // Assert
             result.Should().Be(false);

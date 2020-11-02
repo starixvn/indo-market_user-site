@@ -33,7 +33,7 @@ namespace GameUser.Tests.Features.FileUploads
             var expectedResult = new List<UploadedFile>();
 
             // Act
-            var result = await service.UploadFiles(files, baseDirectory);
+            var result = await service.UploadFilesAsync(files, baseDirectory);
 
             // Assert
             result.Should().BeEquivalentTo(expectedResult);
@@ -53,7 +53,7 @@ namespace GameUser.Tests.Features.FileUploads
             var baseDirectory = fixture.Create<string>();
 
             // Act
-            var result = await service.UploadFiles(files, baseDirectory);
+            var result = await service.UploadFilesAsync(files, baseDirectory);
 
             // Assert
             result.Count(i => i.SavedSuccess).Should().Be(files.Count);
@@ -76,7 +76,7 @@ namespace GameUser.Tests.Features.FileUploads
                 .Returns(Task.FromException<List<object>>(new Exception("some error")));
 
             // Act
-            var result = await service.UploadFiles(files, baseDirectory);
+            var result = await service.UploadFilesAsync(files, baseDirectory);
 
             // Assert
             result.Count(i => !i.SavedSuccess).Should().Be(files.Count);

@@ -69,13 +69,13 @@ namespace GameUser.Web.Features.Feedbacks
         [HttpPost]
         public async Task<IActionResult> Add(InsertFeedbackViewModel model)
         {
-            var result = await feedbackService.AddFeedback(model.Feedback);
+            var result = await feedbackService.AddFeedbackAsync(model.Feedback);
 
-            if (result)
+            if (result.IsSuccess)
             {
                 if(model.Feedback.Files != null && model.Feedback.Files.Any())
                 {
-                    await fileUploadService.UploadFiles(model.Feedback.Files, appSetting.StoreFileFullPath());
+                    await fileUploadService.UploadFilesAsync(model.Feedback.Files, appSetting.StoreFileFullPath());
                 }                
 
                 var email = await feedbackService.GenerateEmail(model.Feedback, model.NickName, emailConfigs);
@@ -83,7 +83,7 @@ namespace GameUser.Web.Features.Feedbacks
                 await emailService.SendAsync(email);
             }
 
-            return Json(new { success = result });
+            return Json(result);
         }
 
         [HttpPost]

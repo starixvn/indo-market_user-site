@@ -1,5 +1,6 @@
 ﻿using GameUser.Features.Emails;
 using GameUser.Shared.Enumerations;
+using GameUser.Shared.Models;
 using GameUser.Shared.Repositories;
 using Sentry;
 using System;
@@ -12,7 +13,7 @@ namespace GameUser.Features.Feedbacks
     public interface IFeedbackService
     {
         Task<IEnumerable<FeedbackType>> GetTypes();
-        Task<bool> AddFeedback(Feedback feedback);
+        Task<UpdateResult> AddFeedbackAsync(Feedback feedback);
 
         Task<EmailRequest> GenerateEmail(Feedback feedback, string nickname, IEmailConfigs emailConfigs);
     }
@@ -28,7 +29,7 @@ namespace GameUser.Features.Feedbacks
             this.sentryClient = sentryClient;
         }
 
-        public async Task<bool> AddFeedback(Feedback feedback)
+        public async Task<UpdateResult> AddFeedbackAsync(Feedback feedback)
         {
             try
             {
@@ -43,12 +44,12 @@ namespace GameUser.Features.Feedbacks
 
                 await feedbackRepository.InsertOneAsync(feedbackEntity);
 
-                return true;
+                return new UpdateResult { IsSuccess = true };
             }
             catch (Exception e)
             {
                 sentryClient.CaptureException(e);
-                return false;
+                return new UpdateResult { IsSuccess = false, Message = "Something went wrong"};
             }
         }
 

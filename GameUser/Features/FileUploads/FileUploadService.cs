@@ -10,7 +10,7 @@ namespace GameUser.Features.FileUploads
 {
     public interface IFileUploadService
     {
-        Task<IEnumerable<UploadedFile>> UploadFiles(List<IFormFile> files, string baseDirectory);
+        Task<IEnumerable<UploadedFile>> UploadFilesAsync(List<IFormFile> files, string baseDirectory);
     }
 
     public class FileUploadService : IFileUploadService
@@ -24,7 +24,7 @@ namespace GameUser.Features.FileUploads
             this.systemIOWrapper = systemIOWrapper;
         }
 
-        public async Task<IEnumerable<UploadedFile>> UploadFiles(List<IFormFile> files, string baseDirectory)
+        public async Task<IEnumerable<UploadedFile>> UploadFilesAsync(List<IFormFile> files, string baseDirectory)
         {
             var result = new List<UploadedFile>();
             if (files != null)
