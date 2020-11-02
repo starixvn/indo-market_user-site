@@ -59,7 +59,8 @@ namespace GameUser.Web.Features.Feedbacks
             {
                 Feedback = new GameUser.Features.Feedbacks.Feedback(),
                 FeedbackTypeOptions = feedbackTypes.Select(t => new SelectListItem { Text = t.DisplayName, Value = t.Value }).ToList(),
-                NickName = feedbackRequest.NickName                 
+                NickName = feedbackRequest.NickName,
+                SessionId = feedbackRequest.SessionId
             };
 
             return View(model);
