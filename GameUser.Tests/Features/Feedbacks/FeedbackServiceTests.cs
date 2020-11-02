@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
+﻿using FluentAssertions;
 using GameUser.Features.Feedbacks;
 using GameUser.Shared.Repositories;
 using NSubstitute;
@@ -14,16 +13,20 @@ namespace GameUser.Tests.Features.Feedbacks
 {
     public class FeedbackServiceTests
     {
-        private readonly Fixture fixture = new Fixture();
+        private readonly IGenericRepository<FeedbackEntity> feedbackRepository;
+        private readonly ISentryClient sentryClient;
+        
+        public FeedbackServiceTests()
+        {
+            feedbackRepository = Substitute.For<IGenericRepository<FeedbackEntity>>();
+            sentryClient = Substitute.For<ISentryClient>();
+        }        
 
         [Fact]
         public async Task GetTypes_WhenCalled_ReturnListOfFeedbackTypes()
         {
-            // Arrange             
-            var sentryClient = Substitute.For<ISentryClient>();
-            var feedbackRepository = Substitute.For<IGenericRepository<FeedbackEntity>>();
+            // Arrange  
             var service = new FeedbackService(feedbackRepository, sentryClient);
-
             var expectedResult = new List<string> {
                 "Request a new game",
                 "Report a bug",
@@ -42,10 +45,7 @@ namespace GameUser.Tests.Features.Feedbacks
         public async Task AddFeedback_WhenSuccess_CallInsert()
         {
             // Arrange             
-            var sentryClient = Substitute.For<ISentryClient>();
-            var feedbackRepository = Substitute.For<IGenericRepository<FeedbackEntity>>();
             var service = new FeedbackService(feedbackRepository, sentryClient);
-
             var feedback = new Feedback { 
                  Category = "ss",
                  Description = "ff",
@@ -71,17 +71,12 @@ namespace GameUser.Tests.Features.Feedbacks
         public async Task AddFeedback_WhenFailed_LogErrors()
         {
             // Arrange             
-            var sentryClient = Substitute.For<ISentryClient>();
-            var feedbackRepository = Substitute.For<IGenericRepository<FeedbackEntity>>();
             var service = new FeedbackService(feedbackRepository, sentryClient);
-
-            var feedback = new Feedback();
-
             feedbackRepository.InsertOneAsync(Arg.Any<FeedbackEntity>())
                 .Returns(Task.FromException<List<object>>(new Exception("some error")));
 
             // Act
-            var result = await service.AddFeedbackAsync(feedback);
+            var result = await service.AddFeedbackAsync(new Feedback());
 
             // Assert
             result.Should().Be(false);

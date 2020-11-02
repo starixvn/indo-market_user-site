@@ -18,18 +18,22 @@ namespace GameUser.Tests.Features.FileUploads
     public class FileUploadServiceTests
     {
         private readonly Fixture fixture = new Fixture();
+        private readonly ISentryClient sentryClient;
+        private readonly ISystemIOWrapper systemIOWrapper;
+
+        public FileUploadServiceTests()
+        {
+            sentryClient = Substitute.For<ISentryClient>();
+            systemIOWrapper = Substitute.For<ISystemIOWrapper>();
+        }
 
         [Fact]
         public async Task UploadFiles_WhenFilesNull_ReturnEmptyList()
         {
             // Arrange
-            var sentryClient = Substitute.For<ISentryClient>();
-            var systemIOWrapper  = Substitute.For<ISystemIOWrapper>();
             var service = new FileUploadService(sentryClient, systemIOWrapper);
-
             List<IFormFile> files = null;
             var baseDirectory = fixture.Create<string>();
-
             var expectedResult = new List<UploadedFile>();
 
             // Act
@@ -43,12 +47,8 @@ namespace GameUser.Tests.Features.FileUploads
         public async Task UploadFiles_WhenSuccess_ReturnSuccessStatuses()
         {
             // Arrange
-            var sentryClient = Substitute.For<ISentryClient>();
-            var systemIOWrapper = Substitute.For<ISystemIOWrapper>();
             var service = new FileUploadService(sentryClient, systemIOWrapper);
-
             IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")), 0, 0, "Data", "dummy.txt");
-
             var files = new List<IFormFile> { file, file };
             var baseDirectory = fixture.Create<string>();
 
@@ -63,12 +63,8 @@ namespace GameUser.Tests.Features.FileUploads
         public async Task UploadFiles_WhenError_ReturnNotSuccessStatusesAndWriteLog()
         {
             // Arrange
-            var sentryClient = Substitute.For<ISentryClient>();
-            var systemIOWrapper = Substitute.For<ISystemIOWrapper>();
             var service = new FileUploadService(sentryClient, systemIOWrapper);
-
             IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")), 0, 0, "Data", "dummy.txt");
-
             var files = new List<IFormFile> { file, file };
             var baseDirectory = fixture.Create<string>();
 
