@@ -2,7 +2,10 @@
     constructor() {
         this.mainForm = $('#gameForm');
         this.successModal = $('#successModal');
+        this.errorModal = $('#errorModal');
         this.loadingModal = $('#loadingModal');
+
+        this.submitButton = this.mainForm.find('#submitBtn');
 
         this.registerEventHandlers();
     }
@@ -18,7 +21,7 @@
         }
 
         let formData = new FormData(this.mainForm[0]);
-        this.mainForm.find('#submitBtn').prop('disabled', true);
+        this.submitButton.prop('disabled', true);
 
         this.showLoading();
         $.ajax({
@@ -29,17 +32,15 @@
             contentType: false
         }).done(function (result) {
             this.hideLoading();
+            this.submitButton.prop('disabled', false);
 
             if (result.success) {
-                this.mainForm.find('#descErrors').hide();
                 feedback.showSuccessModal();
-                this.mainForm.find('#submitBtn').prop('disabled', false);
-                feedback.postToParentFromIframe({ showSuccess: true });
+                feedback.postToParentFromIframe({ showBackdrop: true });
             }
             else {
-                this.mainForm.find('#descErrors').show();
-                this.mainForm.find('#descErrorsContent').html(result.message);
-                this.mainForm.find('#submitBtn').prop('disabled', false);
+                feedback.showErrorModal(result.message);
+                feedback.postToParentFromIframe({ showBackdrop: true });
             }
         }.bind(this));
     }
@@ -58,8 +59,12 @@
     }
 
     registerEventHandlers() {
-        $('#successModal').on('hidden.bs.modal', function () {
+        this.successModal.on('hidden.bs.modal', function () {
             feedback.onCloseSuccessModal();
+        });
+
+        this.errorModal.on('hidden.bs.modal', function () {
+            feedback.onCloseErrorModal();
         });
     }
     //  ******* End common functions  *******
@@ -174,7 +179,7 @@
 
     //  ******* Success Modal  *******
     showSuccessModal() {
-        $('#successModal').modal('show');
+        this.successModal.modal('show');
 
         setTimeout(function () {
             this.hideSuccessModal();
@@ -183,24 +188,45 @@
     }
 
     hideSuccessModal() {
-        $('#successModal').modal('hide');
+        this.successModal.modal('hide');
     }
 
     onCloseSuccessModal() {
-        console.log("on close success");
         feedback.resetForm();
-        feedback.postToParentFromIframe({ closeSuccess: true });
+        feedback.postToParentFromIframe({ hideBackdrop: true });
     }
-    //  ******* Success Modal  *******
+    //  ******* End Success Modal  *******
+
+
+    //  ******* Error Modal  *******
+    showErrorModal(message) {
+        this.errorModal.modal('show');
+        this.errorModal.find('#errorContent').html(message);
+
+        setTimeout(function () {
+            this.hideErrorModal();
+            this.hideLoading();
+        }.bind(this), 4000);
+    }
+
+    hideErrorModal() {
+        this.errorModal.modal('hide');
+    }
+
+    onCloseErrorModal() {
+        feedback.postToParentFromIframe({ hideBackdrop: true });
+    }
+
+    //  ******* End Error Modal  *******
 
 
     //  ******* Loading Modal  *******
     showLoading() {
-        $('#loadingModal').modal('show');
+        this.loadingModal.modal('show');
     }
 
     hideLoading() {
-        $('#loadingModal').modal('hide');
+        this.loadingModal.modal('hide');
     }
     //  ******* Loading Modal  *******    
 }

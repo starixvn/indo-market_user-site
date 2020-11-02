@@ -175,3 +175,40 @@ html, body {
         text-align: center;
     }
 }
+
+.error-modal {
+    .modal-dialog {
+        width: 300px;
+    }
+
+    .header {
+        background: #343d7e;
+
+        .header-content {
+            text-align: center;
+            color: white;
+            padding: 15px;
+
+            img {
+                background: url(./Images/error.png) no-repeat;
+                width: 100px;
+                height: 100px;
+                background-size: contain;
+            }
+        }
+    }
+
+    .content {
+        text-align: center;
+    }
+
+    .close-icon {
+        background: url(./Images/remove.png) no-repeat;
+        width: 40px;
+        height: 40px;
+        position: relative;
+        float: right;
+        margin-right: -15px;
+        margin-top: -15px;
+    }
+}

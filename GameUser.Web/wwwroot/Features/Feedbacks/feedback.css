@@ -117,3 +117,30 @@
 
 .loading-modal .content {
   text-align: center; }
+
+.error-modal .modal-dialog {
+  width: 300px; }
+
+.error-modal .header {
+  background: #343d7e; }
+  .error-modal .header .header-content {
+    text-align: center;
+    color: white;
+    padding: 15px; }
+    .error-modal .header .header-content img {
+      background: url(Images/error.png) no-repeat;
+      width: 100px;
+      height: 100px;
+      background-size: contain; }
+
+.error-modal .content {
+  text-align: center; }
+
+.error-modal .close-icon {
+  background: url(Images/remove.png) no-repeat;
+  width: 40px;
+  height: 40px;
+  position: relative;
+  float: right;
+  margin-right: -15px;
+  margin-top: -15px; }

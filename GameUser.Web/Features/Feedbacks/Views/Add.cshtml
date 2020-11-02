@@ -88,6 +88,24 @@
     </div>
 </div>
 
+<div class="modal error-modal" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="header">
+                <button type="button" class="close close-icon" data-dismiss="modal" aria-label="Close">
+                </button>
+                <div class="header-content">
+                    <div><img /></div>
+                    <div >Errors</div>
+                </div>
+            </div>
+            <div class="modal-body content" id="errorContent">
+                Something went wrong
+            </div>            
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script src="~/Shared/jquery-unobtrusive-ajax/jquery.unobtrusive-ajax.js"></script>
     <script src="~/Features/Feedbacks/feedback.min.js" asp-append-version="true"></script>
