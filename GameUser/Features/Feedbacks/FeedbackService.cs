@@ -74,9 +74,9 @@ namespace GameUser.Features.Feedbacks
             };
         }
 
-        public async Task<IEnumerable<FeedbackType>> GetTypes()
+        public Task<IEnumerable<FeedbackType>> GetTypes()
         {
-            return Enumeration.GetAll<FeedbackType>();
+            return (Task<IEnumerable<FeedbackType>>)Enumeration.GetAll<FeedbackType>();
         }
     }
 }
