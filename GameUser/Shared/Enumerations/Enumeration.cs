@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace GameUser.Shared.Enumerations
 {
-    public abstract class Enumeration : IComparable
+    public class Enumeration : IComparable
     {
         protected Enumeration()
         {
@@ -23,18 +23,6 @@ namespace GameUser.Shared.Enumerations
 
         public string Value { get; set; }
 
-        public static T FromDisplayName<T>(string displayName) where T : Enumeration, new()
-        {
-            var matchingItem = Parse<T, string>(displayName, "display name", item => item.DisplayName == displayName);
-            return matchingItem;
-        }
-
-        public static T FromValue<T>(string value) where T : Enumeration, new()
-        {
-            var matchingItem = Parse<T, string>(value, "value", item => item.Value == value);
-            return matchingItem;
-        }
-
         public static IEnumerable<T> GetAll<T>() where T : Enumeration, new()
         {
             var type = typeof(T);
@@ -50,42 +38,17 @@ namespace GameUser.Shared.Enumerations
                     yield return locatedValue;
                 }
             }
-        }
-
-        public static IEnumerable GetAll(Type type)
-        {
-            var fields = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
-
-            foreach (var info in fields)
-            {
-                object instance = Activator.CreateInstance(type);
-                yield return info.GetValue(instance);
-            }
-        }
+        }      
 
         public static bool operator ==(Enumeration left, Enumeration right)
         {
             if (ReferenceEquals(left, null))
             {
-                if (ReferenceEquals(right, null))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return ReferenceEquals(right, null);                
             }
             else
             {
-                if (ReferenceEquals(right, null))
-                {
-                    return false;
-                }
-                else
-                {
-                    return left.Value == right.Value;
-                }
+                return ReferenceEquals(right, null) ? false : left.Value == right.Value;                
             }
         }
 
@@ -132,19 +95,6 @@ namespace GameUser.Shared.Enumerations
             }
 
             return Value.CompareTo(((Enumeration)obj).Value);
-        }
-
-        private static T Parse<T, K>(K value, string description, Func<T, bool> predicate) where T : Enumeration, new()
-        {
-            var matchingItem = GetAll<T>().FirstOrDefault(predicate);
-
-            if (matchingItem == null)
-            {
-                var message = string.Format("'{0}' is not a valid {1} in {2}", value, description, typeof(T));
-                throw new ArgumentOutOfRangeException(message);
-            }
-
-            return matchingItem;
-        }
+        }        
     }
 }

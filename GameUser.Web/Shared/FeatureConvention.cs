@@ -12,7 +12,7 @@ namespace GameUser.Web.Shared
             controller.Properties.Add("feature",
               GetFeatureName(controller.ControllerType));
         }
-        private string GetFeatureName(TypeInfo controllerType)
+        private static string GetFeatureName(TypeInfo controllerType)
         {
             string[] tokens = controllerType.FullName.Split('.');
             if (!tokens.Any(t => t == "Features")) 

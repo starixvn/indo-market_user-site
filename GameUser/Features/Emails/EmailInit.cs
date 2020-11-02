@@ -15,7 +15,7 @@ namespace GameUser.Features.Emails
 
             services.AddMailKit(optionBuilder =>
             {
-                var mailKitOptions = new MailKitOptions()
+                var mailKitOptions = new MailKitOptions
                 {
                     Server = emailConfigs.Server,
                     Port = emailConfigs.Port,
