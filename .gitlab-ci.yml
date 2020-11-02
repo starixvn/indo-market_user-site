@@ -1,0 +1,7 @@
+variables:
+    PROJECT_NAME: l3-Game-User    
+    SOLUTION_NAME: ./GameUser.sln
+include:
+  - project: 'lumi-ops/ci-scripts'
+    ref: master
+    file: 'sonarqube/sonarqube-dotnet.gitlab-ci.yml'   
