@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GameUser.Web.Shared.Configurations
 {
-    public class Constant
+    public static class Constant
     {
         public const string DevEnv = "DEV";
     }
