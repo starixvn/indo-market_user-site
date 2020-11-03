@@ -11,6 +11,7 @@ namespace GameUser.Web
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Options;
     using System;
 
     public class Startup
@@ -28,6 +29,7 @@ namespace GameUser.Web
             services.AddAutoMapper(typeof(Startup));
             services.AddAppSettings(Configuration);
             services.ConfigMongoDB(Configuration);
+            services.AddLocalizationSettings(Configuration);
 
             services.ConfigGameUser(Configuration);            
 
@@ -78,15 +80,15 @@ namespace GameUser.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            
             app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Feedback}/{action=Add}");
-            });                        
+                    pattern: "{culture=en}/{controller=Feedback}/{action=Add}");
+            });
         }
     }
 }

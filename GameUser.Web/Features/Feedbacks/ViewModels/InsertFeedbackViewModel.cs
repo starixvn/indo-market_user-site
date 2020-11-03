@@ -22,5 +22,7 @@ namespace GameUser.Web.Features.Feedbacks.ViewModels
         public string NickName { get; set; }
 
         public string SessionId { get; set; }
+
+        public string Culture { get; set; }
     }
 }

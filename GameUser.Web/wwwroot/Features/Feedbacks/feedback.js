@@ -26,9 +26,10 @@
         let formData = new FormData(this.mainForm[0]);
         this.disableSubmitButton(true);        
         this.showLoading();
+        let culture = $("#Culture").val();
         $.ajax({
             method: "POST",
-            url: `${window.rootUrl}feedback/Add`,
+            url: `${window.rootUrl}${culture}/feedback/Add`,
             data: formData,
             processData: false,
             contentType: false

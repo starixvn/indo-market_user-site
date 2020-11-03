@@ -3,6 +3,7 @@ using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
 using GameUser.Web.Features.Feedbacks.ViewModels;
 using GameUser.Web.Shared;
+using GameUser.Web.Shared.Attributes;
 using GameUser.Web.Shared.Configurations;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ namespace GameUser.Web.Features.Feedbacks
 {
     [UserSessionValidation]
     [AutoValidateAntiforgeryToken]
+    [Internationalization]
     public class FeedbackController : Controller
     {        
         private readonly IFeedbackService feedbackService;                    
@@ -46,7 +48,8 @@ namespace GameUser.Web.Features.Feedbacks
                 Feedback = new GameUser.Features.Feedbacks.Feedback(),
                 FeedbackTypeOptions = feedbackTypes.Select(t => new SelectListItem { Text = t.DisplayName, Value = t.Value }).ToList(),
                 NickName = feedbackRequest.NickName,
-                SessionId = feedbackRequest.SessionId
+                SessionId = feedbackRequest.SessionId,
+                Culture = (string)HttpContext.Request.RouteValues["culture"] ?? "en"
             };
 
             return View(model);

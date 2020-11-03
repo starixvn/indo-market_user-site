@@ -1,6 +1,6 @@
 ﻿@using GameUser.Web.Features.Feedbacks.ViewModels;
-@using GameUser.Web.Shared.Resources; 
 @model InsertFeedbackViewModel;
+@inject Microsoft.Extensions.Localization.IStringLocalizer<GameUser.Web.Shared.Resources.Resources> Localizer
 
 @section Styles {
     <link href="~/Features/Feedbacks/feedback.min.css" rel="stylesheet" asp-append-version="true" />
@@ -10,10 +10,11 @@
     <form asp-action="Add" asp-controller="Feedback" method="post" id="gameForm" enctype="multipart/form-data">
         <input type="hidden" asp-for="@Model.NickName" value="@Model.NickName" />
         <input type="hidden" asp-for="@Model.SessionId" value="@Model.SessionId" />
+        <input type="hidden" asp-for="@Model.Culture" value="@Model.Culture" />
         <div class="form-group row">
             <div class="col-lg-12 row-item">
                 <label asp-for="@Model.Feedback.Category" class="control-label">
-                    @Resources.Please_Let_Us_Know
+                    @Localizer["Please_Let_Us_Know"]
                 </label>
             </div>
             <div class="col-lg-12 row-item">
@@ -21,7 +22,7 @@
             </div>
             <div class="col-lg-12 row-item">
                 <label asp-for="@Model.Feedback.Category" class="control-label">
-                    @Resources.Description
+                    @Localizer["Description"]
                 </label>
                 <span id="descErrors" class="failed-message"><i class="icon-cancel"></i><span id="descErrorsContent"></span></span>
             </div>
@@ -34,7 +35,7 @@
             </div>
             <div class="col-lg-12 row-item">
                 <label class="control-label">
-                    @Resources.Attachment
+                    @Localizer["Attachment"]
                 </label>
                 <span class="attachment-count">0</span>
                 <span id="attachmentErrors" class="failed-message"><i class="icon-cancel"></i><span id="attachmentErrorsContent"></span></span>
@@ -54,7 +55,7 @@
                 </ul>
             </div>
             <div class="col-lg-12 row-item text-center mt-4">
-                <button type="button" class="btn-gray btn-submit" data-dismiss="modal" id="submitBtn">@Resources.Submit</button>
+                <button type="button" class="btn-gray btn-submit" data-dismiss="modal" id="submitBtn">@Localizer["Submit"]</button>
             </div>
         </div>
     </form>     

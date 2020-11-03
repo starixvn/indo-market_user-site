@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Reflection;
 
 namespace GameUser.Shared.Enumerations
 {
-    public class Enumeration : IComparable
+    public class Enumeration
     {
         protected Enumeration()
         {
@@ -38,63 +35,6 @@ namespace GameUser.Shared.Enumerations
                     yield return locatedValue;
                 }
             }
-        }      
-
-        public static bool operator ==(Enumeration left, Enumeration right)
-        {
-            if (ReferenceEquals(left, null))
-            {
-                return ReferenceEquals(right, null);                
-            }
-            else
-            {
-                return ReferenceEquals(right, null) ? false : left.Value == right.Value;                
-            }
-        }
-
-        public static bool operator !=(Enumeration left, Enumeration right)
-        {
-            return !(left == right);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var otherValue = obj as Enumeration;
-
-            if (otherValue == null)
-            {
-                return false;
-            }
-
-            var typeMatches = GetType().Equals(obj.GetType());
-            var valueMatches = Value.Equals(otherValue.Value);
-
-            return typeMatches && valueMatches;
-        }
-
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return DisplayName;
-        }
-
-        public virtual int CompareTo(object obj)
-        {
-            if (obj == null)
-            {
-                throw new ArgumentNullException(nameof(obj));
-            }
-
-            return Value.CompareTo(((Enumeration)obj).Value);
-        }        
+        }  
     }
 }
