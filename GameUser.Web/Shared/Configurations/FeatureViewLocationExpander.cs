@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using System;
 using System.Collections.Generic;
 
-namespace GameUser.Web.Shared
+namespace GameUser.Web.Shared.Configurations
 {
     public class FeatureViewLocationExpander : IViewLocationExpander
     {

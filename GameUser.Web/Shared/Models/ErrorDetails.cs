@@ -1,4 +1,4 @@
-﻿namespace GameUser.Web.Shared.Middlewares.Models
+﻿namespace GameUser.Web.Shared.Models
 {
     using Newtonsoft.Json;
     public class ErrorDetails

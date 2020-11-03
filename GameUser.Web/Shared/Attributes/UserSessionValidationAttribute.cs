@@ -1,4 +1,4 @@
-﻿namespace GameUser.Web.Shared
+﻿namespace GameUser.Web.Shared.Attributes
 {
     using GameUser.Features.UserSessions;
     using GameUser.Web.Shared.Configurations;

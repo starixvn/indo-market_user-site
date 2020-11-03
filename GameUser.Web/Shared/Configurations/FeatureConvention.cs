@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace GameUser.Web.Shared
+namespace GameUser.Web.Shared.Configurations
 {
     public class FeatureConvention : IControllerModelConvention
     {

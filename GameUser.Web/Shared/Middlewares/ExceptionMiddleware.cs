@@ -1,6 +1,6 @@
 ﻿namespace GameUser.Web.Shared.Middlewares
 {
-    using GameUser.Web.Shared.Middlewares.Models;
+    using GameUser.Web.Shared.Models;
     using Microsoft.AspNetCore.Http;
     using Sentry;
     using System;
