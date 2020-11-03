@@ -13,7 +13,8 @@ using System.Threading.Tasks;
 
 namespace GameUser.Web.Features.Feedbacks
 {
-    [UserSession]
+    [UserSessionValidation]
+    [AutoValidateAntiforgeryToken]
     public class FeedbackController : Controller
     {        
         private readonly IFeedbackService feedbackService;                    
@@ -51,7 +52,7 @@ namespace GameUser.Web.Features.Feedbacks
             return View(model);
         }
 
-        [HttpPost]
+        [HttpPost]        
         public async Task<IActionResult> Add(InsertFeedbackViewModel model)
         {
             var result = await feedbackService.AddFeedbackAsync(model.Feedback);

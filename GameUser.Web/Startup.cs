@@ -7,6 +7,7 @@ namespace GameUser.Web
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -54,6 +55,8 @@ namespace GameUser.Web
                      options.LoginPath = "/Error/NotAuthorized";
                      options.AccessDeniedPath = "/Error/NotAuthorized";
                  });
+
+            services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,7 +86,7 @@ namespace GameUser.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Feedback}/{action=Add}");
-            });
+            });                        
         }
     }
 }

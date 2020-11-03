@@ -13,7 +13,7 @@
     using System.Threading.Tasks;
 
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
-    public class UserSessionAttribute : Attribute, IAsyncAuthorizationFilter
+    public class UserSessionValidationAttribute : Attribute, IAsyncAuthorizationFilter
     {
         private readonly int expiredUserSession = 3; //3 minutes
 
