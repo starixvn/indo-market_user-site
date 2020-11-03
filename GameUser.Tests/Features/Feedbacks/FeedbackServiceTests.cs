@@ -15,18 +15,20 @@ namespace GameUser.Tests.Features.Feedbacks
     {
         private readonly IGenericRepository<FeedbackEntity> feedbackRepository;
         private readonly ISentryClient sentryClient;
-        
+        private readonly FeedbackTypeLocalization feedbackTypeLocalization;
+
         public FeedbackServiceTests()
         {
             feedbackRepository = Substitute.For<IGenericRepository<FeedbackEntity>>();
             sentryClient = Substitute.For<ISentryClient>();
+            feedbackTypeLocalization = Substitute.For<FeedbackTypeLocalization>();
         }        
 
         [Fact]
         public async Task GetTypes_WhenCalled_ReturnListOfFeedbackTypes()
         {
             // Arrange  
-            var service = new FeedbackService(feedbackRepository, sentryClient);
+            var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization);
             var expectedResult = new List<string> {
                 "Request a new game",
                 "Report a bug",
@@ -37,7 +39,7 @@ namespace GameUser.Tests.Features.Feedbacks
             var result = await service.GetTypes();
 
             // Assert
-            var feedbackTypes = result.Select(f => f.DisplayName);
+            var feedbackTypes = result.Select(f => f.Text);
             feedbackTypes.Should().BeEquivalentTo(expectedResult);
         }
 
@@ -45,7 +47,7 @@ namespace GameUser.Tests.Features.Feedbacks
         public async Task AddFeedback_WhenSuccess_CallInsert()
         {
             // Arrange             
-            var service = new FeedbackService(feedbackRepository, sentryClient);
+            var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization);
             var feedback = new Feedback { 
                  Category = "ss",
                  Description = "ff",
@@ -71,7 +73,7 @@ namespace GameUser.Tests.Features.Feedbacks
         public async Task AddFeedback_WhenFailed_LogErrors()
         {
             // Arrange             
-            var service = new FeedbackService(feedbackRepository, sentryClient);
+            var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization);
             feedbackRepository.InsertOneAsync(Arg.Any<FeedbackEntity>())
                 .Returns(Task.FromException<List<object>>(new Exception("some error")));
 

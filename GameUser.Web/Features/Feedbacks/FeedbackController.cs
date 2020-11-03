@@ -46,7 +46,7 @@ namespace GameUser.Web.Features.Feedbacks
             var model = new InsertFeedbackViewModel
             {
                 Feedback = new GameUser.Features.Feedbacks.Feedback(),
-                FeedbackTypeOptions = feedbackTypes.Select(t => new SelectListItem { Text = t.DisplayName, Value = t.Value }).ToList(),
+                FeedbackTypeOptions = feedbackTypes.Select(t => new SelectListItem { Text = t.Text, Value = t.Value }).ToList(),
                 NickName = feedbackRequest.NickName,
                 SessionId = feedbackRequest.SessionId,
                 Culture = (string)HttpContext.Request.RouteValues["culture"] ?? "en"

@@ -2,6 +2,7 @@
 using GameUser.Shared.Enumerations;
 using GameUser.Shared.Models;
 using GameUser.Shared.Repositories;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Sentry;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace GameUser.Features.Feedbacks
 {
     public interface IFeedbackService
     {
-        Task<IEnumerable<FeedbackType>> GetTypes();
+        Task<IEnumerable<SelectListItem>> GetTypes();
         Task<UpdateResult> AddFeedbackAsync(Feedback feedback);
 
         Task<EmailRequest> GenerateEmail(Feedback feedback, string nickname, IEmailConfigs emailConfigs);
@@ -22,11 +23,16 @@ namespace GameUser.Features.Feedbacks
     {
         private readonly IGenericRepository<FeedbackEntity> feedbackRepository;
         private readonly ISentryClient sentryClient;
+        private readonly FeedbackTypeLocalization feedbackTypeLocalization;
 
-        public FeedbackService(IGenericRepository<FeedbackEntity> feedbackRepository, ISentryClient sentryClient)
+        public FeedbackService(
+            IGenericRepository<FeedbackEntity> feedbackRepository, 
+            ISentryClient sentryClient,
+            FeedbackTypeLocalization feedbackTypeLocalization)
         {
             this.feedbackRepository = feedbackRepository;
             this.sentryClient = sentryClient;
+            this.feedbackTypeLocalization = feedbackTypeLocalization;
         }
 
         public async Task<UpdateResult> AddFeedbackAsync(Feedback feedback)
@@ -57,7 +63,7 @@ namespace GameUser.Features.Feedbacks
         {
             var feedbackTypes = await GetTypes();
 
-            var category = feedbackTypes.FirstOrDefault(x => x.Value == feedback.Category).DisplayName;
+            var category = feedbackTypes.FirstOrDefault(x => x.Value == feedback.Category).Text;
 
             var subject = $"Saba_Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{category}";
             var body = $"Dear SB club, " +
@@ -75,9 +81,9 @@ namespace GameUser.Features.Feedbacks
             };
         }
 
-        public async Task<IEnumerable<FeedbackType>> GetTypes()
+        public async Task<IEnumerable<SelectListItem>> GetTypes()
         {
-            return await Task.FromResult(Enumeration.GetAll<FeedbackType>());
+            return await Task.FromResult(feedbackTypeLocalization.GetSelectListItems());
         }
     }
 }
