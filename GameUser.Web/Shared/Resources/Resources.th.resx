@@ -126,15 +126,6 @@
   <data name="Please_Let_Us_Know" xml:space="preserve">
     <value>Please first let us know what you'd like to do:</value>
   </data>
-  <data name="ReportBug" xml:space="preserve">
-    <value>Report a bug</value>
-  </data>
-  <data name="ReportOtherIssues" xml:space="preserve">
-    <value>Report other issues</value>
-  </data>
-  <data name="RequestNewGame" xml:space="preserve">
-    <value>Request a new game</value>
-  </data>
   <data name="Submit" xml:space="preserve">
     <value>Submit</value>
   </data>

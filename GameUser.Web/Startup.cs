@@ -81,7 +81,9 @@ namespace GameUser.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
-            
+
+            app.UseRequestLocalization();
+
             app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseEndpoints(endpoints =>
