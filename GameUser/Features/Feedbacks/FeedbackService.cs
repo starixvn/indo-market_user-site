@@ -56,6 +56,7 @@ namespace GameUser.Features.Feedbacks
                 await feedbackRepository.InsertOneAsync(feedbackEntity);
 
                 return new UpdateResult { IsSuccess = true };
+
             }
             catch (Exception e)
             {

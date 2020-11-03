@@ -107,61 +107,109 @@
         margin: 0;
         margin-top: -5px; }
 
-.success-modal .modal-dialog {
-  width: 300px; }
+.modal .modal-dialog {
+  width: 454px;
+  height: 274px; }
 
-.success-modal .header {
-  background: #343d7e; }
-  .success-modal .header .header-content {
+.modal .modal-content {
+  background: url(Images/BG-Message.png) no-repeat;
+  border: 0; }
+
+.modal .header {
+  position: relative; }
+  .modal .header .header-content {
     text-align: center;
     color: white;
-    padding: 15px; }
-    .success-modal .header .header-content img {
-      background: url(Images/success.png) no-repeat;
-      width: 100px;
-      height: 100px; }
+    font-size: 20px;
+    height: 177px;
+    padding-top: 37px; }
+    .modal .header .header-content .icon {
+      display: block;
+      width: 98px;
+      height: 98px;
+      margin: 0 auto; }
+
+.modal .content {
+  text-align: center;
+  font-size: 20px;
+  height: 100px;
+  color: #333; }
+
+.modal .close-icon {
+  position: absolute;
+  background: url(Images/close.png) no-repeat;
+  width: 60px;
+  height: 60px;
+  right: 0;
+  opacity: 1; }
+  .modal .close-icon:not(:disabled):not(.disabled):focus, .modal .close-icon:not(:disabled):not(.disabled):hover {
+    opacity: 1; }
+  .modal .close-icon:focus {
+    outline: 0; }
 
 .success-modal .content {
-  text-align: center; }
+  padding: 5px 20px 20px; }
 
-.success-modal .close-icon {
-  background: url(Images/remove.png) no-repeat;
-  width: 40px;
-  height: 40px;
-  position: relative;
-  float: right;
-  margin-right: -15px;
-  margin-top: -15px; }
+.success-modal .header-content .icon {
+  background: url(Images/Icon-Success.png) no-repeat; }
 
-.loading-modal .modal-dialog {
-  width: 100px; }
+.error-modal .header-content .icon {
+  background: url(Images/Icon-Error.png) no-repeat; }
 
-.loading-modal .content {
-  text-align: center; }
+.loading-modal {
+  /*.modal-dialog {
+        width: 150px;
+    }*/ }
+  .loading-modal .icon-loading {
+    display: block;
+    background: url(Images/loading.png) no-repeat;
+    width: 100px;
+    height: 100px;
+    background-size: contain;
+    margin: 0 auto;
+    animation: rotate360 2s infinite linear; }
+  .loading-modal .content {
+    text-align: center; }
 
-.error-modal .modal-dialog {
-  width: 300px; }
+@keyframes rotate360 {
+  0% {
+    transform: rotate(0); }
+  100% {
+    transform: rotate(360deg); } }
 
-.error-modal .header {
-  background: #343d7e; }
-  .error-modal .header .header-content {
-    text-align: center;
-    color: white;
-    padding: 15px; }
-    .error-modal .header .header-content img {
-      background: url(Images/error.png) no-repeat;
-      width: 100px;
-      height: 100px;
-      background-size: contain; }
+/*.error-modal {
+    .modal-dialog {
+        width: 300px;
+    }
 
-.error-modal .content {
-  text-align: center; }
+    .header {
+        position: relative;
 
-.error-modal .close-icon {
-  background: url(Images/remove.png) no-repeat;
-  width: 40px;
-  height: 40px;
-  position: relative;
-  float: right;
-  margin-right: -15px;
-  margin-top: -15px; }
+        .header-content {
+            text-align: center;
+            color: white;
+            padding: 15px;
+
+            .icon {
+                display: block;
+                background: url(Images/Icon-Error.png) no-repeat;
+                width: 100px;
+                height: 100px;
+                background-size: contain;
+            }
+        }
+    }
+
+    .content {
+        text-align: center;
+    }
+
+    .close-icon {
+        position: absolute;
+        background: url(Images/close.png) no-repeat;
+        width: 60px;
+        height: 60px;
+        right: 0;
+        opacity: 1;
+    }
+}*/

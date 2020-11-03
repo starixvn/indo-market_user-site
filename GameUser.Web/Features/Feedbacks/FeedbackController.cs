@@ -69,7 +69,7 @@ namespace GameUser.Web.Features.Feedbacks
 
                 var email = await feedbackService.GenerateEmail(model.Feedback, model.NickName, emailConfigs);
 
-                await emailService.SendAsync(email);
+              await emailService.SendAsync(email);
             }
 
             return Json(result);
