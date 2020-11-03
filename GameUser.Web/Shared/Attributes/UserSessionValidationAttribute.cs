@@ -48,7 +48,7 @@
                 }
                 else
                 {
-                    context.Result = new RedirectResult("/Error/NotAuthorized");                                        
+                    context.Result = new RedirectResult("/en/Error/NotAuthorized");                                        
                 }                
             }
             else
@@ -61,12 +61,12 @@
 
                     if(!verifiedUserSession)
                     {
-                        context.Result = new RedirectResult("/Error/NotAuthorized");                                                
+                        context.Result = new RedirectResult("/en/Error/NotAuthorized");                                                
                     }
                 }
                 else
                 {
-                    context.Result = new RedirectResult("/Error/NotAuthorized");
+                    context.Result = new RedirectResult("/en/Error/NotAuthorized");
                 }                
             }
         }

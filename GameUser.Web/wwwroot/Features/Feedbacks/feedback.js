@@ -29,6 +29,7 @@
         this.disableSubmitButton(true);        
         this.showLoading();
         let culture = $("#Culture").val();
+        this.postToParentFromIframe({ showBackdrop: true });
         $.ajax({
             method: "POST",
             url: `${window.rootUrl}${culture}/feedback/Add`,

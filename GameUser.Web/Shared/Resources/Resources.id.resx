@@ -121,7 +121,7 @@
     <value>Attachment</value>
   </data>
   <data name="Attachment_Max_Size" xml:space="preserve">
-    <value>You can't attach more than 15M in total</value>
+    <value>The maximum size of total attachments is 15M</value>
   </data>
   <data name="Description" xml:space="preserve">
     <value>Description</value>
