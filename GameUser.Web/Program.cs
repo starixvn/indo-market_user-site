@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Sentry;
+using System;
 using System.IO;
 
 namespace GameUser.Web
@@ -9,7 +11,20 @@ namespace GameUser.Web
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            try
+            {
+                var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                if (environment == "Development")
+                {
+                    SentrySdk.CaptureMessage(string.Format("{0} has been started at {1}", typeof(Program).FullName, DateTime.Now));
+                }
+                
+                CreateWebHostBuilder(args).Build().Run();
+            }
+            catch(Exception e)
+            {
+                SentrySdk.CaptureException(e);
+            }
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
