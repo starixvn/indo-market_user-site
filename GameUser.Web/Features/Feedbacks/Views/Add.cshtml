@@ -74,11 +74,11 @@
                 </button>
                 <div class="header-content">
                     <div><img /></div>
-                    <div>Successfully</div>
+                    <div>@Localizer["Successfully"]</div>
                 </div>
             </div>
             <div class="modal-body content" >
-                Thank you! Your request has been successfully sent
+                @Localizer["Successfully_Sent"]
             </div>            
         </div>
     </div>
@@ -88,7 +88,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">           
             <div class="modal-body content" >
-                Loading...
+                @Localizer["Loading"]
             </div>            
         </div>
     </div>
@@ -102,17 +102,25 @@
                 </button>
                 <div class="header-content">
                     <div><img /></div>
-                    <div >Errors</div>
+                    <div >@Localizer["Errors"]</div>
                 </div>
             </div>
             <div class="modal-body content" id="errorContent">
-                Something went wrong
+                @Localizer["Something_Wrong"]
             </div>            
         </div>
     </div>
 </div>
 
 @section Scripts {
+    <script type="text/javascript">
+        var viewResources = {
+            Description_Cant_Empty: '@Localizer["Description_Cant_Empty"]',
+            Description_Max_Characters: '@Localizer["Description_Max_Characters"]',
+            Attachment_Max_Size: '@Localizer["Attachment_Max_Size"]'
+        }
+    </script>
+
     <script src="~/Shared/jquery-unobtrusive-ajax/jquery.unobtrusive-ajax.js"></script>
     <script src="~/Features/Feedbacks/feedback.min.js" asp-append-version="true"></script>
 }

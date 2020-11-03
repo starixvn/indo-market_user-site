@@ -120,8 +120,17 @@
   <data name="Attachment" xml:space="preserve">
     <value>Attachment</value>
   </data>
+  <data name="Attachment_Max_Size" xml:space="preserve">
+    <value>You can't attach more than 15M in total</value>
+  </data>
   <data name="Description" xml:space="preserve">
     <value>Description</value>
+  </data>
+  <data name="Description_Cant_Empty" xml:space="preserve">
+    <value>The description can't be empty</value>
+  </data>
+  <data name="Description_Max_Characters" xml:space="preserve">
+    <value>You have reached the maximum number of 500 characters</value>
   </data>
   <data name="Please_Let_Us_Know" xml:space="preserve">
     <value>Please first let us know what you'd like to do:</value>

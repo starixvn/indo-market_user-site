@@ -2,7 +2,9 @@
 using GameUser.Shared.Enumerations;
 using GameUser.Shared.Models;
 using GameUser.Shared.Repositories;
+using GameUser.Shared.Resources;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Localization;
 using Sentry;
 using System;
 using System.Collections.Generic;
@@ -24,15 +26,18 @@ namespace GameUser.Features.Feedbacks
         private readonly IGenericRepository<FeedbackEntity> feedbackRepository;
         private readonly ISentryClient sentryClient;
         private readonly FeedbackTypeLocalization feedbackTypeLocalization;
+        private readonly IStringLocalizer<Resources> localizer;
 
         public FeedbackService(
             IGenericRepository<FeedbackEntity> feedbackRepository, 
             ISentryClient sentryClient,
-            FeedbackTypeLocalization feedbackTypeLocalization)
+            FeedbackTypeLocalization feedbackTypeLocalization,
+            IStringLocalizer<Resources> localizer)
         {
             this.feedbackRepository = feedbackRepository;
             this.sentryClient = sentryClient;
             this.feedbackTypeLocalization = feedbackTypeLocalization;
+            this.localizer = localizer;
         }
 
         public async Task<UpdateResult> AddFeedbackAsync(Feedback feedback)
@@ -55,7 +60,7 @@ namespace GameUser.Features.Feedbacks
             catch (Exception e)
             {
                 sentryClient.CaptureException(e);
-                return new UpdateResult { IsSuccess = false, Message = "Something went wrong"};
+                return new UpdateResult { IsSuccess = false, Message = localizer["Something_Wrong"] };
             }
         }
 

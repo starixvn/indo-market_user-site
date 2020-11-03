@@ -6,6 +6,8 @@
         this.loadingModal = $('#loadingModal');
         this.submitButton = this.mainForm.find('#submitBtn');
 
+        this.viewResources = viewResources;
+
         this.registerEventHandlers();
     }
 
@@ -76,7 +78,7 @@
 
         if (desc === "") {
             this.mainForm.find('#descErrors').show();
-            this.mainForm.find('#descErrorsContent').html("(The description can't be empty)");
+            this.mainForm.find('#descErrorsContent').html(`(${this.viewResources.Description_Cant_Empty})`);
             this.mainForm.find('#descText').addClass('error-border');
 
             this.hideDescErrors();
@@ -85,7 +87,7 @@
         else if (desc.length > 500) {
             this.mainForm.find('#descText').val(desc.substring(0, 500));
             this.mainForm.find('#descErrors').show();
-            this.mainForm.find('#descErrorsContent').html("(You have reached the maximum number of 500 characters)");
+            this.mainForm.find('#descErrorsContent').html(`(${this.viewResources.Description_Max_Characters})`);
             this.mainForm.find('#descText').addClass('error-border');
 
             this.hideDescErrors();
@@ -128,7 +130,7 @@
 
         if (totalLength > 15728640) {
             this.mainForm.find('#attachmentErrors').show();
-            this.mainForm.find('#attachmentErrorsContent').html("(You can't attach more than 15M in total)")
+            this.mainForm.find('#attachmentErrorsContent').html(`(${this.viewResources.Attachment_Max_Size})`)
             this.mainForm.find('.image-container').addClass('error-border');
 
             setTimeout(function () {
