@@ -51,7 +51,7 @@ namespace GameUser.Features.Emails
             var builder = new BodyBuilder { TextBody = emailRequest.Body };
             var mimeMessage = new MimeMessage();
             var mailToList = new InternetAddressList();
-            var mailToAddress = emailRequest.ToAddress.Split(new char[] { ',', ';' });
+            var mailToAddress = emailRequest.ToAddress.Split(new [] { ',', ';' });
 
             if (mailToAddress != null && mailToAddress.Any())
             {
