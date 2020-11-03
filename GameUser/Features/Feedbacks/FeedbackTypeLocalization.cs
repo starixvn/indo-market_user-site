@@ -4,7 +4,7 @@ using Microsoft.Extensions.Localization;
 
 namespace GameUser.Features.Feedbacks
 {
-    public class FeedbackTypeLocalization : EnumLocalization<FeedbackTypeEnum, Resources>
+    public class FeedbackTypeLocalization : EnumLocalization<FeedbackType, Resources>
     {
         public FeedbackTypeLocalization(IStringLocalizer<Resources> localizer) : base(localizer)
         {

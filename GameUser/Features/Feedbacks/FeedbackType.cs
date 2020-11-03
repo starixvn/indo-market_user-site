@@ -1,6 +1,6 @@
 ﻿namespace GameUser.Features.Feedbacks
 {
-    public enum FeedbackTypeEnum
+    public enum FeedbackType
     {
         NewGame = 1,
         ReportBug,
