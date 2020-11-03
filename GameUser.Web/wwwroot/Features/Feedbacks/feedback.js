@@ -50,7 +50,7 @@
     }
 
     resetForm() {
-        this.mainForm.find('#Feedback_Category').val('newgame');
+        this.mainForm.find('#Feedback_Category').val('NewGame');
         this.mainForm.find('#descText').val('');
         this.mainForm.find('.added-image:visible').remove();
         this.mainForm.find('.attachment-count').html(0);
