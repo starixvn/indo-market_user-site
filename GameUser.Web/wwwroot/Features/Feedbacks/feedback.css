@@ -2,53 +2,64 @@
   background: #343d7e;
   margin: 0;
   padding: 0;
-  border-radius: 5px; }
+  border-radius: 5px;
+  font-family: 'Roboto', sans-serif; }
 
 .feedback {
-  padding: 5px 30px 0;
+  padding: 0 10px;
   color: white;
   background: #343d7e; }
-  .feedback .row-item {
-    padding: 0; }
-    .feedback .row-item .desc-input {
+  .feedback .group-item {
+    padding: 0;
+    margin-bottom: 10px; }
+    .feedback .group-item .desc-input {
       padding: 5px;
       resize: none; }
-    .feedback .row-item .failed-message {
-      color: red; }
-    .feedback .row-item .control-label {
-      margin-top: 10px; }
-    .feedback .row-item .attachment-count {
+    .feedback .group-item .failed-message {
+      color: #d94030;
+      font-size: 18px; }
+    .feedback .group-item .control-label {
+      font-size: 18px;
+      margin-bottom: 5px; }
+    .feedback .group-item .form-control {
+      font-size: 20px;
+      background: #f5f3e7; }
+    .feedback .group-item .attachment-count {
       background: white;
-      color: black;
+      color: #363f80;
       background: #fff;
-      color: #000;
-      width: 20px;
-      height: 20px;
-      line-height: 16px;
+      width: 22px;
+      height: 22px;
+      line-height: 22px;
       display: inline-block;
       border-radius: 50%;
-      font-size: 19px;
+      font-size: 18px;
       font-weight: bold;
-      text-align: center; }
-    .feedback .row-item .btn-submit {
-      background: url("Images/submit-button.png");
+      text-align: center;
+      margin-left: 5px; }
+    .feedback .group-item .btn-submit {
+      background: url("Images/submit-button.png") no-repeat;
       height: 46px;
       width: 115px;
       border: none;
       color: white;
       font-size: 18px;
-      font-weight: bold; }
-    .feedback .row-item .btn-submit:hover, .feedback .row-item .btn-submit:focus, .feedback .row-item .btn-submit:active {
+      font-weight: bold;
+      text-transform: uppercase;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5); }
+    .feedback .group-item .btn-submit:hover, .feedback .group-item .btn-submit:focus, .feedback .group-item .btn-submit:active {
       border: none;
       outline: none; }
-    .feedback .row-item .btn-submit:active {
+    .feedback .group-item .btn-submit:active {
       transform: scale(1.1); }
   .feedback .error-border {
-    border: solid 2px red; }
+    box-shadow: inset 0px 0px 8px 0px red;
+    border-color: red; }
   .feedback .image-container {
     height: 100px;
-    background: white;
-    padding: 5px 0; }
+    background: #f5f3e7;
+    padding: 5px 0;
+    border-radius: 5px; }
     .feedback .image-container ul {
       list-style-type: none;
       margin: 0;
@@ -61,22 +72,23 @@
         vertical-align: top; }
       .feedback .image-container ul .to-add-image {
         cursor: pointer; }
-        .feedback .image-container ul .to-add-image img {
-          background: url("Images/toadd-attachment.png") no-repeat;
-          width: 120px;
-          height: 70px; }
+        .feedback .image-container ul .to-add-image span {
+          display: inline-block;
+          background: url("Images/Attachment-Addnew.png") no-repeat;
+          width: 112px;
+          height: 62px; }
+      .feedback .image-container ul .added-image > div {
+        position: relative; }
       .feedback .image-container ul .added-image .attach-img {
-        background: url("Images/added-attachment.png") no-repeat;
-        width: 120px;
-        height: 70px; }
+        background: url("Images/Attachment-Uploaded.png") no-repeat;
+        width: 112px;
+        height: 62px; }
       .feedback .image-container ul .added-image .remove-img {
-        background: url("Images/remove.png") no-repeat;
+        position: absolute;
         width: 40px;
         height: 40px;
-        background-size: contain;
-        margin-left: -45px;
-        position: relative;
-        margin-top: -25px;
+        top: 0;
+        right: 0;
         cursor: pointer; }
       .feedback .image-container ul span {
         color: black;
@@ -85,6 +97,15 @@
         width: 120px;
         overflow: hidden;
         text-overflow: ellipsis; }
+      .feedback .image-container ul .to-add-name {
+        color: #6f6c67;
+        white-space: nowrap;
+        width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 16px;
+        margin: 0;
+        margin-top: -5px; }
 
 .success-modal .modal-dialog {
   width: 300px; }

@@ -5,21 +5,21 @@
 
     public interface IEmailConfigs
     {
-        public string Server { get; }
+        string Server { get; }
 
-        public int Port { get; }
+        int Port { get; }
 
-        public bool Security { get; }
+        bool Security { get; }
 
-        public string SenderName { get; }
+        string SenderName { get; }
 
-        public string SenderEmail { get; }
+        string SenderEmail { get; }
 
-        public string RecieverEmail { get; set; }
+        string RecieverEmail { get; set; }
 
-        public string Account { get; }
+        string Account { get; }
 
-        public string Password { get; }
+        string Password { get; }
     }
 
     public class EmailConfigs : AppConfigs, IEmailConfigs

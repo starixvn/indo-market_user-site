@@ -162,8 +162,8 @@
 
         $(`<li class="added-image" hidden>
                 <div>
-                    <img class="attach-img"/><img class="remove-img"/><br/>
-                    <span class="to-add-name"></span>
+                    <span class="attach-img"></span><span class="remove-img"></span>
+                    <p class="to-add-name"></p>
                     <input type="file" accept="image/x-png,image/gif,image/jpeg" class="to-add-input" name="Feedback.Files" hidden>
                 </div>
            </li>`).insertBefore('.to-add-image');

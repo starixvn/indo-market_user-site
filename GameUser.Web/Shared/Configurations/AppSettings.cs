@@ -10,13 +10,13 @@ namespace GameUser.Web.Shared.Configurations
     {
         string ApiHost { get; }
 
-        public string ResultUrl { get; }
+        string ResultUrl { get; }
 
-        public string StoreFilePath { get; }
+        string StoreFilePath { get; }
 
-        public string Env { get; }
+        string Env { get; }
 
-        public string StoreFileFullPath();
+        string StoreFileFullPath();
     }
     public class AppSettings : IAppSettings
     {
