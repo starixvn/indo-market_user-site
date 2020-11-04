@@ -13,13 +13,11 @@ namespace GameUser.Web
         {
             try
             {
-                var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-                if (environment == "Development")
-                {
-                    SentrySdk.CaptureMessage(string.Format("{0} has been started at {1}", typeof(Program).FullName, DateTime.Now));
-                }
-                
-                CreateWebHostBuilder(args).Build().Run();
+                var host = CreateWebHostBuilder(args).Build();
+
+                SentrySdk.CaptureMessage(string.Format("{0} has been started at {1}", typeof(Program).FullName, DateTime.Now));
+
+                host.Run();
             }
             catch(Exception e)
             {
@@ -36,10 +34,10 @@ namespace GameUser.Web
 
             return WebHost.CreateDefaultBuilder(args)
                .UseKestrel()
-               .UseStartup<Startup>()
-               .UseSentry(opt => opt.Environment = configuration["Env"])
-               .UseIISIntegration()
-               .UseUrls($"http://*:{configuration["HostingPort"]}");
+               .UseUrls($"http://*:{configuration["HostingPort"]}")
+               .UseSentry()
+               .UseIISIntegration()               
+               .UseStartup<Startup>();
         }
     }
 }
