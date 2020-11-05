@@ -365,6 +365,8 @@ MigrationBackup/
 
 # testing
 /coverage
+/cireport
+UnitTestCoverage*
 
 # next.js
 /.next/

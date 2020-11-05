@@ -5,6 +5,11 @@
     <CodeAnalysisRuleSet>..\.sonarlint\l3-game-usercsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
   <ItemGroup>
     <AdditionalFiles Include="..\.sonarlint\l3-game-user\CSharp\SonarLint.xml" Link="SonarLint.xml" />
   </ItemGroup>
