@@ -1,6 +1,7 @@
 ﻿namespace GameUser.Features.Emails
 {
     using GameUser.Shared;
+    using GameUser.Shared.Configurations;
     using Microsoft.Extensions.Configuration;
 
     public interface IEmailConfigs
@@ -22,18 +23,18 @@
         string Password { get; }
     }
 
-    public class EmailConfigs : AppConfigs, IEmailConfigs
+    public class EmailConfigs : IEmailConfigs
     {
-        public EmailConfigs(IConfiguration configuration): base(configuration)
+        public EmailConfigs(IConfigReader configReader) 
         {           
-            Server = GetValue<string>("Email:Server");
-            Port = GetValue<int>("Email:Port");
-            Security = GetValue<bool>("Email:Security");
-            SenderName = GetValue<string>("Email:SenderName");
-            SenderEmail = GetValue<string>("Email:SenderEmail");
-            RecieverEmail = GetValue<string>("Email:RecieverEmail");
-            Account = GetValue<string>("Email:Account");
-            Password = GetValue<string>("Email:Password");
+            Server = configReader.GetValue<string>("Email:Server");
+            Port = configReader.GetValue<int>("Email:Port");
+            Security = configReader.GetValue<bool>("Email:Security");
+            SenderName = configReader.GetValue<string>("Email:SenderName");
+            SenderEmail = configReader.GetValue<string>("Email:SenderEmail");
+            RecieverEmail = configReader.GetValue<string>("Email:RecieverEmail");
+            Account = configReader.GetValue<string>("Email:Account");
+            Password = configReader.GetValue<string>("Email:Password");
         }
 
         public string Server { get; }

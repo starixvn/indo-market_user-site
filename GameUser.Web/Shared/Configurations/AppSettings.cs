@@ -1,6 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.ComponentModel;
+﻿using GameUser.Shared.Configurations;
+using GameUser.Web.Shared.Models;
 using System.IO;
 using System.Reflection;
 
@@ -18,18 +17,15 @@ namespace GameUser.Web.Shared.Configurations
 
         string StoreFileFullPath();
     }
+
     public class AppSettings : IAppSettings
     {
-        private readonly IConfiguration configuration;
-
-        public AppSettings(IConfiguration configuration)
+        public AppSettings(IConfigReader configReader)
         {
-            this.configuration = configuration;
-
-            ApiHost = GetValue<string>(nameof(ApiHost));
-            ResultUrl = GetValue<string>(nameof(ResultUrl));
-            StoreFilePath = GetValue<string>(nameof(StoreFilePath));
-            Env = GetValue<string>(nameof(Env));            
+            ApiHost = configReader.GetValue<string>(nameof(ApiHost));
+            ResultUrl = configReader.GetValue<string>(nameof(ResultUrl));
+            StoreFilePath = configReader.GetValue<string>(nameof(StoreFilePath));
+            Env = configReader.GetValue<string>(nameof(Env));            
         }
 
         public string ResultUrl { get; }
@@ -46,23 +42,7 @@ namespace GameUser.Web.Shared.Configurations
 
         public bool IsDevelopmentEnv()
         {
-            return Env == Constant.DevEnv;
-        }
-
-        public T GetValue<T>(string key)
-        {
-            try
-            {
-                var value = configuration[key];
-
-                TypeConverter typeConverter = TypeDescriptor.GetConverter(typeof(T));
-
-                return (T)typeConverter.ConvertFromString(value);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidCastException($"Key: {key}", ex);
-            }
+            return Env == Constant.DEV;
         }
     }
 }

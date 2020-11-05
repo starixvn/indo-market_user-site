@@ -4,6 +4,7 @@
     using GameUser.Features.Feedbacks;
     using GameUser.Features.FileUploads;
     using GameUser.Features.UserSessions;
+    using GameUser.Shared.Configurations;
     using GameUser.Shared.Repositories;
     using GameUser.Shared.Wrapper;
     using Microsoft.Extensions.Configuration;
@@ -22,6 +23,7 @@
 
         public static void AddSharedServices(this IServiceCollection services)
         {
+            services.AddSingleton(typeof(IConfigReader), typeof(ConfigReader));
             services.AddSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddSingleton(typeof(ISystemIOWrapper), typeof(SystemIOWrapper));
         }

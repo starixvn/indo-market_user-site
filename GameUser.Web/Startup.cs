@@ -28,7 +28,7 @@ namespace GameUser.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Startup));
-            services.AddAppSettings(Configuration);
+            services.AddAppSettings();
             services.ConfigMongoDB(Configuration);
             services.AddLocalizationSettings(Configuration);
 

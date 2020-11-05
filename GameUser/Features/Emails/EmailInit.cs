@@ -9,9 +9,11 @@ namespace GameUser.Features.Emails
     public static class EmailInit
     {
         public static void InitEmail(this IServiceCollection services, IConfiguration configuration)
-        {            
-            var emailConfigs = new EmailConfigs(configuration);
-            services.AddSingleton<IEmailConfigs>(emailConfigs);
+        {                        
+            services.AddSingleton(typeof(IEmailConfigs), typeof(EmailConfigs));
+
+            var buildServiceProvider = services.BuildServiceProvider();
+            var emailConfigs = buildServiceProvider.GetRequiredService<IEmailConfigs>();
 
             services.AddMailKit(optionBuilder =>
             {

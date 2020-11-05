@@ -2,13 +2,18 @@
 using System;
 using System.ComponentModel;
 
-namespace GameUser.Shared
+namespace GameUser.Shared.Configurations
 {
-    public class AppConfigs
+    public interface IConfigReader
+    {
+        T GetValue<T>(string key);
+    }
+
+    public class ConfigReader : IConfigReader
     {
         private readonly IConfiguration configuration;
 
-        public AppConfigs(IConfiguration configuration)
+        public ConfigReader(IConfiguration configuration)
         {
             this.configuration = configuration;
         }

@@ -6,10 +6,9 @@ namespace GameUser.Web.Shared.Middlewares
 {
     public static class AppSettingMiddleware
     {
-        public static void AddAppSettings(this IServiceCollection services, IConfiguration configuration)
+        public static void AddAppSettings(this IServiceCollection services)
         {
-            var appSettings = new AppSettings(configuration);
-            services.AddSingleton<IAppSettings>(appSettings);
+            services.AddSingleton<IAppSettings, AppSettings>();
         }
     }
 }
