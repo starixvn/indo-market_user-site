@@ -83,7 +83,7 @@ namespace GameUser.Features.Feedbacks
                 Subject = subject,
                 Body = body,
                 Attachments = feedback.Files,
-                ToAddress = emailConfigs.RecieverEmail
+                ToAddress = emailConfigs.ReceiverEmail
             };
         }
 

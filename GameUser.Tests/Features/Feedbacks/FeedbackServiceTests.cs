@@ -113,7 +113,7 @@ namespace GameUser.Tests.Features.Feedbacks
             var files = new List<IFormFile> { file, file };
             var feedback = new Feedback { Category = "NewGame", Description = "desc", Files = files };
 
-            emailConfig.RecieverEmail.Returns("recever@gmail.com");
+            emailConfig.ReceiverEmail.Returns("recever@gmail.com");
 
             var expectedBody = $"Dear SB club, " +
                            $"{Environment.NewLine}{Environment.NewLine}" +

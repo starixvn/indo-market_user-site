@@ -16,7 +16,7 @@
 
         string SenderEmail { get; }
 
-        string RecieverEmail { get; set; }
+        string ReceiverEmail { get; }
 
         string Account { get; }
 
@@ -32,7 +32,7 @@
             Security = configReader.GetValue<bool>("Email:Security");
             SenderName = configReader.GetValue<string>("Email:SenderName");
             SenderEmail = configReader.GetValue<string>("Email:SenderEmail");
-            RecieverEmail = configReader.GetValue<string>("Email:RecieverEmail");
+            ReceiverEmail = configReader.GetValue<string>("Email:ReceiverEmail");
             Account = configReader.GetValue<string>("Email:Account");
             Password = configReader.GetValue<string>("Email:Password");
         }
@@ -47,7 +47,7 @@
 
         public string SenderEmail { get; }
 
-        public string RecieverEmail { get; set; }
+        public string ReceiverEmail { get; }
 
         public string Account { get; }
 
