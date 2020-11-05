@@ -1,14 +1,14 @@
 ﻿using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
+using GameUser.Shared.Models;
 using GameUser.Web.Features.Feedbacks.ViewModels;
-using GameUser.Web.Shared;
 using GameUser.Web.Shared.Attributes;
 using GameUser.Web.Shared.Configurations;
-using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Sentry;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,25 +18,31 @@ namespace GameUser.Web.Features.Feedbacks
     [AutoValidateAntiforgeryToken]
     [Internationalization]
     public class FeedbackController : Controller
-    {        
+    {
+        private readonly IHttpContextAccessor httpContext;
         private readonly IFeedbackService feedbackService;                    
         private readonly IAppSettings appSetting;
         private readonly IEmailConfigs emailConfigs;
         private readonly IFileUploadService fileUploadService;
         private readonly IEmailService emailService;
+        private readonly ISentryClient sentryClient;
 
-        public FeedbackController(            
+        public FeedbackController(
+            IHttpContextAccessor httpContext,
             IFeedbackService feedbackService,            
             IAppSettings appSetting,
             IFileUploadService fileUploadService,
             IEmailService emailService,
-            IEmailConfigs emailConfigs)
-        {            
+            IEmailConfigs emailConfigs,
+            ISentryClient sentryClient)
+        {
+            this.httpContext = httpContext;
             this.feedbackService = feedbackService;            
             this.appSetting = appSetting;
             this.fileUploadService = fileUploadService;
             this.emailService = emailService;
             this.emailConfigs = emailConfigs;
+            this.sentryClient = sentryClient;
         }
        
         [HttpGet]        
@@ -45,11 +51,11 @@ namespace GameUser.Web.Features.Feedbacks
             var feedbackTypes = await feedbackService.GetTypes();
             var model = new InsertFeedbackViewModel
             {
-                Feedback = new GameUser.Features.Feedbacks.Feedback(),
-                FeedbackTypeOptions = feedbackTypes.Select(t => new SelectListItem { Text = t.Text, Value = t.Value }).ToList(),
+                Feedback = new Feedback(),
+                FeedbackTypeOptions = feedbackTypes.ToList(),
                 NickName = feedbackRequest.NickName,
                 SessionId = feedbackRequest.SessionId,
-                Culture = (string)HttpContext.Request.RouteValues["culture"] ?? "en"
+                Culture = (string)httpContext.HttpContext.Request.RouteValues["culture"] ?? "en"
             };
 
             return View(model);
@@ -58,18 +64,17 @@ namespace GameUser.Web.Features.Feedbacks
         [HttpPost]        
         public async Task<IActionResult> Add(InsertFeedbackViewModel model)
         {
-            var result = await feedbackService.AddFeedbackAsync(model.Feedback);
-
-            if (result.IsSuccess)
+            var result = new UpdateResult { IsSuccess = true};
+            try
             {
-                if(model.Feedback.Files != null && model.Feedback.Files.Any())
-                {
-                    await fileUploadService.UploadFilesAsync(model.Feedback.Files, appSetting.StoreFileFullPath());
-                }                
-
+                await feedbackService.AddFeedbackAsync(model.Feedback);
+                await fileUploadService.UploadFilesAsync(model.Feedback.Files, appSetting.StoreFileFullPath());
                 var email = await feedbackService.GenerateEmail(model.Feedback, model.NickName, emailConfigs);
-
-              await emailService.SendAsync(email);
+                await emailService.SendAsync(email);
+            }
+            catch (Exception e) {
+                sentryClient.CaptureException(e);
+                result = new UpdateResult { IsSuccess = false, Message = "Something went wrong" };
             }
 
             return Json(result);

@@ -15,7 +15,7 @@ set mypath=%cd%
 echo %mypath%
 
 REM OpenCover
-set command=CodeCoverage\tools\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"dotnet.exe" -targetargs:"test %project% --no-build /p:DebugType=full" -filter:"+[GameUser*]* -[GameUser.*.Tests*]* -[GameUser.Tests*]*" -output:"UnitTestCoverage_%build_number%.xml" -oldstyle -mergeoutput
+set command=CodeCoverage\tools\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user -target:"dotnet.exe" -targetargs:"test %project% --no-build /p:DebugType=full" -filter:"+[GameUser*]* -[GameUser.*.Views*]* -[GameUser.*.Tests*]* -[GameUser.Tests*]*" -output:"UnitTestCoverage_%build_number%.xml" -oldstyle -mergeoutput
 call %command%
 if %errorlevel% neq 0 goto error
 

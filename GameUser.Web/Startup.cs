@@ -32,6 +32,9 @@ namespace GameUser.Web
             services.ConfigMongoDB(Configuration);
             services.AddLocalizationSettings(Configuration);
 
+            services.AddHttpContextAccessor();
+
+
             services.ConfigGameUser(Configuration);            
 
             services.AddMvc(o => o.Conventions.Add(new FeatureConvention()))
