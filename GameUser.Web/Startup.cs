@@ -89,8 +89,11 @@ namespace GameUser.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "default",
+                    name: "culture-route",
                     pattern: "{culture=en}/{controller=Feedback}/{action=Add}");
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Feedback}/{action=Add}");
             });
         }
     }
