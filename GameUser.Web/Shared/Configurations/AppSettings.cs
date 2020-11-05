@@ -34,15 +34,11 @@ namespace GameUser.Web.Shared.Configurations
 
         public string StoreFilePath { get; }
 
-        public string StoreFileFullPath()
-        {
-            return IsDevelopmentEnv() ? Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), StoreFilePath) : StoreFilePath;            
-        }
         public string Env { get; }
 
-        public bool IsDevelopmentEnv()
+        public string StoreFileFullPath()
         {
-            return Env == Constant.DEV;
-        }
+            return Env == Constant.DEV ? Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), StoreFilePath) : StoreFilePath;            
+        }        
     }
 }
