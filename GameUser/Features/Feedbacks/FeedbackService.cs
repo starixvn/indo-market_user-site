@@ -25,13 +25,13 @@ namespace GameUser.Features.Feedbacks
     {
         private readonly IGenericRepository<FeedbackEntity> feedbackRepository;
         private readonly ISentryClient sentryClient;
-        private readonly FeedbackTypeLocalization feedbackTypeLocalization;
+        private readonly IFeedbackTypeLocalization feedbackTypeLocalization;
         private readonly IStringLocalizer<Resources> localizer;
 
         public FeedbackService(
             IGenericRepository<FeedbackEntity> feedbackRepository, 
             ISentryClient sentryClient,
-            FeedbackTypeLocalization feedbackTypeLocalization,
+            IFeedbackTypeLocalization feedbackTypeLocalization,
             IStringLocalizer<Resources> localizer)
         {
             this.feedbackRepository = feedbackRepository;

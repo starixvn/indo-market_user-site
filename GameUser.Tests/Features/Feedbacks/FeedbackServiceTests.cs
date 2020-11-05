@@ -1,13 +1,17 @@
 ﻿using FluentAssertions;
+using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
 using GameUser.Shared.Repositories;
 using GameUser.Shared.Resources;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Localization;
 using NSubstitute;
 using Sentry;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -17,14 +21,14 @@ namespace GameUser.Tests.Features.Feedbacks
     {
         private readonly IGenericRepository<FeedbackEntity> feedbackRepository;
         private readonly ISentryClient sentryClient;
-        private readonly FeedbackTypeLocalization feedbackTypeLocalization;
+        private readonly IFeedbackTypeLocalization feedbackTypeLocalization;
         private readonly IStringLocalizer<Resources> localizer;
 
         public FeedbackServiceTests()
         {
             feedbackRepository = Substitute.For<IGenericRepository<FeedbackEntity>>();
             sentryClient = Substitute.For<ISentryClient>();
-            feedbackTypeLocalization = Substitute.For<FeedbackTypeLocalization>();
+            feedbackTypeLocalization = Substitute.For<IFeedbackTypeLocalization>();
             localizer = Substitute.For<IStringLocalizer<Resources>>();
         }        
 
@@ -33,18 +37,19 @@ namespace GameUser.Tests.Features.Feedbacks
         {
             // Arrange  
             var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization, localizer);
-            var expectedResult = new List<string> {
-                "Request a new game",
-                "Report a bug",
-                "Report other issues"
+            var expectedResult = new List<SelectListItem> {
+                new SelectListItem { Value = "NewGame", Text = "Request a new game"},
+                new SelectListItem { Value = "ReportBug", Text = "Report a bug"},
+                new SelectListItem { Value = "OtherIssue", Text = "Report other issues"}
             };
+
+            feedbackTypeLocalization.GetSelectListItems().Returns(expectedResult);
 
             // Act
             var result = await service.GetTypes();
 
             // Assert
-            var feedbackTypes = result.Select(f => f.Text);
-            feedbackTypes.Should().BeEquivalentTo(expectedResult);
+            result.Should().BeEquivalentTo(expectedResult);
         }
 
         [Fact]
@@ -66,7 +71,7 @@ namespace GameUser.Tests.Features.Feedbacks
             var result = await service.AddFeedbackAsync(feedback);
 
             // Assert
-            result.Should().Be(true);
+            result.IsSuccess.Should().Be(true);
             entity.Category.Should().Be(feedback.Category);
             entity.Description.Should().Be(feedback.Description);
             entity.MemberId.Should().Be(feedback.MemberId);
@@ -85,8 +90,45 @@ namespace GameUser.Tests.Features.Feedbacks
             var result = await service.AddFeedbackAsync(new Feedback());
 
             // Assert
-            result.Should().Be(false);
-            sentryClient.Received().CaptureException(Arg.Any<Exception>());
+            result.IsSuccess.Should().Be(false);
+            sentryClient.ReceivedWithAnyArgs().CaptureException(default);
+        }
+
+        [Fact]
+        public async Task GenerateEmail_WhenCalled_GenerateEmailContent() 
+        {
+            // Arrange      
+            var emailConfig = Substitute.For<IEmailConfigs>();
+            var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization, localizer);
+
+            var expectedResult = new List<SelectListItem> {
+                new SelectListItem { Value = "NewGame", Text = "Request a new game"},
+                new SelectListItem { Value = "ReportBug", Text = "Report a bug"},
+                new SelectListItem { Value = "OtherIssue", Text = "Report other issues"}
+            };
+            feedbackTypeLocalization.GetSelectListItems().Returns(expectedResult);
+
+            var nickname = "nick name";
+            IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")), 0, 0, "Data", "dummy.txt");
+            var files = new List<IFormFile> { file, file };
+            var feedback = new Feedback { Category = "NewGame", Description = "desc", Files = files };
+
+            emailConfig.RecieverEmail.Returns("recever@gmail.com");
+
+            var expectedBody = $"Dear SB club, " +
+                           $"{Environment.NewLine}{Environment.NewLine}" +
+                           $"{feedback.Description} " +
+                           $"{Environment.NewLine}{Environment.NewLine}" +
+                           $"This is an automated email. Please do not reply to it.";
+
+            // Act
+            var result = await service.GenerateEmail(feedback, nickname, emailConfig);
+
+            // Assert
+            result.Subject.Should().Be($"Saba_Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{"Request a new game"}");
+            result.Body.Should().Be(expectedBody);
+            result.Attachments.Should().BeEquivalentTo(files);
+            result.ToAddress.Should().Be("recever@gmail.com");
         }
     }
 }

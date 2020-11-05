@@ -9,7 +9,7 @@ namespace GameUser.Features.Feedbacks
         {
             services.AddScoped<IFeedbackService, FeedbackService>();
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
-            services.AddScoped<FeedbackTypeLocalization>();
+            services.AddScoped<IFeedbackTypeLocalization, FeedbackTypeLocalization>();
         }
     }
 }

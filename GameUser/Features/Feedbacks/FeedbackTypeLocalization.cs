@@ -1,10 +1,17 @@
 ﻿using GameUser.Shared.Enumerations;
 using GameUser.Shared.Resources;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Localization;
+using System.Collections.Generic;
 
 namespace GameUser.Features.Feedbacks
 {
-    public class FeedbackTypeLocalization : EnumLocalization<FeedbackType, Resources>
+    public interface IFeedbackTypeLocalization
+    {
+        IEnumerable<SelectListItem> GetSelectListItems();
+    }
+
+    public class FeedbackTypeLocalization : EnumLocalization<FeedbackType, Resources>, IFeedbackTypeLocalization
     {
         public FeedbackTypeLocalization(IStringLocalizer<Resources> localizer) : base(localizer)
         {
