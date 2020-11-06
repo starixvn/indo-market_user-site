@@ -24,7 +24,7 @@ namespace GameUser.Web.Tests
             var configurationSection = Substitute.For<IConfigurationSection>();
             configurationSection["ConnectionString"].Returns("mongodb://lmn_backend:LmnBackend@10.10.50.12:47103");
             configurationSection["DatabaseName"].Returns("def");
-            configuration.GetSection(nameof(DatabaseSettings)).Returns(configurationSection);
+            configuration.GetSection("DatabaseSettings").Returns(configurationSection);
 
             var cultureSection = Substitute.For<IConfigurationSection>();
             var cultureContentSection = Substitute.For<IConfigurationSection>();
