@@ -1,4 +1,5 @@
-﻿using MimeKit;
+﻿using GameUser.Shared.Wrapper;
+using MimeKit;
 using NETCore.MailKit;
 using NETCore.MailKit.Core;
 using System.IO;
@@ -14,31 +15,28 @@ namespace GameUser.Features.Emails
         Task SendAsync(EmailRequest emailRequest);
     }
 
-    public class EmailService : NETCore.MailKit.Core.EmailService, IEmailService
+    public class EmailService : IEmailService
     {
-        private readonly IMailKitProvider mailKitProvider;
+        private readonly IMailKitWrapper mailKitWrapper;
 
-        public EmailService(IMailKitProvider provider) : base(provider)
+        public EmailService(IMailKitWrapper mailKitWrapper) 
         {
-            mailKitProvider = provider;
+            this.mailKitWrapper = mailKitWrapper;
         }
 
         public async Task SendAsync(MimeMessage message)
         {
-            message.From.Add(MailboxAddress.Parse(mailKitProvider.Options.SenderEmail));
+            message.From.Add(MailboxAddress.Parse(mailKitWrapper.Options.SenderEmail));
 
-            using (var emailClient = mailKitProvider.SmtpClient)
+            using (var emailClient = mailKitWrapper.GetSmtpClient())
             {
                 if (!emailClient.IsConnected)
                 {
-                    await emailClient.AuthenticateAsync(
-                        mailKitProvider.Options.Account, 
-                        mailKitProvider.Options.Password);
-
+                    await emailClient.AuthenticateAsync(mailKitWrapper.Options.Account, mailKitWrapper.Options.Password);
                     await emailClient.ConnectAsync(
-                        mailKitProvider.Options.Server,
-                        mailKitProvider.Options.Port, 
-                        mailKitProvider.Options.Security);
+                        mailKitWrapper.Options.Server,
+                        mailKitWrapper.Options.Port,
+                        mailKitWrapper.Options.Security);
                 }
 
                 await emailClient.SendAsync(message);
@@ -48,11 +46,11 @@ namespace GameUser.Features.Emails
 
         public async Task SendAsync(EmailRequest emailRequest)
         {
-            var builder = new BodyBuilder { TextBody = emailRequest.Body };
             var mimeMessage = new MimeMessage();
-            var mailToList = new InternetAddressList();
+            var builder = new BodyBuilder { TextBody = emailRequest.Body };            
+            
             var mailToAddress = emailRequest.ToAddress.Split(new [] { ',', ';' });
-
+            var mailToList = new InternetAddressList();
             if (mailToAddress != null && mailToAddress.Any())
             {
                 foreach (var mailto in mailToAddress)
@@ -60,7 +58,6 @@ namespace GameUser.Features.Emails
                     mailToList.Add(MailboxAddress.Parse(mailto));
                 }
             }
-
             mimeMessage.To.AddRange(mailToList);
 
             mimeMessage.Subject = emailRequest.Subject;

@@ -27,6 +27,7 @@
         {
             services.AddSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddSingleton(typeof(ISystemIOWrapper), typeof(SystemIOWrapper));
+            services.AddSingleton(typeof(IMailKitWrapper), typeof(MailKitWrapper));
         }
     }
 }

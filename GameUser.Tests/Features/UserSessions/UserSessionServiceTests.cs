@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
+﻿using FluentAssertions;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Repositories;
 using NSubstitute;
@@ -22,7 +21,21 @@ namespace GameUser.Tests.Features.UserSessions
             var userSessionEntity = new UserSessionEntity
             {
                 SessionId = "sesss ",
-                ReCheckInTime = DateTime.Now
+                ReCheckInTime = DateTime.Now,
+                SSOTime = DateTime.Now,
+                SSOToken = "token",
+                OWSeq = "ow seq",
+                UserName = "user name",
+                MemberId = 12,
+                Ip = "ip",
+                BrowserUserAgent = "agent",
+                SiteId = "site id",
+                UserId = "user id",
+                Language = "language",
+                Currency = "currency",
+                ClientId = "client id",
+                MemberName = "member name",
+                Version = 11
             };
             repository.FindOneAsync(Arg.Any<Expression<Func<UserSessionEntity, bool>>>()).Returns(userSessionEntity);
 
