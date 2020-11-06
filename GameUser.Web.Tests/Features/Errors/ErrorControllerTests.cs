@@ -17,7 +17,7 @@ namespace GameUser.Web.Tests.Features.Errors
             var result = controller.NotAuthorized() as ViewResult;
 
             // Assert
-            result.ViewName.Should().BeNull()
+            result.ViewName.Should().BeNull();
         }
     }
 }
