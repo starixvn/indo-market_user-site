@@ -15,8 +15,7 @@ namespace GameUser.Web.Shared.Middlewares
     {
         public static void AddLocalizationSettings(this IServiceCollection services, IConfiguration configuration)
         {
-            var cultures = configuration.GetSection("SupportedCultures").Get<string[]>()
-               .Select(x => new CultureInfo(x)).ToList();
+            var cultures = configuration.GetSection("SupportedCultures").GetChildren().Select(x => new CultureInfo(x.Value)).ToList();
 
             services.Configure<RequestLocalizationOptions>(opts =>
             {

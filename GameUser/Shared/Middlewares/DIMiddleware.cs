@@ -14,8 +14,10 @@
     {
         public static void ConfigGameUser(this IServiceCollection services, IConfiguration configuration)
         {
+            var configReader = new ConfigReader(configuration);
+            services.AddSingleton(typeof(IConfigReader), configReader);
             services.AddSharedServices();
-            services.InitEmail(configuration);
+            services.InitEmail(configReader);
             services.InitFeedback(configuration);
             services.InitFileUpload(configuration);
             services.InitUserSession(configuration);
@@ -23,7 +25,6 @@
 
         public static void AddSharedServices(this IServiceCollection services)
         {
-            services.AddSingleton(typeof(IConfigReader), typeof(ConfigReader));
             services.AddSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddSingleton(typeof(ISystemIOWrapper), typeof(SystemIOWrapper));
         }
