@@ -1,7 +1,6 @@
 ﻿namespace GameUser.Web.Shared.Attributes
 {
     using GameUser.Features.UserSessions;
-    using GameUser.Web.Shared.Configurations;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Mvc;
@@ -28,23 +27,7 @@
 
                 if(verifiedUserSession)
                 {
-                    var claims = new List<Claim>
-                        {
-                            new Claim(ClaimTypes.Name, sessionId)
-                        };
-                    var claimsIdentity = new ClaimsIdentity(
-                        claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                    var authProperties = new AuthenticationProperties
-                    {
-                        AllowRefresh = true,
-                        ExpiresUtc = new DateTimeOffset(DateTime.UtcNow.AddMinutes(30))
-                    };
-
-                    await context.HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        new ClaimsPrincipal(claimsIdentity),
-                        authProperties);
+                    await SetCookie(context, sessionId);
                 }
                 else
                 {
@@ -69,7 +52,7 @@
                     context.Result = new RedirectResult("/Error/NotAuthorized");
                 }                
             }
-        }
+        }        
 
         public async Task<bool> VerifyUserSession(string sessionId, AuthorizationFilterContext context)
         {
@@ -92,6 +75,27 @@
             }
 
             return true;
+        }
+
+        private static async Task SetCookie(AuthorizationFilterContext context, string sessionId)
+        {
+            var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Name, sessionId)
+                        };
+            var claimsIdentity = new ClaimsIdentity(
+                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var authProperties = new AuthenticationProperties
+            {
+                AllowRefresh = true,
+                ExpiresUtc = new DateTimeOffset(DateTime.UtcNow.AddMinutes(30))
+            };
+
+            await context.HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                authProperties);
         }
     }
 }
