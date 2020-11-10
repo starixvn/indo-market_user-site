@@ -1,7 +1,11 @@
-﻿using NETCore.MailKit;
+﻿using GameUser.Shared.Wrapper;
+using NETCore.MailKit;
 using NETCore.MailKit.Infrastructure.Internal;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace GameUser.Shared.Wrapper
+namespace GameUser.Features.Emails
 {
     public interface IMailKitWrapper
     {

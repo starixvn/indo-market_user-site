@@ -1,9 +1,11 @@
 ﻿using MailKit.Net.Smtp;
 using MimeKit;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace GameUser.Shared.Wrapper
+namespace GameUser.Features.Emails
 {
     public interface ISmtpClientWrapper : IDisposable
     {
@@ -20,13 +22,13 @@ namespace GameUser.Shared.Wrapper
         public SmtpClientWrapper(SmtpClient smtpClient)
         {
             this.smtpClient = smtpClient;
-        }          
+        }
 
         public Task AuthenticateAsync(string userName, string password) => smtpClient.AuthenticateAsync(userName, password);
 
         public Task ConnectAsync(string host, int port, bool useSsl) => smtpClient.ConnectAsync(host, port, useSsl);
 
-        public Task DisconnectAsync(bool quit) => smtpClient.DisconnectAsync(quit);        
+        public Task DisconnectAsync(bool quit) => smtpClient.DisconnectAsync(quit);
 
         public bool IsConnected => smtpClient.IsConnected;
 

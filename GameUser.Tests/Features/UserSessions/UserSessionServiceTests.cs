@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using GameUser.Features.UserSessions;
-using GameUser.Shared.Repositories;
+using GameUser.Shared.Database;
 using NSubstitute;
 using System;
 using System.Linq.Expressions;

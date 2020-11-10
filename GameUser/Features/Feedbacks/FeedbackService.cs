@@ -1,7 +1,7 @@
 ﻿using GameUser.Features.Emails;
+using GameUser.Shared.Database;
 using GameUser.Shared.Enumerations;
 using GameUser.Shared.Models;
-using GameUser.Shared.Repositories;
 using GameUser.Shared.Resources;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Localization;

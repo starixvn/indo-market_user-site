@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
-using GameUser.Shared.Repositories;
+using GameUser.Shared.Database;
 using GameUser.Shared.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;

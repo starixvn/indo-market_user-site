@@ -1,11 +1,12 @@
-﻿using GameUser.Shared.Entities;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace GameUser.Shared.Repositories
+namespace GameUser.Shared.Database
 {
     public interface IGenericRepository<TDocument> where TDocument : IDocument
     {
@@ -21,7 +22,7 @@ namespace GameUser.Shared.Repositories
         public GenericRepository(IMongoDatabase database)
         {
             collection = database.GetCollection<TDocument>(Document.GetCollectionName(typeof(TDocument)));
-        }        
+        }
 
         public virtual Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression)
         => collection.Find(filterExpression).FirstOrDefaultAsync();
@@ -31,6 +32,6 @@ namespace GameUser.Shared.Repositories
             document.Id = ObjectId.GenerateNewId();
 
             return collection.InsertOneAsync(document);
-        }        
+        }
     }
 }

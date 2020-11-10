@@ -1,5 +1,4 @@
-﻿using GameUser.Shared.Attributes;
-using GameUser.Shared.Entities;
+﻿using GameUser.Shared.Database;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 

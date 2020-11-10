@@ -1,4 +1,4 @@
-﻿using GameUser.Shared.Repositories;
+﻿using GameUser.Shared.Database;
 using System.Threading.Tasks;
 
 namespace GameUser.Features.UserSessions

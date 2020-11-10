@@ -1,16 +1,16 @@
-﻿namespace GameUser.Shared.Middlewares
-{
-    using GameUser.Features.Emails;
-    using GameUser.Features.Feedbacks;
-    using GameUser.Features.FileUploads;
-    using GameUser.Features.UserSessions;
-    using GameUser.Shared.Configurations;
-    using GameUser.Shared.Repositories;
-    using GameUser.Shared.Wrapper;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
+﻿using GameUser.Features.Emails;
+using GameUser.Features.Feedbacks;
+using GameUser.Features.FileUploads;
+using GameUser.Features.UserSessions;
+using GameUser.Shared.Configurations;
+using GameUser.Shared.Database;
+using GameUser.Shared.Wrapper;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-    public static class DIMiddleware
+namespace GameUser.Web.Shared.Middlewares
+{
+    public static class GameUserMiddleware
     {
         public static void ConfigGameUser(this IServiceCollection services, IConfiguration configuration)
         {

@@ -1,10 +1,9 @@
-﻿using GameUser.Shared.Attributes;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Linq;
 
-namespace GameUser.Shared.Entities
+namespace GameUser.Shared.Database
 {
     public interface IDocument
     {

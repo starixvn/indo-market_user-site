@@ -1,7 +1,6 @@
 namespace GameUser.Web
 {
     using AutoMapper;
-    using GameUser.Shared.Middlewares;
     using GameUser.Web.Shared;
     using GameUser.Web.Shared.Configurations;
     using GameUser.Web.Shared.Middlewares;
