@@ -30,7 +30,7 @@
             }
         }
 
-        private Task HandleExceptionAsync(HttpContext context)
+        private static Task HandleExceptionAsync(HttpContext context)
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
