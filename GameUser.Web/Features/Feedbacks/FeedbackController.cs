@@ -44,7 +44,13 @@ namespace GameUser.Web.Features.Feedbacks
             this.emailConfigs = emailConfigs;
             this.sentryClient = sentryClient;
         }
-       
+
+        [HttpGet]
+        public async Task<IActionResult> Auth(FeedbackRequest feedbackRequest)
+        {
+            return await Task.Run<ActionResult>(() => RedirectToAction("Add", feedbackRequest));
+        }
+
         [HttpGet]        
         public async Task<IActionResult> Add(FeedbackRequest feedbackRequest)
         {
@@ -61,7 +67,7 @@ namespace GameUser.Web.Features.Feedbacks
             return View(model);
         }
 
-        [HttpPost]        
+        [HttpPost]
         public async Task<IActionResult> Add(InsertFeedbackViewModel model)
         {
             var result = new UpdateResult { IsSuccess = true};

@@ -74,7 +74,7 @@ namespace GameUser.Web.Tests.Shared.Configurations
 
             ViewLocationExpanderContext context = new ViewLocationExpanderContext(actionContext, "ViewName", "ContrllerName", "AreaName", "PageName", false);
 
-            List<string> viewLocations = new List<string> { "view1", "view2" }; ;
+            List<string> viewLocations = new List<string> { "view1", "view2" };
 
             var expander = new FeatureViewLocationExpander();
 
