@@ -45,12 +45,6 @@ namespace GameUser.Web.Features.Feedbacks
             this.sentryClient = sentryClient;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Auth(FeedbackRequest feedbackRequest)
-        {
-            return await Task.Run<ActionResult>(() => RedirectToAction("Add", feedbackRequest));
-        }
-
         [HttpGet]        
         public async Task<IActionResult> Add(FeedbackRequest feedbackRequest)
         {
@@ -84,6 +78,12 @@ namespace GameUser.Web.Features.Feedbacks
             }
 
             return Json(result);
-        }             
+        }
+
+        [HttpGet]
+        public ActionResult RefreshToken()
+        {
+            return PartialView("_AntiForgeryToken");
+        }
     }
 }

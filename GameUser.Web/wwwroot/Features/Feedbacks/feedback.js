@@ -11,25 +11,25 @@
         this.registerEventHandlers();
     }
 
-    // ****** Common functions *******
-    postToParentFromIframe(data) {
-        parent.postMessage(data, "*");
-    }
+    // ****** Common functions *******  
 
     disableSubmitButton(isDisabled) {
         this.submitButton.prop('disabled', isDisabled);
     }
 
-    submit() {
-        if (!this.validateDescs()) {
-            return;
-        }
+    refreshAntiforgeryToken(culture, submitForm) {
+        $.ajax({
+            method: "GET",
+            url: `${window.rootUrl}${culture}/feedback/RefreshToken`
+        }).then(function(result){
+            var tokenValue = $('<div />').html(result).find('input[type="hidden"]').val();
+            submitForm(culture, tokenValue);
+        });
+    }
 
+    submitForm(culture, tokenValue) {
+        $('input[name="__RequestVerificationToken"]').val(tokenValue);
         let formData = new FormData(this.mainForm[0]);
-        this.disableSubmitButton(true);        
-        this.showLoading();
-        let culture = $("#Culture").val();
-        this.postToParentFromIframe({ showBackdrop: true });
         $.ajax({
             method: "POST",
             url: `${window.rootUrl}${culture}/feedback/Add`,
@@ -40,16 +40,24 @@
             this.hideLoading();
             this.disableSubmitButton(false);
 
-            console.log(result);
             if (result.isSuccess) {
                 this.showSuccessModal();
-                this.postToParentFromIframe({ showBackdrop: true });
             }
             else {
                 this.showErrorModal(result.message);
-                this.postToParentFromIframe({ showBackdrop: true });
             }
         }.bind(this));
+    }
+
+    submit() {        
+        if (!this.validateDescs()) {
+            return;
+        }
+        
+        this.disableSubmitButton(true);        
+        this.showLoading();
+        let culture = $("#Culture").val();
+        this.refreshAntiforgeryToken(culture, this.submitForm.bind(this));
     }
 
     resetForm() {
@@ -213,7 +221,6 @@
 
     onCloseSuccessModal() {
         this.resetForm();
-        this.postToParentFromIframe({ hideBackdrop: true });
     }
     //  ******* End Success Modal  *******
 
@@ -234,7 +241,6 @@
     }
 
     onCloseErrorModal() {
-        this.postToParentFromIframe({ hideBackdrop: true });
     }
 
     //  ******* End Error Modal  *******
