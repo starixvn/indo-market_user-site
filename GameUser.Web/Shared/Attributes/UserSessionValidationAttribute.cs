@@ -14,47 +14,35 @@
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class UserSessionValidationAttribute : Attribute, IAsyncAuthorizationFilter
     {
-        private readonly int expiredUserSession = 3; //3 minutes
+        private readonly int expiredMinuteUserSession = 3;
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var sessionId = context.HttpContext.Request.Query["sessionid"].ToString();            
-            var verifiedUserSession = true;
+            if (!context.HttpContext.User.Identity.IsAuthenticated)
+            {                
+                var sessionId = context.HttpContext.Request.Query["sessionid"].ToString();
 
-            if (!string.IsNullOrWhiteSpace(sessionId))
-            {
-                verifiedUserSession = await VerifyUserSession(sessionId, context);
-
-                if(verifiedUserSession)
+                if (!string.IsNullOrWhiteSpace(sessionId))
                 {
-                    await SetCookie(context, sessionId);
-                }
-                else
-                {
-                    context.Result = new RedirectResult("/Error/NotAuthorized");                                        
-                }                
-            }
-            else
-            {
-                if (context.HttpContext.User.Identity.IsAuthenticated)
-                {
-                    sessionId = context.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Name).Value;
+                    var verifiedUserSession = await VerifyUserSession(sessionId, context);
 
-                    verifiedUserSession = await VerifyUserSession(sessionId, context);
-
-                    if(!verifiedUserSession)
+                    if (verifiedUserSession)
                     {
-                        context.Result = new RedirectResult("/Error/NotAuthorized");                                                
+                        await SetCookie(context, sessionId);
+                    }
+                    else
+                    {
+                        context.Result = new RedirectResult("/Error/NotAuthorized");
                     }
                 }
                 else
                 {
                     context.Result = new RedirectResult("/Error/NotAuthorized");
-                }                
-            }
+                }
+            }            
         }        
 
-        public async Task<bool> VerifyUserSession(string sessionId, AuthorizationFilterContext context)
+        private async Task<bool> VerifyUserSession(string sessionId, AuthorizationFilterContext context)
         {
             var userSessionService = context.HttpContext.RequestServices.GetService(typeof(IUserSessionService)) as UserSessionService;
 
@@ -68,7 +56,7 @@
             {
                 var totalMinutes = (int)DateTime.Now.ToUniversalTime().Subtract(userSession.ReCheckInTime).TotalMinutes;
 
-                if (totalMinutes > expiredUserSession)
+                if (totalMinutes > expiredMinuteUserSession)
                 {
                     return false;
                 }
