@@ -49,19 +49,18 @@ namespace GameUser.Features.Feedbacks
                     Time = DateTime.Now,
                     Category = feedback.Category,
                     Description = feedback.Description,
-                    MemberId = feedback.MemberId,
-                    MemberName = feedback.MemberName
+                    Nickname = feedback.Nickname
                 };
 
                 await feedbackRepository.InsertOneAsync(feedbackEntity);
 
-                return new UpdateResult { IsSuccess = true };
+                return new UpdateResult(isSuccess: true, message: string.Empty);
 
             }
             catch (Exception e)
             {
                 sentryClient.CaptureException(e);
-                return new UpdateResult { IsSuccess = false, Message = localizer["Something_Wrong"] };
+                return new UpdateResult(isSuccess: false, message: localizer["Something_Wrong"]);
             }
         }
 
@@ -78,13 +77,7 @@ namespace GameUser.Features.Feedbacks
                 $"{Environment.NewLine}{Environment.NewLine}" +
                 $"This is an automated email. Please do not reply to it.";
 
-            return new EmailRequest
-            {
-                Subject = subject,
-                Body = body,
-                Attachments = feedback.Files,
-                ToAddress = emailConfigs.ReceiverEmail
-            };
+            return new EmailRequest(subject: subject, body: body, attachments: feedback.Files, toAddress: emailConfigs.ReceiverEmail);            
         }
 
         public async Task<IEnumerable<SelectListItem>> GetTypes()

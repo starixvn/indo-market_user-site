@@ -4,10 +4,7 @@ using GameUser.Web.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -37,7 +34,9 @@ namespace GameUser.Web.Tests.Shared.Middlewares
             var objResponse = JsonConvert.DeserializeObject<ErrorDetails>(streamText);
 
             // Assert
-            objResponse.Should().BeEquivalentTo(new ErrorDetails { Message = "Internal Server Error from the custom middleware.", StatusCode = 500 });
+            objResponse.Should().BeEquivalentTo(new ErrorDetails(
+                message: "Internal Server Error from the custom middleware.",
+                statusCode: 500));
         }
     }
 }

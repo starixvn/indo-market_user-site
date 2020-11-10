@@ -4,9 +4,17 @@ namespace GameUser.Features.FileUploads
 {
     public class UploadedFile
     {
-        public IFormFile File { get; set; }
-        public string Name { get; set; }
-        public string FullPath { get; set; }
-        public bool SavedSuccess { get; set; }
+        public UploadedFile(IFormFile file, string name, string fullPath, bool savedSuccess)
+        {
+            this.File = file;
+            this.Name = name;
+            this.FullPath = fullPath;
+            this.SavedSuccess = savedSuccess;
+        }
+
+        public IFormFile File { get; }
+        public string Name { get; }
+        public string FullPath { get; }
+        public bool SavedSuccess { get; }
     }
 }

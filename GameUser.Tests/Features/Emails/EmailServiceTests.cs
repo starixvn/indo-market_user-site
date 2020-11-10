@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using GameUser.Features.Emails;
-using GameUser.Shared.Wrapper;
 using Microsoft.AspNetCore.Http;
 using MimeKit;
 using NETCore.MailKit.Infrastructure.Internal;
@@ -77,13 +76,7 @@ namespace GameUser.Tests.Features.Emails
             // Arrange
             IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")), 0, 0, "Data", "dummy.txt");
             var files = new List<IFormFile> { file, file };
-            var emailRequest = new EmailRequest
-            {
-                Body = "body xx",
-                ToAddress = "address1;address2",
-                Subject = "subject",
-                Attachments = files
-            };
+            var emailRequest = new EmailRequest(body: "body xx", toAddress: "address1;address2", subject: "subject", attachments: files);
 
             var service = new EmailService(mailKit);
 

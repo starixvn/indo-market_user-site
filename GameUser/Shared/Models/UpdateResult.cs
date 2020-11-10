@@ -2,7 +2,13 @@
 {
     public class UpdateResult
     {
-        public bool IsSuccess { get; set; }
-        public string Message { get; set; }
+        public UpdateResult(bool isSuccess, string message)
+        {
+            this.IsSuccess = isSuccess;
+            this.Message = message;
+        }
+
+        public bool IsSuccess { get; }
+        public string Message { get; }
     }
 }

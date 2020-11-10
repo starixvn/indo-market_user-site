@@ -11,7 +11,6 @@ namespace GameUser.Features.Feedbacks
         public DateTime Time { get; set; }
         public string Category { get; set; }
         public string Description { get; set; }
-        public int MemberId { get; set; }
-        public string MemberName { get; set; }
+        public string Nickname { get; set; }
     }
 }

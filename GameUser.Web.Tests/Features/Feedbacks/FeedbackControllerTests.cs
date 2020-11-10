@@ -89,7 +89,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
                 Feedback = new Feedback()
             };
 
-            var emailRequest = new EmailRequest { Subject = "hiii" };
+            var emailRequest = new EmailRequest(subject: "hiii", body: string.Empty, toAddress: string.Empty, attachments: null);
             feedbackService.GenerateEmail(model.Feedback, model.NickName, emailConfigs).Returns(emailRequest);
 
             // Act

@@ -70,7 +70,7 @@ namespace GameUser.Web.Features.Feedbacks
         [HttpPost]
         public async Task<IActionResult> Add(InsertFeedbackViewModel model)
         {
-            var result = new UpdateResult { IsSuccess = true};
+            var result = new UpdateResult(isSuccess: true, message: string.Empty);
             try
             {
                 await feedbackService.AddFeedbackAsync(model.Feedback);
@@ -80,7 +80,7 @@ namespace GameUser.Web.Features.Feedbacks
             }
             catch (Exception e) {
                 sentryClient.CaptureException(e);
-                result = new UpdateResult { IsSuccess = false, Message = "Something went wrong" };
+                result = new UpdateResult(isSuccess: false, message: "Something went wrong");
             }
 
             return Json(result);

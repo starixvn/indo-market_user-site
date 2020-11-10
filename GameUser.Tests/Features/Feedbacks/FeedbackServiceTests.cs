@@ -57,12 +57,7 @@ namespace GameUser.Tests.Features.Feedbacks
         {
             // Arrange             
             var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization, localizer);
-            var feedback = new Feedback { 
-                 Category = "ss",
-                 Description = "ff",
-                 MemberId = 12,
-                 MemberName = "abc"
-            };
+            var feedback = new Feedback(category: "ss", description: "ff", nickname: "abc", files: null);
 
             FeedbackEntity entity = null;
             await feedbackRepository.InsertOneAsync(Arg.Do<FeedbackEntity>(x => entity = x));
@@ -74,8 +69,7 @@ namespace GameUser.Tests.Features.Feedbacks
             result.IsSuccess.Should().Be(true);
             entity.Category.Should().Be(feedback.Category);
             entity.Description.Should().Be(feedback.Description);
-            entity.MemberId.Should().Be(feedback.MemberId);
-            entity.MemberName.Should().Be(feedback.MemberName);
+            entity.Nickname.Should().Be(feedback.Nickname);
         }
 
         [Fact]
@@ -111,7 +105,7 @@ namespace GameUser.Tests.Features.Feedbacks
             var nickname = "nick name";
             IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")), 0, 0, "Data", "dummy.txt");
             var files = new List<IFormFile> { file, file };
-            var feedback = new Feedback { Category = "NewGame", Description = "desc", Files = files };
+            var feedback = new Feedback(category: "NewGame", description: "desc", files: files, nickname: string.Empty);
 
             emailConfig.ReceiverEmail.Returns("recever@gmail.com");
 

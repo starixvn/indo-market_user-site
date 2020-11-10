@@ -10,8 +10,8 @@
 <div class="feedback">
     <form asp-action="Add" asp-controller="Feedback" method="post" id="gameForm" enctype="multipart/form-data">
         <input type="hidden" asp-for="@Model.NickName" value="@Model.NickName" />
-        <input type="hidden" asp-for="@Model.SessionId" value="@Model.SessionId" />
         <input type="hidden" asp-for="@Model.Culture" value="@Model.Culture" />
+        <input type="hidden" asp-for="@Model.Feedback.Nickname" value="@Model.NickName" />
         <div class="form-group">
             <div class="group-item">
                 <label asp-for="@Model.Feedback.Category" class="control-label">

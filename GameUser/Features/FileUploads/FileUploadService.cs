@@ -42,25 +42,19 @@ namespace GameUser.Features.FileUploads
 
         private async Task<UploadedFile> SaveFile(IFormFile file, string baseDirectory)
         {
-            var uploadedFile = new UploadedFile { File = file };
             try
             {
                 var name = Guid.NewGuid().ToString();
                 var filePath = Path.Combine(baseDirectory, name);
+                await systemIOWrapper.WriteFile(file, filePath);
 
-                await systemIOWrapper.WriteFile(file, filePath);                
-
-                uploadedFile.Name = name;
-                uploadedFile.FullPath = filePath;
-                uploadedFile.SavedSuccess = true;
+                return new UploadedFile(name: name, fullPath: filePath, file: file, savedSuccess: true);
             }
             catch(Exception e)
             {
                 sentryClient.CaptureException(e);
-                uploadedFile.SavedSuccess = false;
+                return new UploadedFile(name: string.Empty, fullPath: string.Empty, file: file, savedSuccess: false);
             }
-
-            return uploadedFile;
         }
     }
 }

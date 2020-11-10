@@ -3,9 +3,15 @@
     using Newtonsoft.Json;
     public class ErrorDetails
     {
-        public int StatusCode { get; set; }
+        public ErrorDetails(int statusCode, string message)
+        {
+            this.StatusCode = statusCode;
+            this.Message = message;
+        }
 
-        public string Message { get; set; }
+        public int StatusCode { get; }
+
+        public string Message { get; }
 
         public override string ToString()
         {
