@@ -1,4 +1,5 @@
-﻿using GameUser.Features.Emails;
+﻿using GameUser.Features.Avatars;
+using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
 using GameUser.Features.UserSessions;
@@ -21,6 +22,7 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitFeedback(configuration);
             services.InitFileUpload(configuration);
             services.InitUserSession(configuration);
+            services.InitAvatar(configuration);
         }
 
         public static void AddSharedServices(this IServiceCollection services)

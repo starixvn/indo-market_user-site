@@ -123,6 +123,9 @@
   <data name="Attachment_Max_Size" xml:space="preserve">
     <value>The maximum size of total attachments is 15M</value>
   </data>
+  <data name="BackToLobby" xml:space="preserve">
+    <value>Back to Lobby</value>
+  </data>
   <data name="Description" xml:space="preserve">
     <value>Description</value>
   </data>
@@ -134,6 +137,9 @@
   </data>
   <data name="Errors" xml:space="preserve">
     <value>Errors</value>
+  </data>
+  <data name="GameSuggestion" xml:space="preserve">
+    <value>Game Suggestion</value>
   </data>
   <data name="Loading" xml:space="preserve">
     <value>Loading...</value>

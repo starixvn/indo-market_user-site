@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using GameUser.Features.Avatars;
 using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
@@ -27,8 +28,9 @@ namespace GameUser.Web.Tests.Shared.Configurations
             var fileUploadService = Substitute.For<IFileUploadService>();
             var emailService = Substitute.For<IEmailService>();
             var sentryClient = Substitute.For<ISentryClient>();
+            var avatarService = Substitute.For<IAvatarService>();
 
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, fileUploadService, emailService, emailConfigs, sentryClient);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, fileUploadService, emailService, emailConfigs, sentryClient, avatarService);
             var typeInfo = controller.GetType().GetTypeInfo();
             var featureConvention = new FeatureConvention();
             var controllerModel = new ControllerModel(typeInfo, NSubstitute.Substitute.For<IReadOnlyList<object>>());

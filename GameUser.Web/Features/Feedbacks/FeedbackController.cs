@@ -1,4 +1,5 @@
-﻿using GameUser.Features.Emails;
+﻿using GameUser.Features.Avatars;
+using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
 using GameUser.Shared.Models;
@@ -26,6 +27,7 @@ namespace GameUser.Web.Features.Feedbacks
         private readonly IFileUploadService fileUploadService;
         private readonly IEmailService emailService;
         private readonly ISentryClient sentryClient;
+        private readonly IAvatarService avatarService;
 
         public FeedbackController(
             IHttpContextAccessor httpContext,
@@ -34,7 +36,8 @@ namespace GameUser.Web.Features.Feedbacks
             IFileUploadService fileUploadService,
             IEmailService emailService,
             IEmailConfigs emailConfigs,
-            ISentryClient sentryClient)
+            ISentryClient sentryClient,
+            IAvatarService avatarService)
         {
             this.httpContext = httpContext;
             this.feedbackService = feedbackService;            
@@ -43,6 +46,7 @@ namespace GameUser.Web.Features.Feedbacks
             this.emailService = emailService;
             this.emailConfigs = emailConfigs;
             this.sentryClient = sentryClient;
+            this.avatarService = avatarService;
         }
 
         [HttpGet]        
@@ -55,7 +59,8 @@ namespace GameUser.Web.Features.Feedbacks
                 FeedbackTypeOptions = feedbackTypes.ToList(),
                 NickName = feedbackRequest.NickName,
                 SessionId = feedbackRequest.SessionId,
-                Culture = (string)httpContext.HttpContext.Request.RouteValues["culture"] ?? "en"
+                Culture = (string)httpContext.HttpContext.Request.RouteValues["culture"] ?? "en",
+                Avatar = await avatarService.GetAvatar(feedbackRequest.AvatarId)
             };
 
             return View(model);

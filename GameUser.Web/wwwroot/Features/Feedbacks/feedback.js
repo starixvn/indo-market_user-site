@@ -9,9 +9,15 @@
         this.viewResources = viewResources;
 
         this.registerEventHandlers();
+        this.loadAvatar(avatar);
     }
 
     // ****** Common functions *******  
+
+    loadAvatar(avatar) {
+        let canvas = document.getElementById("avatar");
+        canvas.style.backgroundPosition = ` -${avatar.trimX*46/128}px -${avatar.trimY*46/128}px`;
+    }
 
     disableSubmitButton(isDisabled) {
         this.submitButton.prop('disabled', isDisabled);

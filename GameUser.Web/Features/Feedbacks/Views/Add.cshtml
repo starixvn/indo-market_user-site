@@ -8,62 +8,78 @@
 }
 
 <div class="feedback">
-    <form asp-action="Add" asp-controller="Feedback" method="post" id="gameForm" enctype="multipart/form-data">
-        <input type="hidden" asp-for="@Model.NickName" value="@Model.NickName" />
-        <input type="hidden" asp-for="@Model.Culture" value="@Model.Culture" />
-        <input type="hidden" asp-for="@Model.Feedback.Nickname" value="@Model.NickName" />
-        <div class="form-group">
-            <div class="group-item">
-                <label asp-for="@Model.Feedback.Category" class="control-label">
-                    @Localizer["Please_Let_Us_Know"]
-                </label>
-                <select asp-for="@Model.Feedback.Category" required asp-items="@Model.FeedbackTypeOptions" class="form-control"></select>
-            </div>
-            @*<div class="row-item">
-                
-            </div>*@
-            <div class="group-item">
-                <label asp-for="@Model.Feedback.Category" class="control-label">
-                    @Localizer["Description"]
-                </label>
-                <span id="descErrors" class="failed-message"><i class="icon-cancel"></i><span id="descErrorsContent"></span></span>
-                <textarea id="descText" type="text" asp-for="@Model.Feedback.Description"
-                          class="form-control desc-input" cols="50" rows="5">
-                    </textarea>
-                <span asp-validation-for="@Model.Feedback.Description" class="text-danger"></span>
-               
-            </div>
-            @*<div class="row-item">
-                
-            </div>*@
-            <div class="group-item">
-                <label class="control-label">
-                    @Localizer["Attachment"]
-                </label>
-                <span class="attachment-count">0</span>
-                <span id="attachmentErrors" class="failed-message"><i class="icon-cancel"></i><span id="attachmentErrorsContent"></span></span>
-                <div class="image-container">
-                    <ul id="imageContainer">
-                        <li class="added-image" hidden>
-                            <div>
-                                <span class="attach-img"></span><span class="remove-img"></span>
-                                <p class="to-add-name"></p>
-                                <input type="file" accept="image/x-png,image/gif,image/jpeg" class="to-add-input" name="Feedback.Files" hidden>
-                            </div>
-                        </li>
-                        <li class="to-add-image">
-                            <span></span>
-                        </li>
-                    </ul>
-                </div>
-            </div> 
-                
-            <div class="group-item text-center mt-3">
-		        <button type="button" class="btn-gray btn-submit" data-dismiss="modal" id="submitBtn">@Localizer["Submit"]</button>
-            </div>
+    <div class="header">
+        <div class="username">
+            <div class="avatar-circle" ><div class="avatar" id="avatar"></div></div>
+            <div class="name">username</div>
         </div>
-    </form>     
-    
+        <div class="icon"><img /></div>
+    </div>
+    <div class="content">
+        <div class="title">
+            @Localizer["GameSuggestion"]
+        </div>
+        <div class="title-bottom">           
+            
+        </div>
+        <form asp-action="Add" asp-controller="Feedback" method="post" id="gameForm" enctype="multipart/form-data" class="form">
+            <input type="hidden" asp-for="@Model.NickName" value="@Model.NickName" />
+            <input type="hidden" asp-for="@Model.Culture" value="@Model.Culture" />
+            <input type="hidden" asp-for="@Model.Feedback.Nickname" value="@Model.NickName" />
+            <div class="form-group">
+                <div class="group-item">
+                    <label asp-for="@Model.Feedback.Category" class="control-label">
+                        @Localizer["Please_Let_Us_Know"]
+                    </label>
+                    <select asp-for="@Model.Feedback.Category" required asp-items="@Model.FeedbackTypeOptions" class="form-control"></select>
+                </div>
+                @*<div class="row-item">
+                
+                </div>*@
+                <div class="group-item">
+                    <label asp-for="@Model.Feedback.Category" class="control-label">
+                        @Localizer["Description"]
+                    </label>
+                    <span id="descErrors" class="failed-message"><i class="icon-cancel"></i><span id="descErrorsContent"></span></span>
+                    <textarea id="descText" type="text" asp-for="@Model.Feedback.Description"
+                              class="form-control desc-input" cols="50" rows="5">
+                        </textarea>
+                    <span asp-validation-for="@Model.Feedback.Description" class="text-danger"></span>
+               
+                </div>
+                @*<div class="row-item">
+                
+                </div>*@
+                <div class="group-item">
+                    <label class="control-label">
+                        @Localizer["Attachment"]
+                    </label>
+                    <span class="attachment-count">0</span>
+                    <span id="attachmentErrors" class="failed-message"><i class="icon-cancel"></i><span id="attachmentErrorsContent"></span></span>
+                    <div class="image-container">
+                        <ul id="imageContainer">
+                            <li class="added-image" hidden>
+                                <div>
+                                    <span class="attach-img"></span><span class="remove-img"></span>
+                                    <p class="to-add-name"></p>
+                                    <input type="file" accept="image/x-png,image/gif,image/jpeg" class="to-add-input" name="Feedback.Files" hidden>
+                                </div>
+                            </li>
+                            <li class="to-add-image">
+                                <span></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div> 
+                
+                <div class="group-item text-center mt-3">
+		            <button type="button" class="btn-gray btn-submit" data-dismiss="modal" id="submitBtn">@Localizer["Submit"]</button>
+                </div>
+            </div>
+        </form>  
+        <div class="back-link">@Localizer["BackToLobby"]</div>
+    </div>
+    <div class="footer">Copyright@2020, Saba</div>
 </div>
 
 <div class="modal success-modal" id="successModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -114,7 +130,8 @@
             Description_Cant_Empty: '@Localizer["Description_Cant_Empty"]',
             Description_Max_Characters: '@Localizer["Description_Max_Characters"]',
             Attachment_Max_Size: '@Localizer["Attachment_Max_Size"]'
-        }
+        };
+        var avatar = @Html.Raw(Json.Serialize(Model.Avatar));
     </script>
 
     <script src="~/Shared/jquery-unobtrusive-ajax/jquery.unobtrusive-ajax.js"></script>
