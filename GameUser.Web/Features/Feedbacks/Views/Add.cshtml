@@ -32,6 +32,7 @@
                         @Localizer["Please_Let_Us_Know"]
                     </label>
                     <select asp-for="@Model.Feedback.Category" required asp-items="@Model.FeedbackTypeOptions" class="form-control"></select>
+                    <div class="select-arrow"></div>
                 </div>
                 @*<div class="row-item">
                 

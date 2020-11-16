@@ -87,6 +87,15 @@
       .feedback .content .form .group-item {
         padding: 0;
         margin-bottom: 10px; }
+        .feedback .content .form .group-item select {
+          -webkit-appearance: none; }
+        .feedback .content .form .group-item .select-arrow {
+          background: url("Images/down-select.png") no-repeat;
+          height: 30px;
+          width: 30px;
+          float: right;
+          margin-top: -37px;
+          margin-right: 8px; }
         .feedback .content .form .group-item .desc-input {
           padding: 5px;
           resize: none; }
@@ -98,11 +107,11 @@
           margin-bottom: 5px; }
         .feedback .content .form .group-item .form-control {
           font-size: 20px;
-          background: #f5f3e7; }
+          background: white; }
         .feedback .content .form .group-item .attachment-count {
           background: white;
-          color: #363f80;
-          background: #fff;
+          color: white;
+          background: #5e1259;
           width: 22px;
           height: 22px;
           line-height: 22px;
@@ -133,7 +142,7 @@
         border-color: red; }
       .feedback .content .form .image-container {
         height: 100px;
-        background: #f5f3e7;
+        background: white;
         padding: 5px 0;
         border-radius: 5px; }
         .feedback .content .form .image-container ul {
