@@ -6,6 +6,7 @@
         this.loadingModal = $('#loadingModal');
         this.submitButton = this.mainForm.find('#submitBtn');
         this.backToLobbyLink = this.mainForm.find('#backlink');
+        this.wordCount = this.mainForm.find('#wordCount');
 
         this.viewResources = viewResources;
 
@@ -130,6 +131,12 @@
     onDescKeyUp() {
         console.log("key up");
         this.validateDescs(this.mainForm);
+        this.updateWordCount();
+    }
+
+    updateWordCount() {
+        var desc = this.mainForm.find('#descText').val();
+        this.wordCount.html(`${desc.length}/500`);
     }
 
     onDescPaste() {

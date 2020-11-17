@@ -138,6 +138,13 @@ html, body {
                     resize: none;
                 }
 
+                .word-count{
+                    float: right;
+                    margin-top: -24px;
+                    margin-right: 17px;
+                    opacity: 0.6;
+                }
+
                 .failed-message {
                     color: #d94030;
                     font-size: 18px;

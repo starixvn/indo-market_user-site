@@ -45,6 +45,7 @@
                     <textarea id="descText" type="text" asp-for="@Model.Feedback.Description"
                               class="form-control desc-input" cols="50" rows="5">
                         </textarea>
+                    <div class="word-count" id="wordCount">0/500</div>
                     <span asp-validation-for="@Model.Feedback.Description" class="text-danger"></span>
                
                 </div>
