@@ -3,6 +3,7 @@ using GameUser.Features.Avatars;
 using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
+using GameUser.Features.UserSessions;
 using GameUser.Shared.Models;
 using GameUser.Web.Features.Feedbacks;
 using GameUser.Web.Features.Feedbacks.ViewModels;
@@ -31,6 +32,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
         private readonly IEmailService emailService;
         private readonly ISentryClient sentryClient;
         private readonly IAvatarService avatarService;
+        private readonly IUserSessionService userSessionService;
 
         public FeedbackControllerTests()
         {
@@ -42,6 +44,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             this.emailService = Substitute.For<IEmailService>();
             this.sentryClient = Substitute.For<ISentryClient>();
             this.avatarService = Substitute.For<IAvatarService>();
+            this.userSessionService = Substitute.For<IUserSessionService>();
         }
 
         [Theory]
@@ -56,7 +59,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             routeValues.Add(key, value);
             httpRequest.RouteValues.Returns(routeValues);
 
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, fileUploadService, emailService, emailConfigs, sentryClient, avatarService);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, fileUploadService, emailService, emailConfigs, sentryClient, avatarService, userSessionService);
 
             FeedbackRequest feedbackRequest = new FeedbackRequest { NickName = "nick name", SessionId = "sesssion id " };
 
@@ -84,7 +87,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
         public async Task AddPost_WhenCalled_AddFeedbackAndSendEmail()
         {
             // Arrange
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, fileUploadService, emailService, emailConfigs, sentryClient, avatarService);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, fileUploadService, emailService, emailConfigs, sentryClient, avatarService, userSessionService);
 
             var model = new InsertFeedbackViewModel
             {
@@ -110,7 +113,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
         public async Task AddPost_WhenError_CaptureError()
         {
             // Arrange
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, fileUploadService, emailService, emailConfigs, sentryClient, avatarService);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, fileUploadService, emailService, emailConfigs, sentryClient, avatarService, userSessionService);
 
             var model = new InsertFeedbackViewModel
             {

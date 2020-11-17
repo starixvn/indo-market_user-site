@@ -3,6 +3,7 @@ using GameUser.Features.Avatars;
 using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
+using GameUser.Features.UserSessions;
 using GameUser.Web.Features.Feedbacks;
 using GameUser.Web.Shared.Configurations;
 using Microsoft.AspNetCore.Http;
@@ -29,8 +30,9 @@ namespace GameUser.Web.Tests.Shared.Configurations
             var emailService = Substitute.For<IEmailService>();
             var sentryClient = Substitute.For<ISentryClient>();
             var avatarService = Substitute.For<IAvatarService>();
+            var userSessionService = Substitute.For<IUserSessionService>();            
 
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, fileUploadService, emailService, emailConfigs, sentryClient, avatarService);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, fileUploadService, emailService, emailConfigs, sentryClient, avatarService, userSessionService);
             var typeInfo = controller.GetType().GetTypeInfo();
             var featureConvention = new FeatureConvention();
             var controllerModel = new ControllerModel(typeInfo, NSubstitute.Substitute.For<IReadOnlyList<object>>());

@@ -2,6 +2,7 @@
 using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
+using GameUser.Features.UserSessions;
 using GameUser.Shared.Models;
 using GameUser.Web.Features.Feedbacks.ViewModels;
 using GameUser.Web.Shared.Attributes;
@@ -28,6 +29,7 @@ namespace GameUser.Web.Features.Feedbacks
         private readonly IEmailService emailService;
         private readonly ISentryClient sentryClient;
         private readonly IAvatarService avatarService;
+        private readonly IUserSessionService userSessionService;
 
         public FeedbackController(
             IHttpContextAccessor httpContext,
@@ -37,7 +39,8 @@ namespace GameUser.Web.Features.Feedbacks
             IEmailService emailService,
             IEmailConfigs emailConfigs,
             ISentryClient sentryClient,
-            IAvatarService avatarService)
+            IAvatarService avatarService,
+            IUserSessionService userSessionService)
         {
             this.httpContext = httpContext;
             this.feedbackService = feedbackService;            
@@ -47,20 +50,22 @@ namespace GameUser.Web.Features.Feedbacks
             this.emailConfigs = emailConfigs;
             this.sentryClient = sentryClient;
             this.avatarService = avatarService;
+            this.userSessionService = userSessionService;
         }
 
         [HttpGet]        
         public async Task<IActionResult> Add(FeedbackRequest feedbackRequest)
         {
             var feedbackTypes = await feedbackService.GetTypes();
+            var userInfo = await userSessionService.GetUserInfo(feedbackRequest.SessionId);
             var model = new InsertFeedbackViewModel
             {
                 Feedback = new Feedback(),
                 FeedbackTypeOptions = feedbackTypes.ToList(),
-                NickName = feedbackRequest.NickName,
+                NickName = userInfo.Name,
                 SessionId = feedbackRequest.SessionId,
                 Culture = (string)httpContext.HttpContext.Request.RouteValues["culture"] ?? "en",
-                Avatar = await avatarService.GetAvatar(feedbackRequest.AvatarId)
+                Avatar = await avatarService.GetAvatar(userInfo.AvatarId.ToString())
             };
 
             return View(model);

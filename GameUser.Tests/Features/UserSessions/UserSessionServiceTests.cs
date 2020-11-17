@@ -16,7 +16,8 @@ namespace GameUser.Tests.Features.UserSessions
         {
             // Arrange
             var repository = Substitute.For<IGenericRepository<UserSessionEntity>>();
-            var service = new UserSessionService(repository);
+            var userInfoRepository = Substitute.For<IGenericRepository<UserInfoEntity>>(); 
+            var service = new UserSessionService(repository, userInfoRepository);
 
             var userSessionEntity = new UserSessionEntity
             {
