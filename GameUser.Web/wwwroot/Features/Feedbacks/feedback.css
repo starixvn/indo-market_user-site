@@ -225,54 +225,49 @@
     .feedback .content .back-link:active {
       transform: scale(1.1); }
 
-.modal .modal-dialog {
+.modal .modal-dialog .modal-content {
+  background: #d7dae3;
+  border: 0;
   width: 454px;
-  height: 274px; }
-
-.modal .modal-content {
-  background: url(Images/BG-Message.png) no-repeat;
-  border: 0; }
-
-.modal .header {
-  position: relative; }
-  .modal .header .header-content {
-    text-align: center;
-    color: white;
-    font-size: 20px;
-    height: 177px;
-    padding-top: 37px; }
-    .modal .header .header-content .icon {
-      display: block;
-      width: 98px;
-      height: 98px;
-      margin: 0 auto; }
-
-.modal .content {
+  height: 474px;
   text-align: center;
-  font-size: 20px;
-  height: 100px;
-  color: #333; }
-
-.modal .close-icon {
-  position: absolute;
-  background: url(Images/close.png) no-repeat;
-  width: 60px;
-  height: 60px;
-  right: 0;
-  opacity: 1; }
-  .modal .close-icon:not(:disabled):not(.disabled):focus, .modal .close-icon:not(:disabled):not(.disabled):hover {
-    opacity: 1; }
-  .modal .close-icon:focus {
+  padding: 0 50px; }
+  .modal .modal-dialog .modal-content .icon {
+    width: 100px;
+    height: 100px;
+    margin: 70px auto 20px auto; }
+  .modal .modal-dialog .modal-content .error-icon {
+    background: url("Images/Icon-Error.png") no-repeat;
+    background-size: contain; }
+  .modal .modal-dialog .modal-content .success-icon {
+    background: url("Images/Icon-Success.png") no-repeat;
+    background-size: contain; }
+  .modal .modal-dialog .modal-content .message {
+    font-weight: bold;
+    font-size: 27px; }
+  .modal .modal-dialog .modal-content .try-again {
+    margin-top: 20px;
+    font-size: 18px; }
+  .modal .modal-dialog .modal-content .button button {
+    margin-top: 60px;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 227px;
+    height: 71px;
+    font-size: 25px;
+    font-weight: bold; }
+  .modal .modal-dialog .modal-content .success button {
+    background: url("Images/Button-ok.png") no-repeat;
+    background-size: contain; }
+  .modal .modal-dialog .modal-content .failed button {
+    background: url("Images/Button-tryagain.png") no-repeat;
+    background-size: contain; }
+  .modal .modal-dialog .modal-content .button button:hover, .modal .modal-dialog .modal-content .button button:active, .modal .modal-dialog .modal-content .button button:focus {
+    border: none;
     outline: 0; }
-
-.success-modal .content {
-  padding: 5px 20px 20px; }
-
-.success-modal .header-content .icon {
-  background: url(Images/Icon-Success.png) no-repeat; }
-
-.error-modal .header-content .icon {
-  background: url(Images/Icon-Error.png) no-repeat; }
+  .modal .modal-dialog .modal-content .button button:active {
+    transform: scale(1.1); }
 
 .loading-modal {
   /*.modal-dialog {
@@ -294,40 +289,3 @@
     transform: rotate(0); }
   100% {
     transform: rotate(360deg); } }
-
-/*.error-modal {
-    .modal-dialog {
-        width: 300px;
-    }
-
-    .header {
-        position: relative;
-
-        .header-content {
-            text-align: center;
-            color: white;
-            padding: 15px;
-
-            .icon {
-                display: block;
-                background: url(Images/Icon-Error.png) no-repeat;
-                width: 100px;
-                height: 100px;
-                background-size: contain;
-            }
-        }
-    }
-
-    .content {
-        text-align: center;
-    }
-
-    .close-icon {
-        position: absolute;
-        background: url(Images/close.png) no-repeat;
-        width: 60px;
-        height: 60px;
-        right: 0;
-        opacity: 1;
-    }
-}*/

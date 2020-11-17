@@ -147,6 +147,12 @@
   <data name="Loading" xml:space="preserve">
     <value>Loading...</value>
   </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>Please try again!</value>
+  </data>
   <data name="Please_Let_Us_Know" xml:space="preserve">
     <value>Please first let us know what you'd like to do:</value>
   </data>
@@ -157,9 +163,12 @@
     <value>Submit</value>
   </data>
   <data name="Successfully" xml:space="preserve">
-    <value>Successfully!!</value>
+    <value>Successfully!</value>
   </data>
   <data name="Successfully_Sent" xml:space="preserve">
     <value>Thank you! Your request has been successfully sent</value>
+  </data>
+  <data name="TryAgain" xml:space="preserve">
+    <value>Try Again</value>
   </data>
 </root>

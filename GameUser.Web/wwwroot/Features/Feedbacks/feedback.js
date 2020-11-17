@@ -5,6 +5,7 @@
         this.errorModal = $('#errorModal');
         this.loadingModal = $('#loadingModal');
         this.submitButton = this.mainForm.find('#submitBtn');
+        this.backToLobbyLink = this.mainForm.find('#backlink');
 
         this.viewResources = viewResources;
 
@@ -13,6 +14,10 @@
     }
 
     // ****** Common functions *******  
+
+    backToLobby() {
+        window.close();
+    }
 
     loadAvatar(avatar) {
         let canvas = document.getElementById("avatar");
@@ -82,6 +87,7 @@
         this.mainForm.find('.to-add-image').on('click', this.openSelectFile.bind(this));
         this.mainForm.find('#descText').on('keyup', this.onDescKeyUp.bind(this));
         this.mainForm.find('#descText').on('paste', this.onDescPaste.bind(this));
+        this.backToLobbyLink.on('click', this.backToLobby.bind(this));
         this.registerAttachmentHandlers();
     }
     //  ******* End common functions  *******
