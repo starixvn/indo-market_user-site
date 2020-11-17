@@ -11,7 +11,7 @@
     <div class="header">
         <div class="username">
             <div class="avatar-circle" ><div class="avatar" id="avatar"></div></div>
-            <div class="name">username</div>
+            <div class="name">Model.NickName</div>
         </div>
         <div class="icon"><img /></div>
     </div>
@@ -37,8 +37,8 @@
                 @*<div class="row-item">
                 
                 </div>*@
-                <div class="group-item">
-                    <label asp-for="@Model.Feedback.Category" class="control-label">
+                <div class="group-item mt5">
+                    <label asp-for="@Model.Feedback.Description" class="control-label">
                         @Localizer["Description"]
                     </label>
                     <span id="descErrors" class="failed-message"><i class="icon-cancel"></i><span id="descErrorsContent"></span></span>
@@ -51,7 +51,7 @@
                 @*<div class="row-item">
                 
                 </div>*@
-                <div class="group-item">
+                <div class="group-item mt5">
                     <label class="control-label">
                         @Localizer["Attachment"]
                     </label>
@@ -68,6 +68,7 @@
                             </li>
                             <li class="to-add-image">
                                 <span></span>
+                                <p class="add-image">@Localizer["AddImage"]</p>
                             </li>
                         </ul>
                     </div>
@@ -77,8 +78,9 @@
 		            <button type="button" class="btn-gray btn-submit" data-dismiss="modal" id="submitBtn">@Localizer["Submit"]</button>
                 </div>
             </div>
+
+            <div class="back-link">@Localizer["BackToLobby"]</div>
         </form>  
-        <div class="back-link">@Localizer["BackToLobby"]</div>
     </div>
     <div class="footer">Copyright@2020, Saba</div>
 </div>

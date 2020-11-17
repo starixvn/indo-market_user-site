@@ -28,7 +28,7 @@ html, body {
             background: url("./Images/BG-username.png") no-repeat;
             width: 250px;
             height: 60px;
-            margin-left: 200px;
+            margin-left: 15%;
             margin-top: 3px;
 
 
@@ -49,6 +49,8 @@ html, body {
                 height: 46px;
                 width: 46px;
                 border-radius: 50%;
+                margin-left: -2px;
+                margin-top: -1px;
             }
 
             .name {
@@ -60,11 +62,12 @@ html, body {
         }
 
         .icon {
-            background: url("./Images/Logo.png");
+            background: url("./Images/Logo.png") no-repeat;
             background-size: contain;
             width: 120px;
             height: 50px;
-            margin-right: 100px;
+            margin-right: 10%;
+            margin-top: 3px;
         }
     }
 
@@ -95,24 +98,26 @@ html, body {
         .title {
             text-align: center;
             color: #5e1259;
-            font-size: 28px;
-            height: 40px;
-            padding-top: 15px;
-            font-weight: bold;
+            font-size: 26px;
+            height: 70px;
+            padding-top: 18px;
+            font-weight: 900;
             text-transform: uppercase;
+            background: white;
         }
 
         .title-bottom {
             background: url("./Images//Dropline-Title.png");
-            height: 40px;
+            height: 56px;
+            margin-top: -27px;
         }
 
         .form {
-            padding: 20px;
+            padding: 0px 40px;
 
             .group-item {
                 padding: 0;
-                margin-bottom: 10px;
+                margin-bottom: 20px;
 
                 select {
                     -webkit-appearance: none;
@@ -120,11 +125,12 @@ html, body {
 
                 .select-arrow {
                     background: url("./Images/down-select.png") no-repeat;
-                    height: 30px;
-                    width: 30px;
+                    height: 26px;
+                    width: 26px;
                     float: right;
                     margin-top: -37px;
-                    margin-right: 8px;
+                    margin-right: 16px;
+                    background-size: contain;
                 }
 
                 .desc-input {
@@ -156,7 +162,7 @@ html, body {
                     line-height: 22px;
                     display: inline-block;
                     border-radius: 50%;
-                    font-size: 18px;
+                    font-size: 17px;
                     font-weight: bold;
                     text-align: center;
                     margin-left: 5px;
@@ -193,10 +199,12 @@ html, body {
             }
 
             .image-container {
-                height: 100px;
+                height: 120px;
                 background: white;
-                padding: 5px 0;
+                padding: 15px 10px;
                 border-radius: 5px;
+
+
 
                 ul {
                     list-style-type: none;
@@ -211,27 +219,37 @@ html, body {
                         vertical-align: top;
                     }
 
+                    li:first-child {
+                        margin-right: -3px;
+                    }
 
                     .to-add-image {
+                        width: 110px;
+                        text-align: center;
                         cursor: pointer;
 
                         span {
                             display: inline-block;
-                            background: url('./Images/Attachment-Addnew.png') no-repeat;
-                            width: 112px;
-                            height: 62px;
+                            background: url('./Images/Icon-addimage.png') no-repeat;
+                            width: 100px;
+                            height: 75px;
+                            background-size: contain;
                         }
                     }
 
                     .added-image {
+                        width: 110px;
+                        text-align: center;
+
                         > div {
                             position: relative;
                         }
 
                         .attach-img {
-                            background: url('./Images/Attachment-Uploaded.png') no-repeat;
-                            width: 112px;
-                            height: 62px;
+                            background: url('./Images/Icon-Image.png') no-repeat;
+                            width: 100px;
+                            height: 75px;
+                            background-size: contain;
                         }
 
                         .remove-img {
@@ -257,12 +275,21 @@ html, body {
                     .to-add-name {
                         color: #6f6c67;
                         white-space: nowrap;
-                        width: 120px;
                         overflow: hidden;
                         text-overflow: ellipsis;
-                        font-size: 16px;
+                        font-size: 13px;
                         margin: 0;
-                        margin-top: -5px;
+                        margin-top: -2px;
+                    }
+
+                    .add-image {
+                        color: #5e1259;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        font-size: 13px;
+                        margin: 0;
+                        margin-top: -2px;
                     }
                 }
             }
