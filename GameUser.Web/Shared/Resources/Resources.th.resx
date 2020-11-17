@@ -121,7 +121,7 @@
     <value>Add image</value>
   </data>
   <data name="Attachment" xml:space="preserve">
-    <value>Attachment</value>
+    <value>ไฟล์แนบ</value>
   </data>
   <data name="Attachment_Max_Size" xml:space="preserve">
     <value>The maximum size of total attachments is 15M</value>
@@ -130,16 +130,19 @@
     <value>Back to Lobby</value>
   </data>
   <data name="Description" xml:space="preserve">
-    <value>Description</value>
+    <value>คำอธิบาย</value>
   </data>
   <data name="Description_Cant_Empty" xml:space="preserve">
-    <value>The description can't be empty</value>
+    <value>ต้องใส่คำอธิบายหรือรายละเอียด</value>
   </data>
   <data name="Description_Max_Characters" xml:space="preserve">
     <value>You have reached the maximum number of 500 characters</value>
   </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Errors</value>
+  </data>
   <data name="GameSuggestion" xml:space="preserve">
-    <value>Game Suggestion</value>
+    <value>คำแนะนำเกม</value>
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
@@ -148,10 +151,19 @@
     <value>Please try again!</value>
   </data>
   <data name="Please_Let_Us_Know" xml:space="preserve">
-    <value>Please first let us know what you'd like to do:</value>
+    <value>โปรดแจ้งให้เราทราบว่าคุณต้องการทอะไร</value>
+  </data>
+  <data name="Something_Wrong" xml:space="preserve">
+    <value>An unexpected error occurred</value>
   </data>
   <data name="Submit" xml:space="preserve">
-    <value>Submit</value>
+    <value>ตกลง</value>
+  </data>
+  <data name="Successfully" xml:space="preserve">
+    <value>สำเร็จแล้ว</value>
+  </data>
+  <data name="Successfully_Sent" xml:space="preserve">
+    <value>ขอบคุณ! ส่งคำขอของคุณเรียบร้อยแล้ว</value>
   </data>
   <data name="TryAgain" xml:space="preserve">
     <value>Try Again</value>

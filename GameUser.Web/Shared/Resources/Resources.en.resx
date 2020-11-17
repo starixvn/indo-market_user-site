@@ -144,9 +144,6 @@
   <data name="GameSuggestion" xml:space="preserve">
     <value>Game Suggestion</value>
   </data>
-  <data name="Loading" xml:space="preserve">
-    <value>Loading...</value>
-  </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
   </data>
@@ -157,7 +154,7 @@
     <value>Please first let us know what you'd like to do:</value>
   </data>
   <data name="Something_Wrong" xml:space="preserve">
-    <value>Something went wrong</value>
+    <value>An unexpected error occurred</value>
   </data>
   <data name="Submit" xml:space="preserve">
     <value>Submit</value>

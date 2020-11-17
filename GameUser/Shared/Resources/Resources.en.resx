@@ -127,6 +127,6 @@
     <value>Report a bug</value>
   </data>
   <data name="Something_Wrong" xml:space="preserve">
-    <value>Something went wrong</value>
+    <value>An unexpected error occurred</value>
   </data>
 </root>
