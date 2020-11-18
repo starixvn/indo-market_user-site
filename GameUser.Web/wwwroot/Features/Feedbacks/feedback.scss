@@ -93,7 +93,7 @@ html, body {
         color: black;
         border-left: solid 1px white;
         border-right: solid 1px white;
-        min-height: 750px;
+        min-height: 780px;
 
         .title {
             text-align: center;
@@ -415,5 +415,66 @@ html, body {
 
     100% {
         transform: rotate(360deg);
+    }
+}
+
+@media screen and (max-width: 900px) and (orientation:landscape) {
+    .feedback {
+        padding-top: 50px;
+
+        .header {
+            position: absolute;
+            height: 50px;
+
+            .username {
+                background: url("./Images/BG-username.png") no-repeat;
+                background-size: contain;
+                width: 185px;
+                height: 38px;
+                margin-top: 0;
+
+                .avatar-circle {
+                    width: 44px;
+                    height: 44px;
+                    background-size: contain;
+                }
+
+                .avatar {
+                    height: 38px;
+                    width: 38px;
+                    margin-left: -4px;
+                    margin-top: -2px;
+                }
+
+                .name {
+                    margin-top: -33px;
+                    margin-left: 37px;
+                    font-size: 16px;
+                }
+            }
+
+            .icon {
+                width: 115px;
+                height: 38px;
+                margin-top: -1px;
+                margin-right: 7%;
+            }
+        }
+
+        .footer {
+            position: absolute;
+            bottom: auto;
+            height: 60px;
+            padding-top: 27px;
+            margin-top: -20px;
+        }
+
+        .content {
+            .title {
+                font-size: 24px;
+                height: 50px;
+                padding-top: 7px;
+            }
+        }
     }
 }
