@@ -369,4 +369,6 @@
   .feedback .header .icon {
     margin-right: 15px; }
   .feedback .content {
-    width: 100%; } }
+    width: 100%; }
+    .feedback .content .form {
+      padding: 0 20px; } }
