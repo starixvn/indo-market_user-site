@@ -15,7 +15,7 @@ html, body {
 
     .header {
         background: url("./Images/header.png");
-        height: 74px;
+        height: 86px;
         display: flex;
         justify-content: space-between;
         padding: 5px 0;
@@ -420,11 +420,12 @@ html, body {
 
 @media screen and (max-width: 900px) and (orientation:landscape) {
     .feedback {
-        padding-top: 50px;
+        padding-top: 55px;
 
         .header {
             position: absolute;
-            height: 50px;
+            height: 62px;
+            background: url("./Images/header-68.png");
 
             .username {
                 background: url("./Images/BG-username.png") no-repeat;
@@ -470,10 +471,50 @@ html, body {
         }
 
         .content {
+            min-height: 700px;
             .title {
                 font-size: 24px;
                 height: 50px;
                 padding-top: 7px;
+            }
+        }
+    }
+
+    .modal {
+        .modal-dialog {
+            .modal-content {
+                width: 354px;
+                height: 324px;
+                padding: 0 20px;
+                margin-left: auto;
+                margin-right: auto;
+
+                .icon {
+                    width: 100px;
+                    height: 100px;
+                    margin: 30px auto 10px auto;
+                }
+
+                .message {
+                    font-size: 20px;
+                }
+
+                .try-again {
+                    margin-top: 20px;
+                    font-size: 16px;
+                }
+
+                .button button {
+                    margin-top: 30px;
+                    padding: 10px;
+                    width: 175px;
+                    height: 55px;
+                    font-size: 22px;
+                }
+
+                .success button {
+                    margin-top: 18px;
+                }
             }
         }
     }

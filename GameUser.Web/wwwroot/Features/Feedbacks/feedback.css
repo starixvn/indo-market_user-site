@@ -11,7 +11,7 @@
   height: 100%; }
   .feedback .header {
     background: url("Images/header.png");
-    height: 74px;
+    height: 86px;
     display: flex;
     justify-content: space-between;
     padding: 5px 0;
@@ -297,10 +297,11 @@
 
 @media screen and (max-width: 900px) and (orientation: landscape) {
   .feedback {
-    padding-top: 50px; }
+    padding-top: 55px; }
     .feedback .header {
       position: absolute;
-      height: 50px; }
+      height: 62px;
+      background: url("Images/header-68.png"); }
       .feedback .header .username {
         background: url("Images/BG-username.png") no-repeat;
         background-size: contain;
@@ -331,7 +332,32 @@
       height: 60px;
       padding-top: 27px;
       margin-top: -20px; }
-    .feedback .content .title {
-      font-size: 24px;
-      height: 50px;
-      padding-top: 7px; } }
+    .feedback .content {
+      min-height: 700px; }
+      .feedback .content .title {
+        font-size: 24px;
+        height: 50px;
+        padding-top: 7px; }
+  .modal .modal-dialog .modal-content {
+    width: 354px;
+    height: 324px;
+    padding: 0 20px;
+    margin-left: auto;
+    margin-right: auto; }
+    .modal .modal-dialog .modal-content .icon {
+      width: 100px;
+      height: 100px;
+      margin: 30px auto 10px auto; }
+    .modal .modal-dialog .modal-content .message {
+      font-size: 20px; }
+    .modal .modal-dialog .modal-content .try-again {
+      margin-top: 20px;
+      font-size: 16px; }
+    .modal .modal-dialog .modal-content .button button {
+      margin-top: 30px;
+      padding: 10px;
+      width: 175px;
+      height: 55px;
+      font-size: 22px; }
+    .modal .modal-dialog .modal-content .success button {
+      margin-top: 18px; } }
