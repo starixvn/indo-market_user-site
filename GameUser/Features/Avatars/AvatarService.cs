@@ -35,7 +35,7 @@ namespace GameUser.Features.Avatars
                 var directory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
                 var file = Path.Combine(directory, "Features/Avatars/profile-picture.plist.meta.json");
                 var avatarPlist = JsonConvert.DeserializeObject<AvatarPlist>(File.ReadAllText(file));
-                var avatarObject = avatarPlist.SubMetas.First(a => a.Key.Replace(".png", "").Contains(avatarId));
+                var avatarObject = avatarPlist.SubMetas.First(a => a.Key.Replace(".png", "") == avatarId);
 
                 return avatarObject.Value;
             }
