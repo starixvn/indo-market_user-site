@@ -13,6 +13,8 @@ namespace GameUser.Web.Shared.Configurations
 
         string StoreFilePath { get; }
 
+        bool EnabledStoreFile { get; }
+
         string Env { get; }
 
         string StoreFileFullPath();
@@ -25,7 +27,8 @@ namespace GameUser.Web.Shared.Configurations
             ApiHost = configReader.GetValue<string>(nameof(ApiHost));
             ResultUrl = configReader.GetValue<string>(nameof(ResultUrl));
             StoreFilePath = configReader.GetValue<string>(nameof(StoreFilePath));
-            Env = configReader.GetValue<string>(nameof(Env));            
+            Env = configReader.GetValue<string>(nameof(Env));
+            EnabledStoreFile = configReader.GetValue<bool>(nameof(EnabledStoreFile));
         }
 
         public string ResultUrl { get; }
@@ -35,6 +38,8 @@ namespace GameUser.Web.Shared.Configurations
         public string StoreFilePath { get; }
 
         public string Env { get; }
+
+        public bool EnabledStoreFile { get; }
 
         public string StoreFileFullPath()
         {

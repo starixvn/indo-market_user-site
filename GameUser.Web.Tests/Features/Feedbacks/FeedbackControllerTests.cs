@@ -1,8 +1,6 @@
 ﻿using FluentAssertions;
 using GameUser.Features.Avatars;
-using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
-using GameUser.Features.FileUploads;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Models;
 using GameUser.Web.Features.Feedbacks;
@@ -13,9 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
-using Sentry;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -27,10 +22,6 @@ namespace GameUser.Web.Tests.Features.Feedbacks
         private readonly IHttpContextAccessor httpContext;
         private readonly IFeedbackService feedbackService;
         private readonly IAppSettings appSetting;
-        private readonly IEmailConfigs emailConfigs;
-        private readonly IFileUploadService fileUploadService;
-        private readonly IEmailService emailService;
-        private readonly ISentryClient sentryClient;
         private readonly IAvatarService avatarService;
         private readonly IUserSessionService userSessionService;
 
@@ -39,10 +30,6 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             this.httpContext = Substitute.For<IHttpContextAccessor>();
             this.feedbackService = Substitute.For<IFeedbackService>();
             this.appSetting = Substitute.For<IAppSettings>();
-            this.emailConfigs = Substitute.For<IEmailConfigs>();
-            this.fileUploadService = Substitute.For<IFileUploadService>();
-            this.emailService = Substitute.For<IEmailService>();
-            this.sentryClient = Substitute.For<ISentryClient>();
             this.avatarService = Substitute.For<IAvatarService>();
             this.userSessionService = Substitute.For<IUserSessionService>();
         }
@@ -59,7 +46,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             routeValues.Add(key, value);
             httpRequest.RouteValues.Returns(routeValues);
 
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, fileUploadService, emailService, emailConfigs, sentryClient, avatarService, userSessionService);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService);
 
             FeedbackRequest feedbackRequest = new FeedbackRequest { NickName = "nick name", SessionId = "sesssion id " };
 
@@ -72,13 +59,16 @@ namespace GameUser.Web.Tests.Features.Feedbacks
 
             var expectedCulture = key == "culture" ? value : "en";
 
+            var userInfo = new UserInfoEntity { AvatarId = 1, Name = "abc" };
+            userSessionService.GetUserInfo(feedbackRequest.SessionId).Returns(userInfo);
+
             // Act
             var result = await controller.Add(feedbackRequest) as ViewResult;
 
             // Assert
             var model = result.Model as InsertFeedbackViewModel;
             model.SessionId.Should().Be(feedbackRequest.SessionId);
-            model.NickName.Should().Be(feedbackRequest.NickName);
+            model.NickName.Should().Be(userInfo.Name);
             model.FeedbackTypeOptions.Should().BeEquivalentTo(feedbackTypes);
             model.Culture.Should().Be(expectedCulture);
         }
@@ -87,7 +77,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
         public async Task AddPost_WhenCalled_AddFeedbackAndSendEmail()
         {
             // Arrange
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, fileUploadService, emailService, emailConfigs, sentryClient, avatarService, userSessionService);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService);
 
             var model = new InsertFeedbackViewModel
             {
@@ -95,41 +85,15 @@ namespace GameUser.Web.Tests.Features.Feedbacks
                 Feedback = new Feedback()
             };
 
-            var emailRequest = new EmailRequest(subject: "hiii", body: string.Empty, toAddress: string.Empty, attachments: null);
-            feedbackService.GenerateEmail(model.Feedback, model.NickName, emailConfigs).Returns(emailRequest);
-
-            // Act
-            var result = await controller.Add(model) as JsonResult;
-
-            // Assert
-            await feedbackService.Received().AddFeedbackAsync(model.Feedback);
-            await fileUploadService.Received().UploadFilesAsync(model.Feedback.Files, appSetting.StoreFileFullPath());
-            await emailService.Received().SendAsync(emailRequest);
-            var modelResult = result.Value as UpdateResult;
-            modelResult.IsSuccess.Should().Be(true);
-        }
-
-        [Fact]
-        public async Task AddPost_WhenError_CaptureError()
-        {
-            // Arrange
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, fileUploadService, emailService, emailConfigs, sentryClient, avatarService, userSessionService);
-
-            var model = new InsertFeedbackViewModel
-            {
-                NickName = "nick name",
-                Feedback = new Feedback()
-            };
-
-            feedbackService.AddFeedbackAsync(Arg.Any<Feedback>()).Throws(new Exception("some error"));
+            var expectedResult = new UpdateResult(true, string.Empty);
+            feedbackService.AddFeedbackAsync(model.Feedback, model.NickName, Arg.Any<bool>(), Arg.Any<string>()).Returns(expectedResult);
 
             // Act
             var result = await controller.Add(model) as JsonResult;
 
             // Assert
             var modelResult = result.Value as UpdateResult;
-            modelResult.IsSuccess.Should().Be(false);
-            sentryClient.ReceivedWithAnyArgs().CaptureException(default);
+            modelResult.Should().BeEquivalentTo(expectedResult);
         }
     }
 }

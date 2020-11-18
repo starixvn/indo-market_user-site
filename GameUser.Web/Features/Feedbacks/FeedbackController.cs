@@ -1,16 +1,11 @@
 ﻿using GameUser.Features.Avatars;
-using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
-using GameUser.Features.FileUploads;
 using GameUser.Features.UserSessions;
-using GameUser.Shared.Models;
 using GameUser.Web.Features.Feedbacks.ViewModels;
 using GameUser.Web.Shared.Attributes;
 using GameUser.Web.Shared.Configurations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Sentry;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,10 +19,6 @@ namespace GameUser.Web.Features.Feedbacks
         private readonly IHttpContextAccessor httpContext;
         private readonly IFeedbackService feedbackService;                    
         private readonly IAppSettings appSetting;
-        private readonly IEmailConfigs emailConfigs;
-        private readonly IFileUploadService fileUploadService;
-        private readonly IEmailService emailService;
-        private readonly ISentryClient sentryClient;
         private readonly IAvatarService avatarService;
         private readonly IUserSessionService userSessionService;
 
@@ -35,20 +26,12 @@ namespace GameUser.Web.Features.Feedbacks
             IHttpContextAccessor httpContext,
             IFeedbackService feedbackService,            
             IAppSettings appSetting,
-            IFileUploadService fileUploadService,
-            IEmailService emailService,
-            IEmailConfigs emailConfigs,
-            ISentryClient sentryClient,
             IAvatarService avatarService,
             IUserSessionService userSessionService)
         {
             this.httpContext = httpContext;
             this.feedbackService = feedbackService;            
             this.appSetting = appSetting;
-            this.fileUploadService = fileUploadService;
-            this.emailService = emailService;
-            this.emailConfigs = emailConfigs;
-            this.sentryClient = sentryClient;
             this.avatarService = avatarService;
             this.userSessionService = userSessionService;
         }
@@ -74,18 +57,7 @@ namespace GameUser.Web.Features.Feedbacks
         [HttpPost]
         public async Task<IActionResult> Add(InsertFeedbackViewModel model)
         {
-            var result = new UpdateResult(isSuccess: true, message: string.Empty);
-            try
-            {
-                await feedbackService.AddFeedbackAsync(model.Feedback);
-                await fileUploadService.UploadFilesAsync(model.Feedback.Files, appSetting.StoreFileFullPath());
-                var email = await feedbackService.GenerateEmail(model.Feedback, model.NickName, emailConfigs);
-                await emailService.SendAsync(email);
-            }
-            catch (Exception e) {
-                sentryClient.CaptureException(e);
-                result = new UpdateResult(isSuccess: false, message: "Something went wrong");
-            }
+            var result = await feedbackService.AddFeedbackAsync(model.Feedback, model.NickName, appSetting.EnabledStoreFile, appSetting.StoreFileFullPath());            
 
             return Json(result);
         }

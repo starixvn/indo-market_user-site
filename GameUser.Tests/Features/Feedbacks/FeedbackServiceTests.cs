@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
+using GameUser.Features.FileUploads;
 using GameUser.Shared.Database;
 using GameUser.Shared.Resources;
 using Microsoft.AspNetCore.Http;
@@ -23,6 +24,9 @@ namespace GameUser.Tests.Features.Feedbacks
         private readonly ISentryClient sentryClient;
         private readonly IFeedbackTypeLocalization feedbackTypeLocalization;
         private readonly IStringLocalizer<Resources> localizer;
+        private readonly IEmailConfigs emailConfigs;
+        private readonly IFileUploadService fileUploadService;
+        private readonly IEmailService emailService;
 
         public FeedbackServiceTests()
         {
@@ -30,13 +34,16 @@ namespace GameUser.Tests.Features.Feedbacks
             sentryClient = Substitute.For<ISentryClient>();
             feedbackTypeLocalization = Substitute.For<IFeedbackTypeLocalization>();
             localizer = Substitute.For<IStringLocalizer<Resources>>();
+            emailConfigs = Substitute.For<IEmailConfigs>();
+            fileUploadService = Substitute.For<IFileUploadService>();
+            emailService = Substitute.For<IEmailService>();
         }        
 
         [Fact]
         public async Task GetTypes_WhenCalled_ReturnListOfFeedbackTypes()
         {
             // Arrange  
-            var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization, localizer);
+            var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization, localizer, emailConfigs, fileUploadService, emailService);
             var expectedResult = new List<SelectListItem> {
                 new SelectListItem { Value = "NewGame", Text = "Request a new game"},
                 new SelectListItem { Value = "ReportBug", Text = "Report a bug"},
@@ -56,44 +63,7 @@ namespace GameUser.Tests.Features.Feedbacks
         public async Task AddFeedback_WhenSuccess_CallInsert()
         {
             // Arrange             
-            var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization, localizer);
-            var feedback = new Feedback(category: "ss", description: "ff", nickname: "abc", files: null);
-
-            FeedbackEntity entity = null;
-            await feedbackRepository.InsertOneAsync(Arg.Do<FeedbackEntity>(x => entity = x));
-
-            // Act
-            var result = await service.AddFeedbackAsync(feedback);
-
-            // Assert
-            result.IsSuccess.Should().Be(true);
-            entity.Category.Should().Be(feedback.Category);
-            entity.Description.Should().Be(feedback.Description);
-            entity.Nickname.Should().Be(feedback.Nickname);
-        }
-
-        [Fact]
-        public async Task AddFeedback_WhenFailed_LogErrors()
-        {
-            // Arrange             
-            var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization, localizer);
-            feedbackRepository.InsertOneAsync(Arg.Any<FeedbackEntity>())
-                .Returns(Task.FromException<List<object>>(new Exception("some error")));
-
-            // Act
-            var result = await service.AddFeedbackAsync(new Feedback());
-
-            // Assert
-            result.IsSuccess.Should().Be(false);
-            sentryClient.ReceivedWithAnyArgs().CaptureException(default);
-        }
-
-        [Fact]
-        public async Task GenerateEmail_WhenCalled_GenerateEmailContent() 
-        {
-            // Arrange      
-            var emailConfig = Substitute.For<IEmailConfigs>();
-            var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization, localizer);
+            var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization, localizer, emailConfigs, fileUploadService, emailService); 
 
             var expectedResult = new List<SelectListItem> {
                 new SelectListItem { Value = "NewGame", Text = "Request a new game"},
@@ -107,22 +77,55 @@ namespace GameUser.Tests.Features.Feedbacks
             var files = new List<IFormFile> { file, file };
             var feedback = new Feedback(category: "NewGame", description: "desc", files: files, nickname: string.Empty);
 
-            emailConfig.ReceiverEmail.Returns("recever@gmail.com");
-
+            emailConfigs.ReceiverEmail.Returns("recever@gmail.com");
             var expectedBody = $"Dear SB club, " +
                            $"{Environment.NewLine}{Environment.NewLine}" +
                            $"{feedback.Description} " +
                            $"{Environment.NewLine}{Environment.NewLine}" +
                            $"This is an automated email. Please do not reply to it.";
 
+
+            FeedbackEntity entity = null;
+            await feedbackRepository.InsertOneAsync(Arg.Do<FeedbackEntity>(x => entity = x));
+
+            EmailRequest emailRequest = null;
+            await emailService.SendAsync(Arg.Do<EmailRequest>(x => emailRequest = x));
+
             // Act
-            var result = await service.GenerateEmail(feedback, nickname, emailConfig);
+            var result = await service.AddFeedbackAsync(feedback, nickname, true, string.Empty);
 
             // Assert
-            result.Subject.Should().Be($"Saba_Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{"Request a new game"}");
-            result.Body.Should().Be(expectedBody);
-            result.Attachments.Should().BeEquivalentTo(files);
-            result.ToAddress.Should().Be("recever@gmail.com");
+            result.IsSuccess.Should().Be(true);
+            entity.Category.Should().Be(feedback.Category);
+            entity.Description.Should().Be(feedback.Description);
+            entity.Nickname.Should().Be(feedback.Nickname);
+            emailRequest.Subject.Should().Be($"Saba_Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{"Request a new game"}");
+            emailRequest.Body.Should().Be(expectedBody);
+            emailRequest.Attachments.Should().BeEquivalentTo(files);
+            emailRequest.ToAddress.Should().Be("recever@gmail.com");
+        }
+
+        [Fact]
+        public async Task AddFeedback_WhenFailed_LogErrors()
+        {
+            // Arrange             
+            var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization, localizer, emailConfigs, fileUploadService, emailService);
+            var expectedResult = new List<SelectListItem> {
+                new SelectListItem { Value = "NewGame", Text = "Request a new game"},
+                new SelectListItem { Value = "ReportBug", Text = "Report a bug"},
+                new SelectListItem { Value = "OtherIssue", Text = "Report other issues"}
+            };
+            feedbackTypeLocalization.GetSelectListItems().Returns(expectedResult);
+
+            feedbackRepository.InsertOneAsync(Arg.Any<FeedbackEntity>())
+                .Returns(Task.FromException<List<object>>(new Exception("some error")));
+
+            // Act
+            var result = await service.AddFeedbackAsync(new Feedback(), string.Empty, true, string.Empty);
+
+            // Assert
+            result.IsSuccess.Should().Be(false);
+            sentryClient.ReceivedWithAnyArgs().CaptureException(default);
         }
     }
 }

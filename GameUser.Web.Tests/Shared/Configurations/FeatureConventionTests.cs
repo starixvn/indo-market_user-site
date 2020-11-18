@@ -25,14 +25,10 @@ namespace GameUser.Web.Tests.Shared.Configurations
             var httpContext = Substitute.For<IHttpContextAccessor>();
             var feedbackService = Substitute.For<IFeedbackService>();
             var appSetting = Substitute.For<IAppSettings>();
-            var emailConfigs = Substitute.For<IEmailConfigs>();
-            var fileUploadService = Substitute.For<IFileUploadService>();
-            var emailService = Substitute.For<IEmailService>();
-            var sentryClient = Substitute.For<ISentryClient>();
             var avatarService = Substitute.For<IAvatarService>();
             var userSessionService = Substitute.For<IUserSessionService>();            
 
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, fileUploadService, emailService, emailConfigs, sentryClient, avatarService, userSessionService);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService);
             var typeInfo = controller.GetType().GetTypeInfo();
             var featureConvention = new FeatureConvention();
             var controllerModel = new ControllerModel(typeInfo, NSubstitute.Substitute.For<IReadOnlyList<object>>());
