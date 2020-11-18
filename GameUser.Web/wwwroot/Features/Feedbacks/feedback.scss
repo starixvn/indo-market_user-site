@@ -5,6 +5,7 @@ html, body {
     border-radius: 5px;
     font-family: 'Roboto', sans-serif;
     height: 100%;
+    width: 100%;
 }
 
 .feedback {
@@ -84,7 +85,6 @@ html, body {
     }
 
     .content {
-        min-width: 500px;
         width: 50%;
         height: 100%;
         background: #d7dae3;
@@ -471,7 +471,7 @@ html, body {
         }
 
         .content {
-            min-height: 700px;
+            min-height: 750px;
             .title {
                 font-size: 24px;
                 height: 50px;
@@ -516,6 +516,25 @@ html, body {
                     margin-top: 18px;
                 }
             }
+        }
+    }
+}
+
+@media screen and (max-width: 500px) and (orientation:portrait) {
+    .feedback {
+        .header {
+            .username {
+                margin-left: 20px;
+            }
+
+            .icon {
+                margin-right: 15px;
+            }
+        }
+
+        .content {
+            width: 100%;
+            min-height: 110%; 
         }
     }
 }
