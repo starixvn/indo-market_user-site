@@ -25,6 +25,7 @@ namespace GameUser.Web.Tests.Shared.Configurations
             configReader.GetValue<string>("ResultUrl").Returns("result url");
             configReader.GetValue<string>("StoreFilePath").Returns("store file path");
             configReader.GetValue<string>("Env").Returns("env");
+            configReader.GetValue<bool>("EnabledStoreFile").Returns(true);
 
             // Act
             var result = new AppSettings(configReader);
@@ -34,6 +35,7 @@ namespace GameUser.Web.Tests.Shared.Configurations
             result.ResultUrl.Should().Be("result url");
             result.StoreFilePath.Should().Be("store file path");
             result.Env.Should().Be("env");
+            result.EnabledStoreFile.Should().Be(true);
         }
 
         [Fact]

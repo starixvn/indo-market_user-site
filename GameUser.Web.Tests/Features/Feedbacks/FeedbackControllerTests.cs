@@ -60,7 +60,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
 
             var expectedCulture = key == "culture" ? value : "en";
 
-            var userInfo = new UserInfoEntity { AvatarId = 1, Name = "abc" };
+            var userInfo = new UserInfoEntity { AvatarId = 1, Name = "abc", UserId = "123", Version = 123 };
             userSessionService.GetUserInfo(feedbackRequest.SessionId).Returns(userInfo);
 
             // Act
@@ -90,7 +90,6 @@ namespace GameUser.Web.Tests.Features.Feedbacks
                 Feedback = new Feedback(
                     category: request.Feedback.Category,
                     description: request.Feedback.Description,
-                    nickname: request.NickName,
                     files: request.Feedback.Files),
                 NickName = request.NickName
             };
@@ -104,7 +103,8 @@ namespace GameUser.Web.Tests.Features.Feedbacks
 
             // Assert
             var modelResult = result.Value as UpdateResult;
-            modelResult.Should().BeEquivalentTo(expectedResult);
+            modelResult.IsSuccess.Should().Be(expectedResult.IsSuccess);
+            modelResult.Message.Should().Be(expectedResult.Message);
         }
     }
 }

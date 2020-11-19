@@ -57,6 +57,9 @@ namespace GameUser.Tests.Features.FileUploads
 
             // Assert
             result.Count(i => i.SavedSuccess).Should().Be(files.Count);
+            result.ToList()[0].File.Should().Be(file);
+            result.ToList()[0].Name.Should().NotBeNullOrEmpty();
+            result.ToList()[0].FullPath.Should().NotBeNullOrEmpty();
         }
 
         [Fact]

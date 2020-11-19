@@ -63,7 +63,6 @@ namespace GameUser.Web.Features.Feedbacks
                 Feedback = new Feedback(
                     category: addRequest.Feedback.Category, 
                     description: addRequest.Feedback.Description,
-                    nickname: addRequest.NickName,
                     files: addRequest.Feedback.Files),
                 NickName = addRequest.NickName
             };

@@ -58,7 +58,7 @@ namespace GameUser.Features.Feedbacks
         {
             try
             {
-                await SaveFeedbackAsync(feedback);
+                await SaveFeedbackAsync(feedback, nickName);
                 await StoreFileAsync(feedback.Files, enabledStoreFile, filePath);               
                 var email = await GenerateEmail(feedback, nickName);
                 await emailService.SendAsync(email);
@@ -80,14 +80,14 @@ namespace GameUser.Features.Feedbacks
             }
         }
 
-        private async Task SaveFeedbackAsync(Feedback feedback)
+        private async Task SaveFeedbackAsync(Feedback feedback, string nickName)
         {           
             var feedbackEntity = new FeedbackEntity
             {
                 Time = DateTime.Now,
                 Category = feedback.Category,
                 Description = feedback.Description,
-                Nickname = feedback.Nickname
+                Nickname = nickName
             };
 
             await feedbackRepository.InsertOneAsync(feedbackEntity);

@@ -75,7 +75,7 @@ namespace GameUser.Tests.Features.Feedbacks
             var nickname = "nick name";
             IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")), 0, 0, "Data", "dummy.txt");
             var files = new List<IFormFile> { file, file };
-            var feedback = new Feedback(category: "NewGame", description: "desc", files: files, nickname: string.Empty);
+            var feedback = new Feedback(category: "NewGame", description: "desc", files: files);
 
             emailConfigs.ReceiverEmail.Returns("recever@gmail.com");
             var expectedBody = $"Dear SB club, " +
@@ -98,7 +98,7 @@ namespace GameUser.Tests.Features.Feedbacks
             result.IsSuccess.Should().Be(true);
             entity.Category.Should().Be(feedback.Category);
             entity.Description.Should().Be(feedback.Description);
-            entity.Nickname.Should().Be(feedback.Nickname);
+            entity.Nickname.Should().Be(nickname);
             emailRequest.Subject.Should().Be($"Saba_Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{"Request a new game"}");
             emailRequest.Body.Should().Be(expectedBody);
             emailRequest.Attachments.Should().BeEquivalentTo(files);
