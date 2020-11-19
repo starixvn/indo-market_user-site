@@ -1,6 +1,6 @@
-﻿namespace GameUser.Web.Features.Feedbacks
+﻿namespace GameUser.Web.Features.Feedbacks.Requests
 {
-    public class FeedbackRequest
+    public class GetRequest
     {
         public string SessionId { get; set; }
 

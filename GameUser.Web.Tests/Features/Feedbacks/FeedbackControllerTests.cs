@@ -4,6 +4,7 @@ using GameUser.Features.Feedbacks;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Models;
 using GameUser.Web.Features.Feedbacks;
+using GameUser.Web.Features.Feedbacks.Requests;
 using GameUser.Web.Features.Feedbacks.ViewModels;
 using GameUser.Web.Shared.Configurations;
 using Microsoft.AspNetCore.Http;
@@ -48,7 +49,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
 
             var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService);
 
-            FeedbackRequest feedbackRequest = new FeedbackRequest { NickName = "nick name", SessionId = "sesssion id " };
+            GetRequest feedbackRequest = new GetRequest { NickName = "nick name", SessionId = "sesssion id " };
 
             var feedbackTypes = new List<SelectListItem> {
                 new SelectListItem { Value = "NewGame", Text = "Request a new game"},
@@ -66,7 +67,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             var result = await controller.Add(feedbackRequest) as ViewResult;
 
             // Assert
-            var model = result.Model as InsertFeedbackViewModel;
+            var model = result.Model as GetFeedbackViewModel;
             model.SessionId.Should().Be(feedbackRequest.SessionId);
             model.NickName.Should().Be(userInfo.Name);
             model.FeedbackTypeOptions.Should().BeEquivalentTo(feedbackTypes);
@@ -79,17 +80,27 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             // Arrange
             var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService);
 
-            var model = new InsertFeedbackViewModel
+            var request = new InsertRequest
             {
                 NickName = "nick name",
-                Feedback = new Feedback()
+                Feedback = new FeedbackViewModel()
+            };
+            var viewModel = new InsertFeedbackViewModel
+            {
+                Feedback = new Feedback(
+                    category: request.Feedback.Category,
+                    description: request.Feedback.Description,
+                    nickname: request.NickName,
+                    files: request.Feedback.Files),
+                NickName = request.NickName
             };
 
+
             var expectedResult = new UpdateResult(true, string.Empty);
-            feedbackService.AddFeedbackAsync(model.Feedback, model.NickName, Arg.Any<bool>(), Arg.Any<string>()).Returns(expectedResult);
+            feedbackService.AddFeedbackAsync(Arg.Any<Feedback>(), viewModel.NickName, Arg.Any<bool>(), Arg.Any<string>()).Returns(expectedResult);
 
             // Act
-            var result = await controller.Add(model) as JsonResult;
+            var result = await controller.Add(request) as JsonResult;
 
             // Assert
             var modelResult = result.Value as UpdateResult;

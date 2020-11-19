@@ -16,9 +16,9 @@ namespace GameUser.Features.Feedbacks
             this.Files = files;
         }
 
-        public string Category { get; set; }
-        public string Description { get; set; }
-        public string Nickname { get; set; }
-        public List<IFormFile> Files { get; set; }
+        public string Category { get; }
+        public string Description { get; }
+        public string Nickname { get; }
+        public List<IFormFile> Files { get; }
     }
 }

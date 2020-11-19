@@ -1,6 +1,7 @@
 ﻿using GameUser.Features.Avatars;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.UserSessions;
+using GameUser.Web.Features.Feedbacks.Requests;
 using GameUser.Web.Features.Feedbacks.ViewModels;
 using GameUser.Web.Shared.Attributes;
 using GameUser.Web.Shared.Configurations;
@@ -37,13 +38,13 @@ namespace GameUser.Web.Features.Feedbacks
         }
 
         [HttpGet]        
-        public async Task<IActionResult> Add(FeedbackRequest feedbackRequest)
+        public async Task<IActionResult> Add(GetRequest feedbackRequest)
         {
             var feedbackTypes = await feedbackService.GetTypes();
             var userInfo = await userSessionService.GetUserInfo(feedbackRequest.SessionId);
-            var model = new InsertFeedbackViewModel
+            var model = new GetFeedbackViewModel
             {
-                Feedback = new Feedback(),
+                Feedback = new FeedbackViewModel(),
                 FeedbackTypeOptions = feedbackTypes.ToList(),
                 NickName = userInfo.Name,
                 SessionId = feedbackRequest.SessionId,
@@ -55,9 +56,19 @@ namespace GameUser.Web.Features.Feedbacks
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(InsertFeedbackViewModel model)
+        public async Task<IActionResult> Add(InsertRequest addRequest)
         {
-            var result = await feedbackService.AddFeedbackAsync(model.Feedback, model.NickName, appSetting.EnabledStoreFile, appSetting.StoreFileFullPath());            
+            var viewModel = new InsertFeedbackViewModel
+            {
+                Feedback = new Feedback(
+                    category: addRequest.Feedback.Category, 
+                    description: addRequest.Feedback.Description,
+                    nickname: addRequest.NickName,
+                    files: addRequest.Feedback.Files),
+                NickName = addRequest.NickName
+            };
+
+            var result = await feedbackService.AddFeedbackAsync(viewModel.Feedback, viewModel.NickName, appSetting.EnabledStoreFile, appSetting.StoreFileFullPath());            
 
             return Json(result);
         }
