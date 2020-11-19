@@ -59,8 +59,10 @@ namespace GameUser.Tests.Features.Feedbacks
             result.Should().BeEquivalentTo(expectedResult);
         }
 
-        [Fact]
-        public async Task AddFeedback_WhenSuccess_CallInsert()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task AddFeedback_WhenSuccess_CallInsert(bool enabledStoreFile)
         {
             // Arrange             
             var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization, localizer, emailConfigs, fileUploadService, emailService); 
@@ -92,7 +94,7 @@ namespace GameUser.Tests.Features.Feedbacks
             await emailService.SendAsync(Arg.Do<EmailRequest>(x => emailRequest = x));
 
             // Act
-            var result = await service.AddFeedbackAsync(feedback, nickname, true, string.Empty);
+            var result = await service.AddFeedbackAsync(feedback, nickname, enabledStoreFile, string.Empty);
 
             // Assert
             result.IsSuccess.Should().Be(true);

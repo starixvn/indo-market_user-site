@@ -42,7 +42,7 @@ namespace GameUser.Tests.Features.FileUploads
             // Assert
             result.Should().BeEquivalentTo(expectedResult);
         }
-
+       
         [Fact]
         public async Task UploadFiles_WhenSuccess_ReturnSuccessStatuses()
         {
@@ -79,7 +79,7 @@ namespace GameUser.Tests.Features.FileUploads
 
             // Assert
             result.Count(i => !i.SavedSuccess).Should().Be(files.Count);
-            sentryClient.Received().CaptureException(Arg.Any<Exception>());
+            sentryClient.ReceivedWithAnyArgs().CaptureException(default);
         }
     }
 }

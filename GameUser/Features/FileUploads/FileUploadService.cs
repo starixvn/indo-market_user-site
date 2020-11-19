@@ -4,6 +4,7 @@ using Sentry;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GameUser.Features.FileUploads
@@ -30,11 +31,7 @@ namespace GameUser.Features.FileUploads
             if (files != null)
             {
                 systemIOWrapper.CreateDirectory(baseDirectory);
-                foreach (var file in files)
-                {
-                    var r = await SaveFile(file, baseDirectory);
-                    result.Add(r);
-                }
+                result = (await Task.WhenAll(files.Select(async file => await SaveFile(file, baseDirectory)))).ToList();                
             }
 
             return result;
