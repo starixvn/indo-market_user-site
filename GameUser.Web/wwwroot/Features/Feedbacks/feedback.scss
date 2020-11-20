@@ -129,7 +129,7 @@ html, body {
                     height: 26px;
                     width: 26px;
                     float: right;
-                    margin-top: -37px;
+                    margin-top: -35px;
                     margin-right: 16px;
                     background-size: contain;
                 }
@@ -208,21 +208,21 @@ html, body {
             }
 
             .image-container {
-                height: 120px;
+                height: 100px;
                 background: white;
-                padding: 15px 10px;
+                padding: 10px 13px;
                 border-radius: 8px;
 
                 ul {
                     list-style-type: none;
                     margin: 0;
-                    padding: 0 0 0 2px;
+                    padding: 0;
                     white-space: nowrap;
                     overflow-x: auto;
 
                     li {
                         display: inline-block;
-                        padding-left: 3px;
+                        //padding-left: 3px;
                         vertical-align: top;
                     }
 
@@ -231,21 +231,21 @@ html, body {
                     }
 
                     .to-add-image {
-                        width: 110px;
+                        width: 82px;
                         text-align: center;
                         cursor: pointer;
 
                         span {
                             display: inline-block;
                             background: url('./Images/Icon-addimage.png') no-repeat;
-                            width: 100px;
-                            height: 75px;
+                            width: 80px;
+                            height: 60px;
                             background-size: contain;
                         }
                     }
 
                     .added-image {
-                        width: 110px;
+                        width: 82px;
                         text-align: center;
 
                         > div {
@@ -254,8 +254,8 @@ html, body {
 
                         .attach-img {
                             background: url('./Images/Icon-Image.png') no-repeat;
-                            width: 100px;
-                            height: 75px;
+                            width: 80px;
+                            height: 60px;
                             background-size: contain;
                         }
 
@@ -280,6 +280,7 @@ html, body {
                     }
 
                     .to-add-name {
+                        width: 75px;
                         color: #6f6c67;
                         white-space: nowrap;
                         overflow: hidden;
@@ -307,7 +308,6 @@ html, body {
             color: #5e1259;
             font-size: 22px;
             text-decoration: underline;
-            margin-right: 20px;
             font-weight: bold;
             cursor: pointer;
         }
