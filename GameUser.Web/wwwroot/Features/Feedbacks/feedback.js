@@ -79,6 +79,7 @@
         this.mainForm.find('.attachment-count').html(0);
         this.mainForm.find('#descErrors').hide();
         this.mainForm.find('#attachmentErrors').hide();
+        this.updateWordCount();
     }    
 
     registerEventHandlers() {
@@ -230,7 +231,6 @@
 
         setTimeout(function () {
             this.hideSuccessModal();
-            this.hideLoading();
         }.bind(this), 3000);
     }
 
@@ -247,12 +247,7 @@
     //  ******* Error Modal  *******
     showErrorModal(message) {
         this.errorModal.modal('show');
-        this.errorModal.find('#errorContent').html(message);
-
-        setTimeout(function () {
-            this.hideErrorModal();
-            this.hideLoading();
-        }.bind(this), 4000);
+        this.errorModal.find('#errorContent').html(message);       
     }
 
     hideErrorModal() {
