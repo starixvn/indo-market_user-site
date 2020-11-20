@@ -13,3 +13,4 @@ include:
   - project: 'lumi-ops/ci-scripts'
     ref: master
     file: 'sonarqube/sonarqube-dotnet-unittest.gitlab-ci.yml'
+    
