@@ -61,7 +61,7 @@ namespace GameUser.Features.Feedbacks
                 await SaveFeedbackAsync(feedback, nickName);
                 await StoreFileAsync(feedback.Files, enabledStoreFile, filePath);               
                 var email = await GenerateEmail(feedback, nickName);
-                //await emailService.SendAsync(email);
+                await emailService.SendAsync(email);
 
                 return new UpdateResult(isSuccess: true, message: string.Empty);
             }
