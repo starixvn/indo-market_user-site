@@ -1,0 +1,545 @@
+html, body {
+    background: url("./Images//BG.png") no-repeat;
+    margin: 0;
+    padding: 0;
+    border-radius: 5px;
+    font-family: 'Roboto', sans-serif;
+    height: 100%;
+    width: 100%;
+}
+
+.feedback {
+    //color: white;
+    //background: #343d7e;
+    padding-top: 70px;
+    height: 100%;
+
+    .header {
+        background: url("./Images/header.png");
+        height: 86px;
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        position: fixed;
+        width: 100%;
+        left: 0;
+        top: 0;
+
+        .username {
+            background: url("./Images/BG-username.png") no-repeat;
+            width: 250px;
+            height: 60px;
+            margin-left: 15%;
+            margin-top: 3px;
+
+
+            .avatar-circle {
+                background: url("./Images/Vien-avatar.png") no-repeat;
+                width: 55px;
+                height: 55px;
+                margin-left: -12px;
+                margin-top: -3px;
+                padding-top: 4px;
+                padding-left: 5px;
+            }
+
+            .avatar {
+                background-repeat: no-repeat;
+                background-image: url("./Images/profile-picture.png");
+                background-size: 508px 184px;
+                height: 46px;
+                width: 46px;
+                border-radius: 50%;
+                margin-left: -2px;
+                margin-top: -1px;
+            }
+
+            .name {
+                margin-top: -40px;
+                margin-left: 50px;
+                font-size: 18px;
+                color: yellow;
+            }
+        }
+
+        .icon {
+            background: url("./Images/Logo.png") no-repeat;
+            background-size: contain;
+            width: 120px;
+            height: 50px;
+            margin-right: 10%;
+            margin-top: 3px;
+        }
+    }
+
+    .footer {
+        background: url("./Images//footer.png");
+        text-align: center;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 70px;
+        padding-top: 35px;
+        color: white;
+    }
+
+    .content {
+        width: 50%;
+        height: 100%;
+        background: #d7dae3;
+        margin-left: auto;
+        margin-right: auto;
+        color: black;
+        border-left: solid 1px white;
+        border-right: solid 1px white;
+        min-height: 780px;
+
+        .title {
+            text-align: center;
+            color: #5e1259;
+            font-size: 26px;
+            height: 70px;
+            padding-top: 18px;
+            font-weight: 900;
+            text-transform: uppercase;
+            background: white;
+        }
+
+        .title-bottom {
+            background: url("./Images//Dropline-Title.png");
+            height: 56px;
+            margin-top: -27px;
+        }
+
+        .form {
+            padding: 0px 40px;
+
+            .group-item {
+                padding: 0;
+                margin-bottom: 20px;
+
+                select {
+                    -webkit-appearance: none;
+                }
+
+                .select-arrow {
+                    background: url("./Images/down-select.png") no-repeat;
+                    height: 26px;
+                    width: 26px;
+                    float: right;
+                    margin-top: -37px;
+                    margin-right: 16px;
+                    background-size: contain;
+                }
+
+                .desc-input {
+                    padding: 5px;
+                    resize: none;
+                }
+
+                .word-count {
+                    float: right;
+                    margin-top: -24px;
+                    margin-right: 17px;
+                    opacity: 0.6;
+                }
+
+                .failed-message {
+                    color: #d94030;
+                    font-size: 18px;
+                }
+
+                .control-label {
+                    font-size: 18px;
+                    margin-bottom: 5px;
+                }
+
+                .form-control {
+                    font-size: 20px;
+                    background: white;
+                }
+
+                .attachment-count {
+                    background: white;
+                    color: white;
+                    background: #5e1259;
+                    width: 22px;
+                    height: 22px;
+                    line-height: 22px;
+                    display: inline-block;
+                    border-radius: 50%;
+                    font-size: 17px;
+                    font-weight: bold;
+                    text-align: center;
+                    margin-left: 5px;
+                }
+
+
+
+                .btn-submit {
+                    background: url("./Images/Button-Submit.png") no-repeat;
+                    background-size: contain;
+                    height: 60px;
+                    width: 270px;
+                    border: none;
+                    color: white;
+                    font-size: 22px;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+                }
+
+                .btn-submit:hover, .btn-submit:focus, .btn-submit:active {
+                    border: none;
+                    outline: none;
+                }
+
+                .btn-submit:active {
+                    transform: scale(1.1);
+                }
+            }
+
+            .error-border {
+                box-shadow: inset 0px 0px 8px 0px rgba(255,0,0,1);
+                border-color: red;
+            }
+
+            .image-container {
+                height: 120px;
+                background: white;
+                padding: 15px 10px;
+                border-radius: 5px;
+
+
+
+                ul {
+                    list-style-type: none;
+                    margin: 0;
+                    padding: 0 0 0 2px;
+                    white-space: nowrap;
+                    overflow-x: auto;
+
+                    li {
+                        display: inline-block;
+                        padding-left: 3px;
+                        vertical-align: top;
+                    }
+
+                    li:first-child {
+                        margin-right: -3px;
+                    }
+
+                    .to-add-image {
+                        width: 110px;
+                        text-align: center;
+                        cursor: pointer;
+
+                        span {
+                            display: inline-block;
+                            background: url('./Images/Icon-addimage.png') no-repeat;
+                            width: 100px;
+                            height: 75px;
+                            background-size: contain;
+                        }
+                    }
+
+                    .added-image {
+                        width: 110px;
+                        text-align: center;
+
+                        > div {
+                            position: relative;
+                        }
+
+                        .attach-img {
+                            background: url('./Images/Icon-Image.png') no-repeat;
+                            width: 100px;
+                            height: 75px;
+                            background-size: contain;
+                        }
+
+                        .remove-img {
+                            position: absolute;
+                            //background: url('./Images/remove.png') no-repeat;
+                            width: 40px;
+                            height: 40px;
+                            top: 0;
+                            right: 0;
+                            cursor: pointer;
+                        }
+                    }
+
+                    span {
+                        color: black;
+                        display: inline-block;
+                        white-space: nowrap;
+                        width: 120px;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+
+                    .to-add-name {
+                        color: #6f6c67;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        font-size: 13px;
+                        margin: 0;
+                        margin-top: -2px;
+                    }
+
+                    .add-image {
+                        color: #5e1259;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        font-size: 13px;
+                        margin: 0;
+                        margin-top: -2px;
+                    }
+                }
+            }
+        }
+
+        .back-link {
+            float: right;
+            color: #5e1259;
+            font-size: 20px;
+            text-decoration: underline;
+            margin-right: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back-link:active {
+            transform: scale(1.1);
+        }
+    }
+}
+
+.modal {
+    .modal-dialog {
+
+        .modal-content {
+            background: #d7dae3;
+            border: 0;
+            width: 454px;
+            height: 474px;
+            text-align: center;
+            padding: 0 50px;
+
+            .icon {               
+                width: 100px;
+                height: 100px;
+                margin: 70px auto 20px auto;
+            }
+
+            .error-icon {
+                background: url("./Images/Icon-Error.png") no-repeat;
+                background-size: contain;
+            }
+
+            .success-icon {
+                background: url("./Images/Icon-Success.png") no-repeat;
+                background-size: contain;
+            }
+
+            .message {
+                font-weight: bold;
+                font-size: 27px;
+            }
+
+            .try-again {
+                margin-top: 20px;
+                font-size: 18px;
+            }
+
+            .button button {
+                margin-top: 60px;
+                color: white;
+                border: none;
+                padding: 10px;
+                width: 227px;
+                height: 71px;
+                font-size: 25px;
+                font-weight: bold;
+            }
+
+            .success button {
+                background: url("./Images/Button-ok.png") no-repeat;
+                background-size: contain;
+            }
+
+            .failed button {
+                background: url("./Images/Button-tryagain.png") no-repeat;
+                background-size: contain;
+            }
+
+            .button button:hover, .button button:active, .button button:focus {
+                border: none;
+                outline: 0;
+            }
+
+            .button button:active {
+                transform: scale(1.1);
+            }
+        }
+    }
+}
+
+.loading-modal {
+    /*.modal-dialog {
+        width: 150px;
+    }*/
+
+    .icon-loading {
+        display: block;
+        background: url(./Images/loading.png) no-repeat;
+        width: 100px;
+        height: 100px;
+        background-size: contain;
+        margin: 0 auto;
+        animation: rotate360 2s infinite linear;
+    }
+
+    .content {
+        text-align: center;
+    }
+}
+
+@keyframes rotate360 {
+    0% {
+        transform: rotate(0);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@media screen and (max-width: 900px) and (orientation:landscape) {
+    .feedback {
+        padding-top: 55px;
+
+        .header {
+            position: absolute;
+            height: 62px;
+            background: url("./Images/header-68.png");
+
+            .username {
+                background: url("./Images/BG-username.png") no-repeat;
+                background-size: contain;
+                width: 185px;
+                height: 38px;
+                margin-top: 0;
+
+                .avatar-circle {
+                    width: 44px;
+                    height: 44px;
+                    background-size: contain;
+                }
+
+                .avatar {
+                    height: 38px;
+                    width: 38px;
+                    margin-left: -4px;
+                    margin-top: -2px;
+                }
+
+                .name {
+                    margin-top: -33px;
+                    margin-left: 37px;
+                    font-size: 16px;
+                }
+            }
+
+            .icon {
+                width: 115px;
+                height: 38px;
+                margin-top: -1px;
+                margin-right: 7%;
+            }
+        }
+
+        .footer {
+            position: absolute;
+            bottom: auto;
+            height: 60px;
+            padding-top: 27px;
+            margin-top: -20px;
+        }
+
+        .content {
+            width: 60%;
+            min-height: 750px;
+            .title {
+                font-size: 24px;
+                height: 50px;
+                padding-top: 7px;
+            }
+        }
+    }
+
+    .modal {
+        .modal-dialog {
+            .modal-content {
+                width: 354px;
+                height: 324px;
+                padding: 0 20px;
+                margin-left: auto;
+                margin-right: auto;
+
+                .icon {
+                    width: 100px;
+                    height: 100px;
+                    margin: 30px auto 10px auto;
+                }
+
+                .message {
+                    font-size: 20px;
+                }
+
+                .try-again {
+                    margin-top: 20px;
+                    font-size: 16px;
+                }
+
+                .button button {
+                    margin-top: 30px;
+                    padding: 10px;
+                    width: 175px;
+                    height: 55px;
+                    font-size: 22px;
+                }
+
+                .success button {
+                    margin-top: 18px;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 500px) and (orientation:portrait) {
+    .feedback {
+        .header {
+            .username {
+                margin-left: 20px;
+            }
+
+            .icon {
+                margin-right: 15px;
+            }
+        }
+
+        .content {
+            width: 100%;
+
+            .form {
+                padding: 0 20px;
+            }
+        }
+    }
+}
+

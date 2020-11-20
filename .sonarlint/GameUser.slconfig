@@ -1,0 +1,12 @@
+{
+  "ServerUri": "https://sonarqube.lumigame.com/",
+  "Organization": null,
+  "ProjectKey": "l3-Game-User",
+  "ProjectName": "l3-Game-User",
+  "Profiles": {
+    "CSharp": {
+      "ProfileKey": "AXSuqrHSMkh2CgVkmwi1",
+      "ProfileTimestamp": "2020-09-21T03:17:36Z"
+    }
+  }
+}

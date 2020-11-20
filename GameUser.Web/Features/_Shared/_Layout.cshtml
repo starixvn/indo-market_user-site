@@ -1,0 +1,29 @@
+﻿@using System.Security.Claims;
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" href='@Url.Content("~/Shared/Images/favicon.ico")'>
+
+    <link href="~/Shared/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
+    @RenderSection("Styles", false)
+</head>
+<body>
+    @RenderBody()   
+    
+    <script>
+        window.rootUrl = '@Url.Content("~/")';
+    </script>
+    <script src="~/Shared/jquery/dist/jquery.min.js"></script>
+    <script src="~/Shared/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/Shared/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Shared/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Shared/detectmobilebrowser.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

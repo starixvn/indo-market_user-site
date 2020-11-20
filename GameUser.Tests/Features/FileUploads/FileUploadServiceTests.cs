@@ -1,0 +1,85 @@
+﻿using AutoFixture;
+using FluentAssertions;
+using GameUser.Features.FileUploads;
+using GameUser.Shared.Wrapper;
+using Microsoft.AspNetCore.Http;
+using NSubstitute;
+using Sentry;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Xunit;
+
+namespace GameUser.Tests.Features.FileUploads
+{
+    public class FileUploadServiceTests
+    {
+        private readonly Fixture fixture = new Fixture();
+        private readonly ISentryClient sentryClient;
+        private readonly ISystemIOWrapper systemIOWrapper;
+
+        public FileUploadServiceTests()
+        {
+            sentryClient = Substitute.For<ISentryClient>();
+            systemIOWrapper = Substitute.For<ISystemIOWrapper>();
+        }
+
+        [Fact]
+        public async Task UploadFiles_WhenFilesNull_ReturnEmptyList()
+        {
+            // Arrange
+            var service = new FileUploadService(sentryClient, systemIOWrapper);
+            List<IFormFile> files = null;
+            var baseDirectory = fixture.Create<string>();
+            var expectedResult = new List<UploadedFile>();
+
+            // Act
+            var result = await service.UploadFilesAsync(files, baseDirectory);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedResult);
+        }
+       
+        [Fact]
+        public async Task UploadFiles_WhenSuccess_ReturnSuccessStatuses()
+        {
+            // Arrange
+            var service = new FileUploadService(sentryClient, systemIOWrapper);
+            IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")), 0, 0, "Data", "dummy.txt");
+            var files = new List<IFormFile> { file, file };
+            var baseDirectory = fixture.Create<string>();
+
+            // Act
+            var result = await service.UploadFilesAsync(files, baseDirectory);
+
+            // Assert
+            result.Count(i => i.SavedSuccess).Should().Be(files.Count);
+            result.ToList()[0].File.Should().Be(file);
+            result.ToList()[0].Name.Should().NotBeNullOrEmpty();
+            result.ToList()[0].FullPath.Should().NotBeNullOrEmpty();
+        }
+
+        [Fact]
+        public async Task UploadFiles_WhenError_ReturnNotSuccessStatusesAndWriteLog()
+        {
+            // Arrange
+            var service = new FileUploadService(sentryClient, systemIOWrapper);
+            IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")), 0, 0, "Data", "dummy.txt");
+            var files = new List<IFormFile> { file, file };
+            var baseDirectory = fixture.Create<string>();
+
+            systemIOWrapper.WriteFile(Arg.Any<IFormFile>(), Arg.Any<string>())
+                .Returns(Task.FromException<List<object>>(new Exception("some error")));
+
+            // Act
+            var result = await service.UploadFilesAsync(files, baseDirectory);
+
+            // Assert
+            result.Count(i => !i.SavedSuccess).Should().Be(files.Count);
+            sentryClient.ReceivedWithAnyArgs().CaptureException(default);
+        }
+    }
+}

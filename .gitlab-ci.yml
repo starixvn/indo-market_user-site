@@ -1,0 +1,15 @@
+variables:
+    PROJECT_NAME: l3-Game-User    
+    SOLUTION_NAME: ./GameUser.sln
+  
+stages:
+  - test
+  - post-test
+
+include:
+  - project: 'lumi-ops/ci-scripts'
+    ref: master
+    file: 'unit-test/dotnet-unit-test.gitlab-ci.yml'   
+  - project: 'lumi-ops/ci-scripts'
+    ref: master
+    file: 'sonarqube/sonarqube-dotnet-unittest.gitlab-ci.yml'
