@@ -91,6 +91,18 @@
       margin-top: -27px; }
     .feedback .content .form {
       padding: 0px 40px; }
+      .feedback .content .form ::-webkit-input-placeholder {
+        /* Chrome/Opera/Safari */
+        color: #bbb; }
+      .feedback .content .form ::-moz-placeholder {
+        /* Firefox 19+ */
+        color: #bbb; }
+      .feedback .content .form :-ms-input-placeholder {
+        /* IE 10+ */
+        color: #bbb; }
+      .feedback .content .form :-moz-placeholder {
+        /* Firefox 18- */
+        color: #bbb; }
       .feedback .content .form .group-item {
         padding: 0;
         margin-bottom: 20px; }
@@ -121,7 +133,8 @@
         .feedback .content .form .group-item .form-control {
           font-size: 20px;
           background: white;
-          border-radius: 8px; }
+          border-radius: 8px;
+          line-height: 1.3; }
         .feedback .content .form .group-item .attachment-count {
           background: white;
           color: white;
