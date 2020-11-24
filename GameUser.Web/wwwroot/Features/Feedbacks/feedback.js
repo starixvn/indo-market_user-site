@@ -186,7 +186,8 @@
             $(e).parent().parent().remove();
         }
         else {
-            $(e).parent().parent().find('.to-add-name').html(file.name);
+            $(e).parent().parent().find('.to-add-name').html(file.name).attr("title", file.name);
+            $(e).parent().parent().find('.attach-img').attr("title", file.name);
             $(e).removeClass('to-add-input');
             $(e).parent().parent().removeAttr('hidden');
         }
@@ -195,12 +196,12 @@
                 <div>
                     <span class="attach-img"></span><span class="remove-img"></span>
                     <p class="to-add-name"></p>
-                    <input type="file" accept="image/x-png,image/gif,image/jpeg" class="to-add-input" name="Feedback.Files" hidden>
+                    <input type="file" accept="image/x-png,image/jpeg" class="to-add-input" name="Feedback.Files" hidden>
                 </div>
-           </li>`).insertBefore('.to-add-image');
+           </li>`).insertAfter('.to-add-image');
 
         var container = this.mainForm.find('.image-container ul');
-        container.animate({ scrollLeft: container[0].scrollWidth });
+        container.animate({ scrollLeft: 0 });
         this.updateAttachmentCount();
 
         this.registerAttachmentHandlers();

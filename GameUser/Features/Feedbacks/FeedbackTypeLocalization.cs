@@ -8,7 +8,7 @@ namespace GameUser.Features.Feedbacks
 {
     public interface IFeedbackTypeLocalization
     {
-        IEnumerable<SelectListItem> GetSelectListItems();
+        IEnumerable<SelectListItem> GetSelectListItems(string language = null);
     }
 
     public class FeedbackTypeLocalization : EnumLocalization<FeedbackType, Resources>, IFeedbackTypeLocalization

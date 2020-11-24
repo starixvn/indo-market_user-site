@@ -17,7 +17,7 @@ namespace GameUser.Features.Feedbacks
 {
     public interface IFeedbackService
     {
-        Task<IEnumerable<SelectListItem>> GetTypes();
+        Task<IEnumerable<SelectListItem>> GetTypes(string language = null);
         Task<UpdateResult> AddFeedbackAsync(Feedback feedback, string nickName, bool enabledStoreFile, string filePath);
     }
 
@@ -49,9 +49,9 @@ namespace GameUser.Features.Feedbacks
             this.emailService = emailService;
         }
 
-        public async Task<IEnumerable<SelectListItem>> GetTypes()
+        public async Task<IEnumerable<SelectListItem>> GetTypes(string language = null)
         {
-            return await Task.FromResult(feedbackTypeLocalization.GetSelectListItems());
+            return await Task.FromResult(feedbackTypeLocalization.GetSelectListItems(language));
         }
 
         public async Task<UpdateResult> AddFeedbackAsync(Feedback feedback, string nickName, bool enabledStoreFile, string filePath)
@@ -95,14 +95,14 @@ namespace GameUser.Features.Feedbacks
 
         private async Task<EmailRequest> GenerateEmail(Feedback feedback, string nickname)
         {
-            var feedbackTypes = await GetTypes();
-
+            var feedbackTypes = await GetTypes("en");
             var category = feedbackTypes.FirstOrDefault(x => x.Value == feedback.Category).Text;
-
-            var subject = $"Saba_Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{category}";
+            var subject = $"Saba Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{category}";
             var body = $"Dear SB club, " +
                 $"{Environment.NewLine}{Environment.NewLine}" +
                 $"{feedback.Description} " +
+                $"{Environment.NewLine}{Environment.NewLine}" +
+                $"------------------------------------------------------" +
                 $"{Environment.NewLine}{Environment.NewLine}" +
                 $"This is an automated email. Please do not reply to it.";
 

@@ -156,6 +156,9 @@
   <data name="Something_Wrong" xml:space="preserve">
     <value>An unexpected error occurred</value>
   </data>
+  <data name="Something_Wrong_On_Attachment" xml:space="preserve">
+    <value>There is something wrong on Attachment Images</value>
+  </data>
   <data name="Submit" xml:space="preserve">
     <value>Mengajukan</value>
   </data>

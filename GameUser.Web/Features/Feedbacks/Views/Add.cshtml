@@ -60,16 +60,16 @@
                     <span id="attachmentErrors" class="failed-message"><i class="icon-cancel"></i><span id="attachmentErrorsContent"></span></span>
                     <div class="image-container">
                         <ul id="imageContainer">
+                            <li class="to-add-image">
+                                <span></span>
+                                <p class="add-image">@Localizer["AddImage"]</p>
+                            </li>
                             <li class="added-image" hidden>
                                 <div>
                                     <span class="attach-img"></span><span class="remove-img"></span>
                                     <p class="to-add-name"></p>
                                     <input type="file" accept="image/x-png,image/gif,image/jpeg" class="to-add-input" name="Feedback.Files" hidden>
                                 </div>
-                            </li>
-                            <li class="to-add-image">
-                                <span></span>
-                                <p class="add-image">@Localizer["AddImage"]</p>
                             </li>
                         </ul>
                     </div>
@@ -115,7 +115,7 @@
         <div class="modal-content">
             <div class="icon error-icon">
             </div>
-            <div class="message">
+            <div class="message" id="errorContent">
                 @Localizer["Something_Wrong"]
             </div>           
             <div class="try-again">
@@ -139,5 +139,5 @@
     </script>
 
     <script src="~/Shared/jquery-unobtrusive-ajax/jquery.unobtrusive-ajax.js"></script>
-    <script src="~/Features/Feedbacks/feedback.min.js" asp-append-version="true"></script>
+    <script src="~/Features/Feedbacks/feedback.js" asp-append-version="true"></script>
 }
