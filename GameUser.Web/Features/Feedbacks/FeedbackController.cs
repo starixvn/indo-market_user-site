@@ -49,14 +49,17 @@ namespace GameUser.Web.Features.Feedbacks
         {
             var feedbackTypes = await feedbackService.GetTypes();
             var sessionId = feedbackRequest.SessionId ?? this.httpContext.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "SessionId").Value;
-            var userInfo = await userSessionService.GetUserInfo(sessionId);
+            var userSession = await userSessionService.GetUserSession(sessionId);
+            var userInfo = await userSessionService.GetUserInfo(userSession);            
+
             var model = new GetFeedbackViewModel
             {
                 Feedback = new FeedbackViewModel(),
                 FeedbackTypeOptions = feedbackTypes.ToList(),
                 NickName = userInfo.Name,
                 Culture = (string)httpContext.HttpContext.Request.RouteValues["culture"] ?? "en",
-                Avatar = await avatarService.GetAvatar(userInfo.AvatarId.ToString())
+                Avatar = await avatarService.GetAvatar(userInfo.AvatarId.ToString()),
+                CustId = userSession.MemberId
             };
 
             return View(model);
@@ -73,10 +76,11 @@ namespace GameUser.Web.Features.Feedbacks
                     category: addRequest.Feedback.Category,
                     description: addRequest.Feedback.Description.Trim(),
                     files: addRequest.Feedback.Files),
-                    NickName = addRequest.NickName
+                    NickName = addRequest.NickName,
+                    CustId = addRequest.CustId
                 };
 
-                var result = await feedbackService.AddFeedbackAsync(viewModel.Feedback, viewModel.NickName, appSetting.EnabledStoreFile, appSetting.StoreFileFullPath());
+                var result = await feedbackService.AddFeedbackAsync(viewModel.Feedback, viewModel.NickName, appSetting.EnabledStoreFile, appSetting.StoreFileFullPath(), viewModel.CustId);
 
                 return Json(result);
             }

@@ -18,7 +18,7 @@ namespace GameUser.Features.Feedbacks
     public interface IFeedbackService
     {
         Task<IEnumerable<SelectListItem>> GetTypes(string language = null);
-        Task<UpdateResult> AddFeedbackAsync(Feedback feedback, string nickName, bool enabledStoreFile, string filePath);
+        Task<UpdateResult> AddFeedbackAsync(Feedback feedback, string nickName, bool enabledStoreFile, string filePath, int custId);
     }
 
     public class FeedbackService : IFeedbackService
@@ -54,13 +54,13 @@ namespace GameUser.Features.Feedbacks
             return await Task.FromResult(feedbackTypeLocalization.GetSelectListItems(language));
         }
 
-        public async Task<UpdateResult> AddFeedbackAsync(Feedback feedback, string nickName, bool enabledStoreFile, string filePath)
+        public async Task<UpdateResult> AddFeedbackAsync(Feedback feedback, string nickName, bool enabledStoreFile, string filePath, int custId)
         {
             try
             {
                 await SaveFeedbackAsync(feedback, nickName);
                 await StoreFileAsync(feedback.Files, enabledStoreFile, filePath);               
-                var email = await GenerateEmail(feedback, nickName);
+                var email = await GenerateEmail(feedback, nickName, custId);
                 await emailService.SendAsync(email);
 
                 return new UpdateResult(isSuccess: true, message: string.Empty);
@@ -93,11 +93,11 @@ namespace GameUser.Features.Feedbacks
             await feedbackRepository.InsertOneAsync(feedbackEntity);
         }
 
-        private async Task<EmailRequest> GenerateEmail(Feedback feedback, string nickname)
+        private async Task<EmailRequest> GenerateEmail(Feedback feedback, string nickname, int custId)
         {
             var feedbackTypes = await GetTypes("en");
             var category = feedbackTypes.FirstOrDefault(x => x.Value == feedback.Category).Text;
-            var subject = $"Saba Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{category}";
+            var subject = $"Saba Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}#{custId}_{category}";
             var body = $"Dear SB club, " +
                 $"{Environment.NewLine}{Environment.NewLine}" +
                 $"{feedback.Description} " +

@@ -12,5 +12,7 @@ namespace GameUser.Web.Features.Feedbacks.Requests
         public FeedbackViewModel Feedback { get; set; }
 
         public string NickName { get; set; }
+
+        public int CustId { get; set; }
     }
 }

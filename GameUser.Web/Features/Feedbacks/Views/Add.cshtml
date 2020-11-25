@@ -25,6 +25,7 @@
         <form asp-action="Add" asp-controller="Feedback" method="post" id="gameForm" enctype="multipart/form-data" class="form">
             <input type="hidden" asp-for="@Model.NickName" value="@Model.NickName" />
             <input type="hidden" asp-for="@Model.Culture" value="@Model.Culture" />
+            <input type="hidden" asp-for="@Model.CustId" value="@Model.CustId" />
             <div class="form-group">
                 <div class="group-item">
                     <label asp-for="@Model.Feedback.Category" class="control-label">
@@ -34,8 +35,8 @@
                     <div class="select-arrow"></div>
                 </div>
                 @*<div class="row-item">
-                
-                </div>*@
+
+            </div>*@
                 <div class="group-item mt5">
                     <label asp-for="@Model.Feedback.Description" class="control-label">
                         @Localizer["Description"]
@@ -47,11 +48,11 @@
                         </textarea>
                     <div class="word-count" id="wordCount">0/500</div>
                     <span asp-validation-for="@Model.Feedback.Description" class="text-danger"></span>
-               
+
                 </div>
                 @*<div class="row-item">
-                
-                </div>*@
+
+            </div>*@
                 <div class="group-item mt5">
                     <label class="control-label">
                         @Localizer["Attachment"]
@@ -73,10 +74,10 @@
                             </li>
                         </ul>
                     </div>
-                </div> 
-                
+                </div>
+
                 <div class="group-item text-center mt-3">
-		            <button type="button" class="btn-gray btn-submit" data-dismiss="modal" id="submitBtn">@Localizer["Submit"]</button>
+                    <button type="button" class="btn-gray btn-submit" data-dismiss="modal" id="submitBtn">@Localizer["Submit"]</button>
                 </div>
             </div>
 

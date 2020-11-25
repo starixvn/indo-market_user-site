@@ -100,7 +100,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
 
 
             var expectedResult = new UpdateResult(true, string.Empty);
-            feedbackService.AddFeedbackAsync(Arg.Any<Feedback>(), viewModel.NickName, Arg.Any<bool>(), Arg.Any<string>()).Returns(expectedResult);
+            feedbackService.AddFeedbackAsync(Arg.Any<Feedback>(), viewModel.NickName, Arg.Any<bool>(), Arg.Any<string>(), Arg.Any<int>()).Returns(expectedResult);
 
             // Act
             var result = await controller.Add(request) as JsonResult;
