@@ -11,7 +11,7 @@ namespace GameUser.Web.Features.Feedbacks.ViewModels
         public string Description { get; set; }
 
         [MaxFileSize(15728640)]
-        [AllowedExtensions(new[] { ".jpg", ".png", ".jpeg" })]
+        [AllowedExtensions(new[] { ".jpg", ".png", ".jpeg", ".gif" })]
         public List<IFormFile> Files { get; set; }
     }
 }
