@@ -126,6 +126,9 @@
   <data name="Attachment_Max_Size" xml:space="preserve">
     <value>The maximum size of total attachments is 15M</value>
   </data>
+  <data name="Attachment_Supported_Types" xml:space="preserve">
+    <value>You can only attach images</value>
+  </data>
   <data name="BackToLobby" xml:space="preserve">
     <value>Back to Lobby</value>
   </data>

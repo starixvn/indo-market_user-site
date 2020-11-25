@@ -1,4 +1,7 @@
-﻿class Feedback {
+﻿const SUPPORTED_FILE_TYPES = ["image/jpeg", "image/png", "image/gif"];
+
+class Feedback {
+    
     constructor() {
         this.mainForm = $('#gameForm');
         this.successModal = $('#successModal');
@@ -158,7 +161,8 @@
 
     //  ******* Attachment  *******
     validateAttachments(currentFile) {
-        var totalLength = currentFile.size;
+        let errorMessage = "";
+        let totalLength = currentFile.size;
 
         this.mainForm.find('.added-image:visible input[type=file]').each(function (i, obj) {
             let file = obj.files[0].size;
@@ -166,8 +170,19 @@
         });
 
         if (totalLength > 15728640) {
+            errorMessage = this.viewResources.Attachment_Max_Size;
+        }
+        else if (!SUPPORTED_FILE_TYPES.includes(currentFile.type)) {
+            errorMessage = this.viewResources.Attachment_Supported_Types;
+        }
+
+        if (errorMessage === "") {
+            this.mainForm.find('#attachmentErrors').hide();
+            return true;
+        }
+        else {
             this.mainForm.find('#attachmentErrors').show();
-            this.mainForm.find('#attachmentErrorsContent').html(`(${this.viewResources.Attachment_Max_Size})`)
+            this.mainForm.find('#attachmentErrorsContent').html(`(${errorMessage})`)
             this.mainForm.find('.image-container').addClass('error-border');
 
             setTimeout(function () {
@@ -177,9 +192,6 @@
 
             return false;
         }
-
-        this.mainForm.find('#attachmentErrors').hide();
-        return true;
     }
 
     openSelectFile() {
