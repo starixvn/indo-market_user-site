@@ -37,9 +37,14 @@ class Feedback {
         $.ajax({
             method: "GET",
             url: `${window.rootUrl}${culture}/feedback/RefreshToken`
-        }).then(function(result){
-            var tokenValue = $('<div />').html(result).find('input[type="hidden"]').val();
-            submitForm(culture, tokenValue);
+        }).then(function (result) {
+            if (!!result["unauthorized"]) {
+                window.location.href = `${window.rootUrl}Error/NotAuthorized`
+            }
+            else {
+                var tokenValue = $('<div />').html(result).find('input[type="hidden"]').val();
+                submitForm(culture, tokenValue);
+            }
         });
     }
 
