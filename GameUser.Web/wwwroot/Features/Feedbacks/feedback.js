@@ -113,29 +113,31 @@ class Feedback {
 
     //  ******* Description  *******
     validateDescs() {
-        var desc = this.mainForm.find('#descText').val();
+        let errorMessage = "";
+        let desc = this.mainForm.find('#descText').val();
 
-        if (desc === "") {
-            this.mainForm.find('#descErrors').show();
-            this.mainForm.find('#descErrorsContent').html(`(${this.viewResources.Description_Cant_Empty})`);
-            this.mainForm.find('#descText').addClass('error-border');
-
-            this.hideDescErrors();
-            return false;
+        if (desc.trim() === "") {
+            errorMessage = this.viewResources.Description_Cant_Empty;           
         }
         else if (desc.length > 500) {
-            this.mainForm.find('#descText').val(desc.substring(0, 500));
-            this.mainForm.find('#descErrors').show();
-            this.mainForm.find('#descErrorsContent').html(`(${this.viewResources.Description_Max_Characters})`);
-            this.mainForm.find('#descText').addClass('error-border');
-
-            this.hideDescErrors();
-            return false;
+            errorMessage = this.viewResources.this.viewResources.Description_Max_Characters;
+            this.mainForm.find('#descText').val(desc.substring(0, 500));            
         }
 
-        this.mainForm.find('#descErrors').hide();
-        this.mainForm.find('#descText').removeClass('error-border')
-        return true;
+        if (errorMessage === "") {
+            this.mainForm.find('#descErrors').hide();
+            this.mainForm.find('#descText').removeClass('error-border');
+            return true;
+        }
+        else {
+            this.mainForm.find('#descText').val(desc.substring(0, 500));
+            this.mainForm.find('#descErrors').show();
+            this.mainForm.find('#descErrorsContent').html(`(${errorMessage})`);
+            this.mainForm.find('#descText').addClass('error-border');
+            this.hideDescErrors();
+
+            return false;
+        }
     }
 
     hideDescErrors() {
