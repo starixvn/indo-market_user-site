@@ -110,28 +110,17 @@
         }
 
         private static IActionResult Redirect(AuthorizationFilterContext context)
-        {
-            string method = context.HttpContext.Request.Method;
-
+        {            
             string requestedWith = context.HttpContext.Request.Headers["X-Requested-With"];
 
-            if (method == "POST")
+            if (requestedWith == "XMLHttpRequest")
             {
-                if (requestedWith == "XMLHttpRequest")
-                {
-                    context.Result = new JsonResult(new { HttpStatusCode.Unauthorized });
-                }
-                else
-                {
-                    context.Result = new RedirectResult("/Error/NotAuthorized");
-                }
+                return new JsonResult(new { HttpStatusCode.Unauthorized });
             }
             else
             {
-                context.Result = new RedirectResult("/Error/NotAuthorized");
-            }
-
-            return context.Result;
+                return new RedirectResult("/Error/NotAuthorized");
+            }            
         }
     }
 }

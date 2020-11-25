@@ -97,7 +97,7 @@ namespace GameUser.Features.Feedbacks
         {
             var feedbackTypes = await GetTypes("en");
             var category = feedbackTypes.FirstOrDefault(x => x.Value == feedback.Category).Text;
-            var subject = $"Saba Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}#{custId}_{category}";
+            var subject = $"Saba Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{custId}_{category}";
             var body = $"Dear SB club, " +
                 $"{Environment.NewLine}{Environment.NewLine}" +
                 $"{feedback.Description} " +
