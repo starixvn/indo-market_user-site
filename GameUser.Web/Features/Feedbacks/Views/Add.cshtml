@@ -43,7 +43,7 @@
                     <span id="descErrors" class="failed-message"><i class="icon-cancel"></i><span id="descErrorsContent"></span></span>
                     <textarea id="descText" type="text" asp-for="@Model.Feedback.Description"
                               class="form-control desc-input" cols="50" rows="7"
-                              placeholder="Even though we can't reply to all messages personally, all suggestions are more than welcome and are taken into serious consideration.">
+                              placeholder="@Localizer["Description_Hint"]">
                         </textarea>
                     <div class="word-count" id="wordCount">0/500</div>
                     <span asp-validation-for="@Model.Feedback.Description" class="text-danger"></span>

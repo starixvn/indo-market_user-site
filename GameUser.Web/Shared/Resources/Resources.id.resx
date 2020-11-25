@@ -135,6 +135,9 @@
   <data name="Description_Cant_Empty" xml:space="preserve">
     <value>Deskripsi tidak boleh kosong</value>
   </data>
+  <data name="Description_Hint" xml:space="preserve">
+    <value>Meskipun kami tidak dapat membalas semua pesan secara pribadi,  Segala bentuk kritik dan saran anda akan Kami terima dan tinjau dengan serius</value>
+  </data>
   <data name="Description_Max_Characters" xml:space="preserve">
     <value>You have reached the maximum number of 500 characters</value>
   </data>

@@ -135,6 +135,9 @@
   <data name="Description_Cant_Empty" xml:space="preserve">
     <value>The description can't be empty</value>
   </data>
+  <data name="Description_Hint" xml:space="preserve">
+    <value>Even though we can't reply to all messages personally, all sugestions are more than welcome and are taken into serious consideration.</value>
+  </data>
   <data name="Description_Max_Characters" xml:space="preserve">
     <value>You have reached the maximum number of 500 characters</value>
   </data>

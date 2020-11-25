@@ -135,6 +135,9 @@
   <data name="Description_Cant_Empty" xml:space="preserve">
     <value>ต้องใส่คำอธิบายหรือรายละเอียด</value>
   </data>
+  <data name="Description_Hint" xml:space="preserve">
+    <value>ขอขอบคุณสำหรับคำแนะนำและความคิดเห็นที่ทุกท่านสละเวลาแจ้งเข้ามา ถึงแม้ว่าเราจะไม่สามารถตอบกลับทุกท่านได้แต่เราจะนำคำแนะนำไปดำเนินการเพื่อการบริการที่ดียิ่งขึ้น</value>
+  </data>
   <data name="Description_Max_Characters" xml:space="preserve">
     <value>You have reached the maximum number of 500 characters</value>
   </data>
