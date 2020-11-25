@@ -127,7 +127,7 @@
     <value>The maximum size of total attachments is 15M</value>
   </data>
   <data name="Attachment_Supported_Types" xml:space="preserve">
-    <value>You can only attach images</value>
+    <value>File is invalid. Please select an image file</value>
   </data>
   <data name="BackToLobby" xml:space="preserve">
     <value>Back to Lobby</value>
