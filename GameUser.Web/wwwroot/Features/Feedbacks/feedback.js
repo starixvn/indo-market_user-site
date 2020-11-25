@@ -12,6 +12,7 @@
 
         this.registerEventHandlers();
         this.loadAvatar(avatar);
+        this.clearSessionFromUrl();
     }
 
     // ****** Common functions *******  
@@ -92,6 +93,13 @@
         this.backToLobbyLink.on('click', this.backToLobby.bind(this));
         this.registerAttachmentHandlers();
     }
+
+    clearSessionFromUrl() {
+        var url = location.href;
+
+        history.pushState(null, "", url.slice(0, url.lastIndexOf('/')));
+    }
+
     //  ******* End common functions  *******
 
 

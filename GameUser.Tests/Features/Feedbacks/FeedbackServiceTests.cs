@@ -72,7 +72,7 @@ namespace GameUser.Tests.Features.Feedbacks
                 new SelectListItem { Value = "ReportBug", Text = "Report a bug"},
                 new SelectListItem { Value = "OtherIssue", Text = "Report other issues"}
             };
-            feedbackTypeLocalization.GetSelectListItems().Returns(expectedResult);
+            feedbackTypeLocalization.GetSelectListItems("en").Returns(expectedResult);
 
             var nickname = "nick name";
             IFormFile file = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("This is a dummy file")), 0, 0, "Data", "dummy.txt");
@@ -80,11 +80,14 @@ namespace GameUser.Tests.Features.Feedbacks
             var feedback = new Feedback(category: "NewGame", description: "desc", files: files);
 
             emailConfigs.ReceiverEmail.Returns("recever@gmail.com");
+
             var expectedBody = $"Dear SB club, " +
-                           $"{Environment.NewLine}{Environment.NewLine}" +
-                           $"{feedback.Description} " +
-                           $"{Environment.NewLine}{Environment.NewLine}" +
-                           $"This is an automated email. Please do not reply to it.";
+                $"{Environment.NewLine}{Environment.NewLine}" +
+                $"{feedback.Description} " +
+                $"{Environment.NewLine}{Environment.NewLine}" +
+                $"------------------------------------------------------" +
+                $"{Environment.NewLine}{Environment.NewLine}" +
+                $"This is an automated email. Please do not reply to it.";
 
 
             FeedbackEntity entity = null;
@@ -101,7 +104,7 @@ namespace GameUser.Tests.Features.Feedbacks
             entity.Category.Should().Be(feedback.Category);
             entity.Description.Should().Be(feedback.Description);
             entity.Nickname.Should().Be(nickname);
-            emailRequest.Subject.Should().Be($"Saba_Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{"Request a new game"}");
+            emailRequest.Subject.Should().Be($"Saba Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{"Request a new game"}");
             emailRequest.Body.Should().Be(expectedBody);
             emailRequest.Attachments.Should().BeEquivalentTo(files);
             emailRequest.ToAddress.Should().Be("recever@gmail.com");

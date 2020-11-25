@@ -73,7 +73,6 @@ namespace GameUser.Web.Tests.Features.Feedbacks
 
             // Assert
             var model = result.Model as GetFeedbackViewModel;
-            model.SessionId.Should().Be(feedbackRequest.SessionId);
             model.NickName.Should().Be(userInfo.Name);
             model.FeedbackTypeOptions.Should().BeEquivalentTo(feedbackTypes);
             model.Culture.Should().Be(expectedCulture);
@@ -88,7 +87,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             var request = new InsertRequest
             {
                 NickName = "nick name",
-                Feedback = new FeedbackViewModel()
+                Feedback = new FeedbackViewModel { Description = "abc" }
             };
             var viewModel = new InsertFeedbackViewModel
             {

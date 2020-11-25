@@ -48,13 +48,13 @@ namespace GameUser.Web.Features.Feedbacks
         public async Task<IActionResult> Add(GetRequest feedbackRequest)
         {
             var feedbackTypes = await feedbackService.GetTypes();
-            var userInfo = await userSessionService.GetUserInfo(feedbackRequest.SessionId);
+            var sessionId = feedbackRequest.SessionId ?? this.httpContext.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "SessionId").Value;
+            var userInfo = await userSessionService.GetUserInfo(sessionId);
             var model = new GetFeedbackViewModel
             {
                 Feedback = new FeedbackViewModel(),
                 FeedbackTypeOptions = feedbackTypes.ToList(),
                 NickName = userInfo.Name,
-                SessionId = feedbackRequest.SessionId,
                 Culture = (string)httpContext.HttpContext.Request.RouteValues["culture"] ?? "en",
                 Avatar = await avatarService.GetAvatar(userInfo.AvatarId.ToString())
             };

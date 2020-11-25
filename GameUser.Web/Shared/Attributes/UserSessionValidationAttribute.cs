@@ -97,7 +97,7 @@
         {
             var claims = new List<Claim>
                             {
-                                new Claim(ClaimTypes.Name, sessionId)
+                                new Claim("SessionId", sessionId)
                             };
             var claimsIdentity = new ClaimsIdentity(
                 claims, CookieAuthenticationDefaults.AuthenticationScheme);
