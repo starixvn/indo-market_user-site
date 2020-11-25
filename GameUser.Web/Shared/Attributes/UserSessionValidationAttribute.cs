@@ -8,6 +8,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Security.Claims;
     using System.Threading.Tasks;
 
@@ -24,6 +25,8 @@
     {
         private readonly int expiredMinuteUserSession = 3;
 
+        private readonly int expiredMinuteCookie = 30;
+
         private DateTime CurrentDate { get; set; }
 
         public UserSessionValidationAttribute()
@@ -35,38 +38,30 @@
         {
             if (!context.HttpContext.User.Identity.IsAuthenticated)
             {
-                if(context.HttpContext.Request.Query != null && context.HttpContext.Request.Query.Any())
+                var sessionId = context.HttpContext.Request.Query["sessionid"].ToString();
+
+                if (!string.IsNullOrWhiteSpace(sessionId))
                 {
-                    var sessionId = context.HttpContext.Request.Query["sessionid"].ToString();
+                    var verifiedUserSession = await VerifyUserSession(sessionId, context);
 
-                    if (!string.IsNullOrWhiteSpace(sessionId))
+                    if (verifiedUserSession)
                     {
-                        var verifiedUserSession = await VerifyUserSession(sessionId, context);
-
-                        if (verifiedUserSession)
-                        {
-                            await SignIn(sessionId, context);
-                        }
-                        else
-                        {
-                            context.Result = new RedirectResult("/Error/NotAuthorized");
-                        }
+                        await SignIn(sessionId, context);
                     }
                     else
-                    {
-                        context.Result = new RedirectResult("/Error/NotAuthorized");
+                    {                        
+                        context.Result = Redirect(context);
                     }
                 }
                 else
-                {
-                    context.Result = new RedirectResult("/Error/NotAuthorized");
+                {                    
+                    context.Result = Redirect(context);
                 }
-                
             }
         }
 
         public async Task<bool> VerifyUserSession(string sessionId, AuthorizationFilterContext context)
-        {           
+        {
             if (context != null)
             {
                 var userSessionService = context.HttpContext.RequestServices.GetService(typeof(IUserSessionService)) as UserSessionService;
@@ -105,13 +100,38 @@
             var authProperties = new AuthenticationProperties
             {
                 AllowRefresh = true,
-                ExpiresUtc = new DateTimeOffset(DateTime.UtcNow.AddMinutes(30))
+                ExpiresUtc = new DateTimeOffset(DateTime.UtcNow.AddMinutes(expiredMinuteCookie))
             };
 
             await context.HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
-        }        
+        }
+
+        private static IActionResult Redirect(AuthorizationFilterContext context)
+        {
+            string method = context.HttpContext.Request.Method;
+
+            string requestedWith = context.HttpContext.Request.Headers["X-Requested-With"];
+
+            if (method == "POST")
+            {
+                if (requestedWith == "XMLHttpRequest")
+                {
+                    context.Result = new JsonResult(new { HttpStatusCode.Unauthorized });
+                }
+                else
+                {
+                    context.Result = new RedirectResult("/Error/NotAuthorized");
+                }
+            }
+            else
+            {
+                context.Result = new RedirectResult("/Error/NotAuthorized");
+            }
+
+            return context.Result;
+        }
     }
 }
