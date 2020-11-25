@@ -97,7 +97,7 @@
     clearSessionFromUrl() {
         var url = location.href;
 
-        history.pushState(null, "", url.slice(0, url.lastIndexOf('/')));
+        history.pushState(null, "", url.split('?')[0]);
     }
 
     //  ******* End common functions  *******
