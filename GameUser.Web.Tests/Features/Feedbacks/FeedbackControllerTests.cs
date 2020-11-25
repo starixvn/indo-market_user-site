@@ -116,7 +116,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
         public void RefreshToken()
         {
             // Arrange
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer);
 
             // Act
             var result = controller.RefreshToken() as PartialViewResult;
