@@ -57,4 +57,9 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\APIs\Authentications\ViewModels\" />
+    <Folder Include="Features\APIs\Authentications\Requests\" />
+  </ItemGroup>
+
 </Project>
