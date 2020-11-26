@@ -77,43 +77,7 @@ namespace GameUser.Web.Tests.Shared.Attributes
 
             await attribute.OnAuthorizationAsync(context);                      
             
-            Assert.Equal("/Error/NotAuthorized", ((Microsoft.AspNetCore.Mvc.RedirectResult)context.Result).Url);
-        }
-
-        //[Fact]
-        //public async Task UserSessionValidationAttribute_WhenNotAuthenticated_SessionIdNotNull_ReturnAuthenticated()
-        //{
-        //    string sessionId = "aaaaa";
-        //    var httpContextMock = new Mock<HttpContext>();
-        //    var query = new Mock<IQueryCollection>();
-            
-        //    var userSessionServiceMock = new Mock<UserSessionService>();
-
-        //    query.SetupGet(q => q["sessionid"]).Returns(sessionId);
-        //    httpContextMock.Setup(x => x.Request.Query).Returns(query.Object);
-        //    httpContextMock.Setup(x => x.User).Returns(new ClaimsPrincipal());
-        //    httpContextMock.Setup(x => x.User.Identity).Returns(new ClaimsIdentity());
-        //    httpContextMock.Setup(x => x.User.Identity.IsAuthenticated).Returns(false);
-        //    httpContextMock.Setup(x => x.RequestServices.GetService(typeof(IUserSessionService))).Returns(userSessionServiceMock.Object);
-
-        //    var attribute = new UserSessionValidationAttribute();
-
-        //    var routeData = new RouteData();
-
-        //    var context = new AuthorizationFilterContext(
-        //        new ActionContext(
-        //            httpContext: httpContextMock.Object,
-        //            routeData: new RouteData(routeData),
-        //            actionDescriptor: new ActionDescriptor()
-        //        ),
-        //        new List<IFilterMetadata>());
-
-        //    var userSessionValidationAttribute = new Mock<IUserSessionValidationAttribute>();
-
-
-        //    userSessionValidationAttribute.Setup(x => x.VerifyUserSession(sessionId, context)).Returns(Task.FromResult(true));
-            
-        //    await attribute.OnAuthorizationAsync(context);
-        //}
+            Assert.Equal("/Error/NotAuthorized", ((RedirectResult)context.Result).Url);
+        }        
     }
 }

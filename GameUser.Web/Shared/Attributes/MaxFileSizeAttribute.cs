@@ -10,11 +10,11 @@ namespace GameUser.Web.Shared.Attributes
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class MaxFileSizeAttribute : ValidationAttribute
     {
-        private readonly int _maxFileSize;
+        private readonly int maxFileSize;
 
         public MaxFileSizeAttribute(int maxFileSize)
         {
-            _maxFileSize = maxFileSize;
+            this.maxFileSize = maxFileSize;
         }
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -25,7 +25,7 @@ namespace GameUser.Web.Shared.Attributes
             {
                 foreach (var file in files)
                 {
-                    if (file.Length > _maxFileSize)
+                    if (file.Length > maxFileSize)
                     {
                         return new ValidationResult(GetErrorMessage());
                     }
@@ -37,7 +37,7 @@ namespace GameUser.Web.Shared.Attributes
 
         public string GetErrorMessage()
         {
-            return $"Maximum allowed file size is { _maxFileSize} bytes.";
+            return $"Maximum allowed file size is { maxFileSize} bytes.";
         }
     }
 }
