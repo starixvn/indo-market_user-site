@@ -1,4 +1,7 @@
-﻿class Feedback {
+﻿const SUPPORTED_FILE_TYPES = ["image/jpeg", "image/png", "image/gif"];
+
+class Feedback {
+    
     constructor() {
         this.mainForm = $('#gameForm');
         this.successModal = $('#successModal');
@@ -12,6 +15,7 @@
 
         this.registerEventHandlers();
         this.loadAvatar(avatar);
+        this.clearSessionFromUrl();
     }
 
     // ****** Common functions *******  
@@ -33,9 +37,14 @@
         $.ajax({
             method: "GET",
             url: `${window.rootUrl}${culture}/feedback/RefreshToken`
-        }).then(function(result){
-            var tokenValue = $('<div />').html(result).find('input[type="hidden"]').val();
-            submitForm(culture, tokenValue);
+        }).then(function (result) {
+            if (!!result["unauthorized"]) {
+                window.location.href = `${window.rootUrl}Error/NotAuthorized`
+            }
+            else {
+                var tokenValue = $('<div />').html(result).find('input[type="hidden"]').val();
+                submitForm(culture, tokenValue);
+            }
         });
     }
 
@@ -79,6 +88,7 @@
         this.mainForm.find('.attachment-count').html(0);
         this.mainForm.find('#descErrors').hide();
         this.mainForm.find('#attachmentErrors').hide();
+        this.updateWordCount();
     }    
 
     registerEventHandlers() {
@@ -91,34 +101,43 @@
         this.backToLobbyLink.on('click', this.backToLobby.bind(this));
         this.registerAttachmentHandlers();
     }
+
+    clearSessionFromUrl() {
+        var url = location.href;
+
+        history.pushState(null, "", url.split('?')[0]);
+    }
+
     //  ******* End common functions  *******
 
 
     //  ******* Description  *******
     validateDescs() {
-        var desc = this.mainForm.find('#descText').val();
+        let errorMessage = "";
+        let desc = this.mainForm.find('#descText').val();
 
-        if (desc === "") {
-            this.mainForm.find('#descErrors').show();
-            this.mainForm.find('#descErrorsContent').html(`(${this.viewResources.Description_Cant_Empty})`);
-            this.mainForm.find('#descText').addClass('error-border');
-
-            this.hideDescErrors();
-            return false;
+        if (desc.trim() === "") {
+            errorMessage = this.viewResources.Description_Cant_Empty;           
         }
         else if (desc.length > 500) {
-            this.mainForm.find('#descText').val(desc.substring(0, 500));
-            this.mainForm.find('#descErrors').show();
-            this.mainForm.find('#descErrorsContent').html(`(${this.viewResources.Description_Max_Characters})`);
-            this.mainForm.find('#descText').addClass('error-border');
-
-            this.hideDescErrors();
-            return false;
+            errorMessage = this.viewResources.this.viewResources.Description_Max_Characters;
+            this.mainForm.find('#descText').val(desc.substring(0, 500));            
         }
 
-        this.mainForm.find('#descErrors').hide();
-        this.mainForm.find('#descText').removeClass('error-border')
-        return true;
+        if (errorMessage === "") {
+            this.mainForm.find('#descErrors').hide();
+            this.mainForm.find('#descText').removeClass('error-border');
+            return true;
+        }
+        else {
+            this.mainForm.find('#descText').val(desc.substring(0, 500));
+            this.mainForm.find('#descErrors').show();
+            this.mainForm.find('#descErrorsContent').html(`(${errorMessage})`);
+            this.mainForm.find('#descText').addClass('error-border');
+            this.hideDescErrors();
+
+            return false;
+        }
     }
 
     hideDescErrors() {
@@ -149,7 +168,8 @@
 
     //  ******* Attachment  *******
     validateAttachments(currentFile) {
-        var totalLength = currentFile.size;
+        let errorMessage = "";
+        let totalLength = currentFile.size;
 
         this.mainForm.find('.added-image:visible input[type=file]').each(function (i, obj) {
             let file = obj.files[0].size;
@@ -157,8 +177,19 @@
         });
 
         if (totalLength > 15728640) {
+            errorMessage = this.viewResources.Attachment_Max_Size;
+        }
+        else if (!SUPPORTED_FILE_TYPES.includes(currentFile.type)) {
+            errorMessage = this.viewResources.Attachment_Supported_Types;
+        }
+
+        if (errorMessage === "") {
+            this.mainForm.find('#attachmentErrors').hide();
+            return true;
+        }
+        else {
             this.mainForm.find('#attachmentErrors').show();
-            this.mainForm.find('#attachmentErrorsContent').html(`(${this.viewResources.Attachment_Max_Size})`)
+            this.mainForm.find('#attachmentErrorsContent').html(`(${errorMessage})`)
             this.mainForm.find('.image-container').addClass('error-border');
 
             setTimeout(function () {
@@ -168,9 +199,6 @@
 
             return false;
         }
-
-        this.mainForm.find('#attachmentErrors').hide();
-        return true;
     }
 
     openSelectFile() {
@@ -185,7 +213,8 @@
             $(e).parent().parent().remove();
         }
         else {
-            $(e).parent().parent().find('.to-add-name').html(file.name);
+            $(e).parent().parent().find('.to-add-name').html(file.name).attr("title", file.name);
+            $(e).parent().parent().find('.attach-img').attr("title", file.name);
             $(e).removeClass('to-add-input');
             $(e).parent().parent().removeAttr('hidden');
         }
@@ -194,12 +223,12 @@
                 <div>
                     <span class="attach-img"></span><span class="remove-img"></span>
                     <p class="to-add-name"></p>
-                    <input type="file" accept="image/x-png,image/gif,image/jpeg" class="to-add-input" name="Feedback.Files" hidden>
+                    <input type="file" accept="image/x-png,image/jpeg" class="to-add-input" name="Feedback.Files" hidden>
                 </div>
-           </li>`).insertBefore('.to-add-image');
+           </li>`).insertAfter('.to-add-image');
 
         var container = this.mainForm.find('.image-container ul');
-        container.animate({ scrollLeft: container[0].scrollWidth });
+        container.animate({ scrollLeft: 0 });
         this.updateAttachmentCount();
 
         this.registerAttachmentHandlers();
@@ -230,7 +259,6 @@
 
         setTimeout(function () {
             this.hideSuccessModal();
-            this.hideLoading();
         }.bind(this), 3000);
     }
 
@@ -247,12 +275,7 @@
     //  ******* Error Modal  *******
     showErrorModal(message) {
         this.errorModal.modal('show');
-        this.errorModal.find('#errorContent').html(message);
-
-        setTimeout(function () {
-            this.hideErrorModal();
-            this.hideLoading();
-        }.bind(this), 4000);
+        this.errorModal.find('#errorContent').html(message);       
     }
 
     hideErrorModal() {

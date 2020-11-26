@@ -6,7 +6,10 @@ namespace GameUser.Features.UserSessions
     public interface IUserSessionService
     {
         Task<UserSessionEntity> GetUserSession(string sessionId);
+
         Task<UserInfoEntity> GetUserInfo(string sessionId);
+
+        Task<UserInfoEntity> GetUserInfo(UserSessionEntity userSession);
     }
 
     public class UserSessionService : IUserSessionService
@@ -27,6 +30,11 @@ namespace GameUser.Features.UserSessions
             var userSession = await GetUserSession(sessionId);
             var userInfo = await userInfoRepository.FindOneAsync(x => x.UserId == userSession.UserId);
             return userInfo;
+        }
+
+        public async Task<UserInfoEntity> GetUserInfo(UserSessionEntity userSession)
+        {
+            return await userInfoRepository.FindOneAsync(x => x.UserId == userSession.UserId);
         }
 
         public async Task<UserSessionEntity> GetUserSession(string sessionId)

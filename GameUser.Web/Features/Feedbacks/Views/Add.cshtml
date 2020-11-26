@@ -4,7 +4,7 @@
 
 @section Styles {
     <link href="~/Features/Feedbacks/feedback.min.css" rel="stylesheet" asp-append-version="true" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap" rel="stylesheet">
 }
 
 <div class="feedback">
@@ -25,6 +25,7 @@
         <form asp-action="Add" asp-controller="Feedback" method="post" id="gameForm" enctype="multipart/form-data" class="form">
             <input type="hidden" asp-for="@Model.NickName" value="@Model.NickName" />
             <input type="hidden" asp-for="@Model.Culture" value="@Model.Culture" />
+            <input type="hidden" asp-for="@Model.CustId" value="@Model.CustId" />
             <div class="form-group">
                 <div class="group-item">
                     <label asp-for="@Model.Feedback.Category" class="control-label">
@@ -34,23 +35,24 @@
                     <div class="select-arrow"></div>
                 </div>
                 @*<div class="row-item">
-                
-                </div>*@
+
+            </div>*@
                 <div class="group-item mt5">
                     <label asp-for="@Model.Feedback.Description" class="control-label">
                         @Localizer["Description"]
                     </label>
                     <span id="descErrors" class="failed-message"><i class="icon-cancel"></i><span id="descErrorsContent"></span></span>
                     <textarea id="descText" type="text" asp-for="@Model.Feedback.Description"
-                              class="form-control desc-input" cols="50" rows="5">
+                              class="form-control desc-input" cols="50" rows="7"
+                              placeholder="@Localizer["Description_Hint"]">
                         </textarea>
                     <div class="word-count" id="wordCount">0/500</div>
                     <span asp-validation-for="@Model.Feedback.Description" class="text-danger"></span>
-               
+
                 </div>
                 @*<div class="row-item">
-                
-                </div>*@
+
+            </div>*@
                 <div class="group-item mt5">
                     <label class="control-label">
                         @Localizer["Attachment"]
@@ -59,6 +61,10 @@
                     <span id="attachmentErrors" class="failed-message"><i class="icon-cancel"></i><span id="attachmentErrorsContent"></span></span>
                     <div class="image-container">
                         <ul id="imageContainer">
+                            <li class="to-add-image">
+                                <span></span>
+                                <p class="add-image">@Localizer["AddImage"]</p>
+                            </li>
                             <li class="added-image" hidden>
                                 <div>
                                     <span class="attach-img"></span><span class="remove-img"></span>
@@ -66,16 +72,12 @@
                                     <input type="file" accept="image/x-png,image/gif,image/jpeg" class="to-add-input" name="Feedback.Files" hidden>
                                 </div>
                             </li>
-                            <li class="to-add-image">
-                                <span></span>
-                                <p class="add-image">@Localizer["AddImage"]</p>
-                            </li>
                         </ul>
                     </div>
-                </div> 
-                
+                </div>
+
                 <div class="group-item text-center mt-3">
-		            <button type="button" class="btn-gray btn-submit" data-dismiss="modal" id="submitBtn">@Localizer["Submit"]</button>
+                    <button type="button" class="btn-gray btn-submit" data-dismiss="modal" id="submitBtn">@Localizer["Submit"]</button>
                 </div>
             </div>
 
@@ -114,7 +116,7 @@
         <div class="modal-content">
             <div class="icon error-icon">
             </div>
-            <div class="message">
+            <div class="message" id="errorContent">
                 @Localizer["Something_Wrong"]
             </div>           
             <div class="try-again">
@@ -132,11 +134,12 @@
         var viewResources = {
             Description_Cant_Empty: '@Localizer["Description_Cant_Empty"]',
             Description_Max_Characters: '@Localizer["Description_Max_Characters"]',
-            Attachment_Max_Size: '@Localizer["Attachment_Max_Size"]'
+            Attachment_Max_Size: '@Localizer["Attachment_Max_Size"]',
+            Attachment_Supported_Types: '@Localizer["Attachment_Supported_Types"]'
         };
         var avatar = @Html.Raw(Json.Serialize(Model.Avatar));
     </script>
 
     <script src="~/Shared/jquery-unobtrusive-ajax/jquery.unobtrusive-ajax.js"></script>
-    <script src="~/Features/Feedbacks/feedback.min.js" asp-append-version="true"></script>
+    <script src="~/Features/Feedbacks/feedback.js" asp-append-version="true"></script>
 }

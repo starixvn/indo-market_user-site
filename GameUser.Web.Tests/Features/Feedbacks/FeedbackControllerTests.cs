@@ -7,10 +7,12 @@ using GameUser.Web.Features.Feedbacks;
 using GameUser.Web.Features.Feedbacks.Requests;
 using GameUser.Web.Features.Feedbacks.ViewModels;
 using GameUser.Web.Shared.Configurations;
+using GameUser.Web.Shared.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Localization;
 using NSubstitute;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -25,7 +27,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
         private readonly IAppSettings appSetting;
         private readonly IAvatarService avatarService;
         private readonly IUserSessionService userSessionService;
-
+        private readonly IStringLocalizer<Resources> localizer;
         public FeedbackControllerTests()
         {
             this.httpContext = Substitute.For<IHttpContextAccessor>();
@@ -33,6 +35,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             this.appSetting = Substitute.For<IAppSettings>();
             this.avatarService = Substitute.For<IAvatarService>();
             this.userSessionService = Substitute.For<IUserSessionService>();
+            this.localizer = Substitute.For<IStringLocalizer<Resources>>();
         }
 
         [Theory]
@@ -47,7 +50,9 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             routeValues.Add(key, value);
             httpRequest.RouteValues.Returns(routeValues);
 
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService);
+            
+
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer);
 
             GetRequest feedbackRequest = new GetRequest { NickName = "nick name", SessionId = "sesssion id " };
 
@@ -68,7 +73,6 @@ namespace GameUser.Web.Tests.Features.Feedbacks
 
             // Assert
             var model = result.Model as GetFeedbackViewModel;
-            model.SessionId.Should().Be(feedbackRequest.SessionId);
             model.NickName.Should().Be(userInfo.Name);
             model.FeedbackTypeOptions.Should().BeEquivalentTo(feedbackTypes);
             model.Culture.Should().Be(expectedCulture);
@@ -78,12 +82,12 @@ namespace GameUser.Web.Tests.Features.Feedbacks
         public async Task AddPost_WhenCalled_AddFeedbackAndSendEmail()
         {
             // Arrange
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer);
 
             var request = new InsertRequest
             {
                 NickName = "nick name",
-                Feedback = new FeedbackViewModel()
+                Feedback = new FeedbackViewModel { Description = "abc" }
             };
             var viewModel = new InsertFeedbackViewModel
             {
@@ -96,7 +100,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
 
 
             var expectedResult = new UpdateResult(true, string.Empty);
-            feedbackService.AddFeedbackAsync(Arg.Any<Feedback>(), viewModel.NickName, Arg.Any<bool>(), Arg.Any<string>()).Returns(expectedResult);
+            feedbackService.AddFeedbackAsync(Arg.Any<Feedback>(), viewModel.NickName, Arg.Any<bool>(), Arg.Any<string>(), Arg.Any<int>()).Returns(expectedResult);
 
             // Act
             var result = await controller.Add(request) as JsonResult;
@@ -105,6 +109,19 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             var modelResult = result.Value as UpdateResult;
             modelResult.IsSuccess.Should().Be(expectedResult.IsSuccess);
             modelResult.Message.Should().Be(expectedResult.Message);
+        }
+
+        [Fact]
+        public void RefreshToken()
+        {
+            // Arrange
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer);
+
+            // Act
+            var result = controller.RefreshToken() as PartialViewResult;
+
+            // Assert
+            result.ViewName.Should().Be("_AntiForgeryToken");
         }
     }
 }

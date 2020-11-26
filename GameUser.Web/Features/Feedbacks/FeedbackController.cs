@@ -1,12 +1,16 @@
 ﻿using GameUser.Features.Avatars;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.UserSessions;
+using GameUser.Shared.Models;
 using GameUser.Web.Features.Feedbacks.Requests;
 using GameUser.Web.Features.Feedbacks.ViewModels;
 using GameUser.Web.Shared.Attributes;
 using GameUser.Web.Shared.Configurations;
+using GameUser.Web.Shared.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,38 +22,44 @@ namespace GameUser.Web.Features.Feedbacks
     public class FeedbackController : Controller
     {
         private readonly IHttpContextAccessor httpContext;
-        private readonly IFeedbackService feedbackService;                    
+        private readonly IFeedbackService feedbackService;
         private readonly IAppSettings appSetting;
         private readonly IAvatarService avatarService;
         private readonly IUserSessionService userSessionService;
+        private readonly IStringLocalizer<Resources> localizer;
 
         public FeedbackController(
             IHttpContextAccessor httpContext,
-            IFeedbackService feedbackService,            
+            IFeedbackService feedbackService,
             IAppSettings appSetting,
             IAvatarService avatarService,
-            IUserSessionService userSessionService)
+            IUserSessionService userSessionService,
+            IStringLocalizer<Resources> localizer)
         {
             this.httpContext = httpContext;
-            this.feedbackService = feedbackService;            
+            this.feedbackService = feedbackService;
             this.appSetting = appSetting;
             this.avatarService = avatarService;
             this.userSessionService = userSessionService;
+            this.localizer = localizer;
         }
 
-        [HttpGet]        
+        [HttpGet]
         public async Task<IActionResult> Add(GetRequest feedbackRequest)
         {
             var feedbackTypes = await feedbackService.GetTypes();
-            var userInfo = await userSessionService.GetUserInfo(feedbackRequest.SessionId);
+            var sessionId = feedbackRequest.SessionId ?? this.httpContext.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "SessionId").Value;
+            var userSession = await userSessionService.GetUserSession(sessionId);
+            var userInfo = await userSessionService.GetUserInfo(userSession);            
+
             var model = new GetFeedbackViewModel
             {
                 Feedback = new FeedbackViewModel(),
                 FeedbackTypeOptions = feedbackTypes.ToList(),
                 NickName = userInfo.Name,
-                SessionId = feedbackRequest.SessionId,
                 Culture = (string)httpContext.HttpContext.Request.RouteValues["culture"] ?? "en",
-                Avatar = await avatarService.GetAvatar(userInfo.AvatarId.ToString())
+                Avatar = await avatarService.GetAvatar(userInfo.AvatarId.ToString()),
+                CustId = userSession.MemberId
             };
 
             return View(model);
@@ -57,19 +67,25 @@ namespace GameUser.Web.Features.Feedbacks
 
         [HttpPost]
         public async Task<IActionResult> Add(InsertRequest addRequest)
-        {
-            var viewModel = new InsertFeedbackViewModel
+        {            
+            if (ModelState.IsValid)
             {
-                Feedback = new Feedback(
-                    category: addRequest.Feedback.Category, 
-                    description: addRequest.Feedback.Description,
+                var viewModel = new InsertFeedbackViewModel
+                {
+                    Feedback = new Feedback(
+                    category: addRequest.Feedback.Category,
+                    description: addRequest.Feedback.Description.Trim(),
                     files: addRequest.Feedback.Files),
-                NickName = addRequest.NickName
-            };
+                    NickName = addRequest.NickName,
+                    CustId = addRequest.CustId
+                };
 
-            var result = await feedbackService.AddFeedbackAsync(viewModel.Feedback, viewModel.NickName, appSetting.EnabledStoreFile, appSetting.StoreFileFullPath());            
+                var result = await feedbackService.AddFeedbackAsync(viewModel.Feedback, viewModel.NickName, appSetting.EnabledStoreFile, appSetting.StoreFileFullPath(), viewModel.CustId);
 
-            return Json(result);
+                return Json(result);
+            }
+
+            return Json(new UpdateResult(false, this.localizer.GetString("Something_Wrong_On_Attachment")));
         }
 
         [HttpGet]

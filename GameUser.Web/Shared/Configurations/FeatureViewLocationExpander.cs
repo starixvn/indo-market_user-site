@@ -32,9 +32,6 @@ namespace GameUser.Web.Shared.Configurations
             }
         }
 
-        public void PopulateValues(ViewLocationExpanderContext context)
-        {
-            // no implementation
-        }
+        public void PopulateValues(ViewLocationExpanderContext context) { /* no implementation*/ }
     }
 }

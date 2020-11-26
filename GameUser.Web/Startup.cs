@@ -8,6 +8,7 @@ namespace GameUser.Web
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Rewrite;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -34,7 +35,7 @@ namespace GameUser.Web
             services.AddHttpContextAccessor();
 
 
-            services.ConfigGameUser(Configuration);            
+            services.ConfigGameUser(Configuration);
 
             services.AddMvc(o => o.Conventions.Add(new FeatureConvention()))
                   .AddRazorOptions(options =>
@@ -96,7 +97,7 @@ namespace GameUser.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Feedback}/{action=Add}");
-            });
+            });            
         }
     }
 }

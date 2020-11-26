@@ -17,8 +17,8 @@ namespace GameUser.Features.Feedbacks
 {
     public interface IFeedbackService
     {
-        Task<IEnumerable<SelectListItem>> GetTypes();
-        Task<UpdateResult> AddFeedbackAsync(Feedback feedback, string nickName, bool enabledStoreFile, string filePath);
+        Task<IEnumerable<SelectListItem>> GetTypes(string language = null);
+        Task<UpdateResult> AddFeedbackAsync(Feedback feedback, string nickName, bool enabledStoreFile, string filePath, int custId);
     }
 
     public class FeedbackService : IFeedbackService
@@ -49,18 +49,18 @@ namespace GameUser.Features.Feedbacks
             this.emailService = emailService;
         }
 
-        public async Task<IEnumerable<SelectListItem>> GetTypes()
+        public async Task<IEnumerable<SelectListItem>> GetTypes(string language = null)
         {
-            return await Task.FromResult(feedbackTypeLocalization.GetSelectListItems());
+            return await Task.FromResult(feedbackTypeLocalization.GetSelectListItems(language));
         }
 
-        public async Task<UpdateResult> AddFeedbackAsync(Feedback feedback, string nickName, bool enabledStoreFile, string filePath)
+        public async Task<UpdateResult> AddFeedbackAsync(Feedback feedback, string nickName, bool enabledStoreFile, string filePath, int custId)
         {
             try
             {
                 await SaveFeedbackAsync(feedback, nickName);
                 await StoreFileAsync(feedback.Files, enabledStoreFile, filePath);               
-                var email = await GenerateEmail(feedback, nickName);
+                var email = await GenerateEmail(feedback, nickName, custId);
                 await emailService.SendAsync(email);
 
                 return new UpdateResult(isSuccess: true, message: string.Empty);
@@ -93,16 +93,16 @@ namespace GameUser.Features.Feedbacks
             await feedbackRepository.InsertOneAsync(feedbackEntity);
         }
 
-        private async Task<EmailRequest> GenerateEmail(Feedback feedback, string nickname)
+        private async Task<EmailRequest> GenerateEmail(Feedback feedback, string nickname, int custId)
         {
-            var feedbackTypes = await GetTypes();
-
+            var feedbackTypes = await GetTypes("en");
             var category = feedbackTypes.FirstOrDefault(x => x.Value == feedback.Category).Text;
-
-            var subject = $"Saba_Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{category}";
-            var body = $"Dear SB club, " +
+            var subject = $"Saba Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{custId}_{category}";
+            var body = $"Dear Saba Club, " +
                 $"{Environment.NewLine}{Environment.NewLine}" +
                 $"{feedback.Description} " +
+                $"{Environment.NewLine}{Environment.NewLine}" +
+                $"------------------------------------------------------" +
                 $"{Environment.NewLine}{Environment.NewLine}" +
                 $"This is an automated email. Please do not reply to it.";
 

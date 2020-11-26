@@ -13,10 +13,10 @@ namespace GameUser.Web.Features.Feedbacks.ViewModels
 
         public string NickName { get; set; }
 
-        public string SessionId { get; set; }
-
         public string Culture { get; set; }
 
         public AvatarObject Avatar { get; set; }
+
+        public int CustId { get; set; }
     }
 }

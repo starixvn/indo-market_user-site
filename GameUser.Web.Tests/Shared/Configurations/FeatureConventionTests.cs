@@ -1,15 +1,14 @@
 ﻿using FluentAssertions;
 using GameUser.Features.Avatars;
-using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
-using GameUser.Features.FileUploads;
 using GameUser.Features.UserSessions;
 using GameUser.Web.Features.Feedbacks;
 using GameUser.Web.Shared.Configurations;
+using GameUser.Web.Shared.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.Extensions.Localization;
 using NSubstitute;
-using Sentry;
 using System.Collections.Generic;
 using System.Reflection;
 using Xunit;
@@ -26,9 +25,10 @@ namespace GameUser.Web.Tests.Shared.Configurations
             var feedbackService = Substitute.For<IFeedbackService>();
             var appSetting = Substitute.For<IAppSettings>();
             var avatarService = Substitute.For<IAvatarService>();
-            var userSessionService = Substitute.For<IUserSessionService>();            
+            var userSessionService = Substitute.For<IUserSessionService>();
+            var localizer = Substitute.For<IStringLocalizer<Resources>>();
 
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer);
             var typeInfo = controller.GetType().GetTypeInfo();
             var featureConvention = new FeatureConvention();
             var controllerModel = new ControllerModel(typeInfo, NSubstitute.Substitute.For<IReadOnlyList<object>>());
