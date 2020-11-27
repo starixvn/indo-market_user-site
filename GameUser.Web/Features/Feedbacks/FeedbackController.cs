@@ -48,7 +48,7 @@ namespace GameUser.Web.Features.Feedbacks
         public async Task<IActionResult> Add(GetRequest feedbackRequest)
         {
             var feedbackTypes = await feedbackService.GetTypes();
-            var sessionId = feedbackRequest.SessionId ?? this.httpContext.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "SessionId").Value;
+            var sessionId = feedbackRequest.SessionId ?? this.httpContext.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "sessionid").Value;
             var userSession = await userSessionService.GetUserSession(sessionId);
             var userInfo = await userSessionService.GetUserInfo(userSession);            
 
