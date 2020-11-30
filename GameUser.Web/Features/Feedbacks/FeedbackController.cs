@@ -50,7 +50,7 @@ namespace GameUser.Web.Features.Feedbacks
             var feedbackTypes = await feedbackService.GetTypes();
             var sessionId = feedbackRequest.SessionId ?? this.httpContext.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "sessionid").Value;
             var userSession = await userSessionService.GetUserSession(sessionId);
-            var userInfo = await userSessionService.GetUserInfo(userSession);            
+            var userInfo = await userSessionService.GetUserInfo(userSession);
 
             var model = new GetFeedbackViewModel
             {
@@ -67,7 +67,7 @@ namespace GameUser.Web.Features.Feedbacks
 
         [HttpPost]
         public async Task<IActionResult> Add(InsertRequest addRequest)
-        {            
+        {
             if (ModelState.IsValid)
             {
                 var viewModel = new InsertFeedbackViewModel
@@ -80,7 +80,13 @@ namespace GameUser.Web.Features.Feedbacks
                     CustId = addRequest.CustId
                 };
 
-                var result = await feedbackService.AddFeedbackAsync(viewModel.Feedback, viewModel.NickName, appSetting.EnabledStoreFile, appSetting.StoreFileFullPath(), viewModel.CustId);
+                var result = await feedbackService.AddFeedbackAsync(
+                    viewModel.Feedback,
+                    viewModel.NickName,
+                    appSetting.EnabledStoreFile,
+                    appSetting.StoreFileFullPath(),
+                    viewModel.CustId,
+                    appSetting.Env);
 
                 return Json(result);
             }
