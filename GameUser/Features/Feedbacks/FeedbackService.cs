@@ -18,7 +18,7 @@ namespace GameUser.Features.Feedbacks
     public interface IFeedbackService
     {
         Task<IEnumerable<SelectListItem>> GetTypes(string language = null);
-        Task<UpdateResult> AddFeedbackAsync(Feedback feedback, string nickName, bool enabledStoreFile, string filePath, int custId);
+        Task<UpdateResult> AddFeedbackAsync(Feedback feedback, string nickName, bool enabledStoreFile, string filePath, int custId, string enviroment);
     }
 
     public class FeedbackService : IFeedbackService
@@ -29,7 +29,7 @@ namespace GameUser.Features.Feedbacks
         private readonly IStringLocalizer<Resources> localizer;
         private readonly IEmailConfigs emailConfigs;
         private readonly IFileUploadService fileUploadService;
-        private readonly IEmailService emailService;
+        private readonly IEmailService emailService;        
 
         public FeedbackService(
             IGenericRepository<FeedbackEntity> feedbackRepository, 
@@ -54,13 +54,13 @@ namespace GameUser.Features.Feedbacks
             return await Task.FromResult(feedbackTypeLocalization.GetSelectListItems(language));
         }
 
-        public async Task<UpdateResult> AddFeedbackAsync(Feedback feedback, string nickName, bool enabledStoreFile, string filePath, int custId)
+        public async Task<UpdateResult> AddFeedbackAsync(Feedback feedback, string nickName, bool enabledStoreFile, string filePath, int custId, string enviroment)
         {
             try
             {
                 await SaveFeedbackAsync(feedback, nickName);
                 await StoreFileAsync(feedback.Files, enabledStoreFile, filePath);               
-                var email = await GenerateEmail(feedback, nickName, custId);
+                var email = await GenerateEmail(feedback, nickName, custId, enviroment);
                 await emailService.SendAsync(email);
 
                 return new UpdateResult(isSuccess: true, message: string.Empty);
@@ -93,11 +93,11 @@ namespace GameUser.Features.Feedbacks
             await feedbackRepository.InsertOneAsync(feedbackEntity);
         }
 
-        private async Task<EmailRequest> GenerateEmail(Feedback feedback, string nickname, int custId)
+        private async Task<EmailRequest> GenerateEmail(Feedback feedback, string nickname, int custId, string environment)
         {
             var feedbackTypes = await GetTypes("en");
             var category = feedbackTypes.FirstOrDefault(x => x.Value == feedback.Category).Text;
-            var subject = $"Saba Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{custId}_{category}";
+            var subject = $"Saba Club{(environment.Contains("PRO") ? string.Empty : "_" + environment)}_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{custId}_{category}";
             var body = $"Dear Saba Club, " +
                 $"{Environment.NewLine}{Environment.NewLine}" +
                 $"{feedback.Description} " +

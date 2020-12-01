@@ -290,6 +290,10 @@ class Feedback {
 
     //  ******* Loading Modal  *******
     showLoading() {
+        this.loadingModal.modal({
+            show: false,
+            backdrop: 'static'
+        });
         this.loadingModal.modal('show');
     }
 

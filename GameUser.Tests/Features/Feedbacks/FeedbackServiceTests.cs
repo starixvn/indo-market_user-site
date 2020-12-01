@@ -97,7 +97,7 @@ namespace GameUser.Tests.Features.Feedbacks
             await emailService.SendAsync(Arg.Do<EmailRequest>(x => emailRequest = x));
 
             // Act
-            var result = await service.AddFeedbackAsync(feedback, nickname, enabledStoreFile, string.Empty, 123);
+            var result = await service.AddFeedbackAsync(feedback, nickname, enabledStoreFile, string.Empty, 123, string.Empty);
 
             // Assert
             result.IsSuccess.Should().Be(true);
@@ -126,7 +126,7 @@ namespace GameUser.Tests.Features.Feedbacks
                 .Returns(Task.FromException<List<object>>(new Exception("some error")));
 
             // Act
-            var result = await service.AddFeedbackAsync(new Feedback(), string.Empty, true, string.Empty, 123);
+            var result = await service.AddFeedbackAsync(new Feedback(), string.Empty, true, string.Empty, 123, string.Empty);
 
             // Assert
             result.IsSuccess.Should().Be(false);

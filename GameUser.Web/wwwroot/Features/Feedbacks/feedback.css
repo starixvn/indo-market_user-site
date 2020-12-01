@@ -240,7 +240,8 @@
       font-size: 22px;
       text-decoration: underline;
       font-weight: bold;
-      cursor: pointer; }
+      cursor: pointer;
+      padding-bottom: 70px; }
     .feedback .content .back-link:active {
       transform: scale(1.1); }
 
