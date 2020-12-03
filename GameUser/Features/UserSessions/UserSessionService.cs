@@ -1,5 +1,5 @@
-﻿using GameUser.Shared.Database;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using GameUser.Shared.Database;
 
 namespace GameUser.Features.UserSessions
 {
@@ -31,7 +31,7 @@ namespace GameUser.Features.UserSessions
 
         public async Task CreateUserSession(UserSessionEntity userSession)
         {
-            await this.userSessionRepository.InsertOneAsync(userSession);
+            await userSessionRepository.InsertOneAsync(userSession);
         }
 
         public async Task<UserInfoEntity> GetUserInfo(string sessionId)
@@ -48,12 +48,12 @@ namespace GameUser.Features.UserSessions
 
         public async Task<UserSessionEntity> GetUserSession(string sessionId)
         {
-            return await this.userSessionRepository.FindOneAsync(x => x.SessionId == sessionId);
+            return await userSessionRepository.FindOneAsync(x => x.SessionId == sessionId);
         }
 
         public async Task<UserSessionEntity> GetUserSessionByToken(string token)
         {
-            return await this.userSessionRepository.FindOneAsync(x => x.SSOToken == token);
+            return await userSessionRepository.FindOneAsync(x => x.SSOToken == token);
         }
     }
 }

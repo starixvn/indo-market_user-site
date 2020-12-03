@@ -1,14 +1,11 @@
-﻿using GameUser.Shared.Database;
+﻿using System;
+using GameUser.Shared.Database;
 using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace GameUser.Features.Users
 {
-    
-    public class LocalUserEntity: Document
-    {        
+    public class LocalUserEntity : Document
+    {
         [BsonElement("username")]
         public string UserName { get; set; }
 
@@ -25,7 +22,7 @@ namespace GameUser.Features.Users
         public string MemberName { get; set; }
 
         [BsonElement("clientId")]
-        public int ClientId { get; set; }
+        public string ClientId { get; set; }
 
         [BsonElement("currency")]
         public string Currency { get; set; }

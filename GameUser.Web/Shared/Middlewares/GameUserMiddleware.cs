@@ -1,7 +1,10 @@
-﻿using GameUser.Features.Avatars;
+﻿using GameUser.Features.ApiComminicators;
+using GameUser.Features.Avatars;
+using GameUser.Features.BackendAuthentications;
 using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
+using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Configurations;
 using GameUser.Shared.Database;
@@ -23,6 +26,9 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitFileUpload(configuration);
             services.InitUserSession(configuration);
             services.InitAvatar(configuration);
+            services.InitBackendAuthentication(configuration);
+            services.InitApi(configuration);
+            services.InitUser();
         }
 
         public static void AddSharedServices(this IServiceCollection services)

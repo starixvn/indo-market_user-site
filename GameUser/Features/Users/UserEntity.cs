@@ -1,14 +1,11 @@
 ﻿using GameUser.Shared.Database;
 using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace GameUser.Features.Users
 {
     [BsonIgnoreExtraElements]
     [BsonCollection("users")]
-    public class UserEntity
+    public class UserEntity: Document
     {
         [BsonElement("local")]
         public LocalUserEntity Local { get; set; }
