@@ -1,7 +1,7 @@
 namespace GameUser.Web
 {
+    using System;
     using AutoMapper;
-    using GameUser.Web.Shared;
     using GameUser.Web.Shared.Configurations;
     using GameUser.Web.Shared.Middlewares;
     using Microsoft.AspNetCore.Authentication.Cookies;
@@ -12,8 +12,7 @@ namespace GameUser.Web
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Options;
-    using System;
+    using Microsoft.OpenApi.Models;
 
     public class Startup
     {
@@ -34,7 +33,6 @@ namespace GameUser.Web
 
             services.AddHttpContextAccessor();
             services.AddHealthChecks();
-
             services.ConfigGameUser(Configuration);
 
             services.AddMvc(o => o.Conventions.Add(new FeatureConvention()))
@@ -54,6 +52,11 @@ namespace GameUser.Web
                       options.ViewLocationExpanders.Add(new FeatureViewLocationExpander());
                   });
 
+            services.AddSwaggerGen(swagger =>
+            {
+                swagger.SwaggerDoc(name: "v1", new OpenApiInfo { Title = "User APIs", Version = "v1" });
+            });
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                  .AddCookie(options =>
                  {
@@ -61,8 +64,6 @@ namespace GameUser.Web
                      options.LoginPath = "/Error/NotAuthorized";
                      options.AccessDeniedPath = "/Error/NotAuthorized";
                  });
-
-            services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -77,8 +78,15 @@ namespace GameUser.Web
                 app.UseExceptionHandler("/Error/NotAuthorized");
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(swagger =>
+            {
+                swagger.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "User APIs v1");
+            });
 
             app.UseRouting();
 
@@ -98,7 +106,7 @@ namespace GameUser.Web
                     name: "default",
                     pattern: "{controller=Feedback}/{action=Add}");
                 endpoints.MapHealthChecks("/health");
-            });            
+            });
         }
     }
 }

@@ -17,5 +17,9 @@ namespace GameUser.Features.Authentications.Entity
         public string Currency { get; set; }
 
         public string MemberKey { get; set; }
+
+        public string Seq { get; set; }
+
+        public string SiteId { get; set; }
     }
 }

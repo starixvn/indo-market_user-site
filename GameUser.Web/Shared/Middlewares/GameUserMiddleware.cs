@@ -1,4 +1,5 @@
 ﻿using GameUser.Features.ApiComminicators;
+using GameUser.Features.Authentications;
 using GameUser.Features.Avatars;
 using GameUser.Features.BackendAuthentications;
 using GameUser.Features.Emails;
@@ -29,6 +30,7 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitBackendAuthentication(configuration);
             services.InitApi(configuration);
             services.InitUser();
+            services.InitAuthenticationService();
         }
 
         public static void AddSharedServices(this IServiceCollection services)

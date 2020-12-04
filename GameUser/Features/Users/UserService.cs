@@ -5,7 +5,7 @@ namespace GameUser.Features.Users
 {
     public interface IUserService
     {
-        Task CreateUser(UserEntity userEntity);
+        Task<UserEntity> CreateUser(UserEntity userEntity);
 
         Task<UserEntity> GetUser(string userName);
     }
@@ -19,14 +19,18 @@ namespace GameUser.Features.Users
             this.userRepository = userRepository;
         }
 
-        public async Task CreateUser(UserEntity userEntity)
+        public async Task<UserEntity> CreateUser(UserEntity userEntity)
         {
-            await this.userRepository.InsertOneAsync(userEntity);
+            await userRepository.InsertOneAsync(userEntity);
+
+            var user = await GetUser(userEntity.Local.UserName);
+
+            return user;
         }
 
         public async Task<UserEntity> GetUser(string userName)
         {
-            var user = await this.userRepository.FindOneAsync(user => user.Local.UserName == userName);
+            var user = await userRepository.FindOneAsync(user => user.Local.UserName == userName);
 
             return user;
         }

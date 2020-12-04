@@ -12,7 +12,8 @@ namespace GameUser.Features.BackendAuthentications
             configuration.GetSection(nameof(BackendAuthenticationSettings)).Bind(backendAuthenticationSettings);
 
             services.AddSingleton(backendAuthenticationSettings);
-            services.AddScoped<IBackendAuthenticationService, BackendAuthenticationService>();
+            services.AddHttpClient<IBackendAuthenticationService, BackendAuthenticationService>();
+            services.AddTransient<ProtectedApiBearerTokenHandler>();
         }
     }
 }

@@ -4,6 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace GameUser.Features.Users
 {
+    [BsonIgnoreExtraElements]
     public class LocalUserEntity : Document
     {
         [BsonElement("username")]

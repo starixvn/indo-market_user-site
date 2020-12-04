@@ -1,19 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using GameUser.Features.Authentications;
+using GameUser.Features.Authentications.Entity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GameUser.Web.Features.APIs.Authentications
 {
     [ApiController]
-    [Route("api/authentication")]
-    public class AuthenticationController : ControllerBase
+    [Route("api/user")]
+    public class AuthenticationController : Controller
     {
-        [HttpGet("init")]
-        public async Task<IActionResult> InitAuthentication()
+        private readonly IAuthenticationService authenticationService;
+
+        public AuthenticationController(IAuthenticationService authenticationService)
         {
-            return Ok(true);
+            this.authenticationService = authenticationService;
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SignIn(UserSignInRequest request)
+        {
+            var result = await authenticationService.SignIn(request);
+
+            return Json(result);
         }
     }
 }

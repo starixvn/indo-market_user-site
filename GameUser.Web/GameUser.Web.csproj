@@ -13,6 +13,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\APIs\Authentications\Requests\**" />
+    <Compile Remove="Features\APIs\Authentications\ViewModels\**" />
+    <Content Remove="Features\APIs\Authentications\Requests\**" />
+    <Content Remove="Features\APIs\Authentications\ViewModels\**" />
+    <EmbeddedResource Remove="Features\APIs\Authentications\Requests\**" />
+    <EmbeddedResource Remove="Features\APIs\Authentications\ViewModels\**" />
+    <None Remove="Features\APIs\Authentications\Requests\**" />
+    <None Remove="Features\APIs\Authentications\ViewModels\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="bundleconfig.json" />
     <Content Remove="compilerconfig.json" />
   </ItemGroup>
@@ -55,11 +66,6 @@
     <EmbeddedResource Update="Shared\Resources\Resources.en.resx">
       <Generator></Generator>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\APIs\Authentications\ViewModels\" />
-    <Folder Include="Features\APIs\Authentications\Requests\" />
   </ItemGroup>
 
 </Project>

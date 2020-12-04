@@ -13,7 +13,7 @@ namespace GameUser.Features.UserSessions
 
         Task<UserSessionEntity> GetUserSessionByToken(string token);
 
-        Task CreateUserSession(UserSessionEntity userSession);
+        Task<UserSessionEntity> CreateUserSession(UserSessionEntity userSession);
     }
 
     public class UserSessionService : IUserSessionService
@@ -29,9 +29,13 @@ namespace GameUser.Features.UserSessions
             this.userInfoRepository = userInfoRepository;
         }
 
-        public async Task CreateUserSession(UserSessionEntity userSession)
+        public async Task<UserSessionEntity> CreateUserSession(UserSessionEntity userSession)
         {
             await userSessionRepository.InsertOneAsync(userSession);
+
+            var newUserSession = await GetUserSession(userSession.SessionId);
+
+            return newUserSession;
         }
 
         public async Task<UserInfoEntity> GetUserInfo(string sessionId)
