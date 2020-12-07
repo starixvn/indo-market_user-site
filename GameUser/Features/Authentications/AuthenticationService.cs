@@ -10,6 +10,10 @@ namespace GameUser.Features.Authentications
     public interface IAuthenticationService
     {
         Task<UserSignInResponse> SignIn(UserSignInRequest request);
+
+        Task Refresh(RefreshSessionRequest request);
+
+        Task<VerificationSessionResult> Verify(VerificationSessionRequest request);
     }
 
     public class AuthenticationService : IAuthenticationService
@@ -30,7 +34,7 @@ namespace GameUser.Features.Authentications
 
         public async Task<UserSignInResponse> SignIn(UserSignInRequest request)
         {
-            var response = await apiService.Post<VerifyTokenResult>(apiEndpoints.VerifyToken, request);
+            var response = await apiService.Post<VerificationTokenResult>(apiEndpoints.VerifyToken, request);
 
             if (response.IsSuccessful)
             {
@@ -62,7 +66,39 @@ namespace GameUser.Features.Authentications
             };
         }
 
-        private async Task<UserEntity> CreateUserIfNotExist(VerifyTokenResult verifyTokenResult)
+        public async Task Refresh(RefreshSessionRequest request)
+        {
+            var userSession = await userSessionService.GetUserSession(request.Session);
+            var isValidRequest = userSession != null && Equals(request.BrowserUserAgent, userSession.BrowserUserAgent);
+
+            if (isValidRequest && !IsExpiredSession(userSession))
+            {
+                await userSessionService.ReCheckIn(request.Session, DateTime.Now);
+            }
+        }
+
+        public async Task<VerificationSessionResult> Verify(VerificationSessionRequest request)
+        {
+            var userSession = await userSessionService.GetUserSession(request.Session);
+
+            if (IsExpiredSession(userSession))
+            {
+                return new VerificationSessionResult
+                {
+                    IsSuccessful = false
+                };
+            }
+            else
+            {
+                return new VerificationSessionResult
+                {
+                    IsSuccessful = true,
+                    Session = userSession
+                };
+            }
+        }
+
+        private async Task<UserEntity> CreateUserIfNotExist(VerificationTokenResult verifyTokenResult)
         {
             var user = await userService.GetUser(verifyTokenResult.MemberKey);
 
@@ -88,7 +124,7 @@ namespace GameUser.Features.Authentications
             return user;
         }
 
-        private async Task<UserSessionEntity> AddSessionIfNotExist(UserEntity user, VerifyTokenResult verifyTokenResult, UserSignInRequest request)
+        private async Task<UserSessionEntity> AddSessionIfNotExist(UserEntity user, VerificationTokenResult verifyTokenResult, UserSignInRequest request)
         {
             var session = await userSessionService.GetUserSessionByToken(request.Token);
 
@@ -118,6 +154,21 @@ namespace GameUser.Features.Authentications
             }
 
             return session;
+        }
+
+        private bool IsExpiredSession(UserSessionEntity userSession)
+        {
+            if (userSession != null)
+            {
+                const int timeout = 20 * 60;
+                var elasedSticks = DateTime.UtcNow.Ticks - userSession.ReCheckInTime.Ticks;
+                var elapsedSpan = new TimeSpan(elasedSticks);
+                var isExpired = elapsedSpan.TotalSeconds > timeout;
+
+                return isExpired;
+            }
+
+            return true;
         }
     }
 }

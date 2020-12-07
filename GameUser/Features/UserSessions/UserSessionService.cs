@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using GameUser.Shared.Database;
+using MongoDB.Driver;
 
 namespace GameUser.Features.UserSessions
 {
@@ -14,6 +16,8 @@ namespace GameUser.Features.UserSessions
         Task<UserSessionEntity> GetUserSessionByToken(string token);
 
         Task<UserSessionEntity> CreateUserSession(UserSessionEntity userSession);
+
+        Task ReCheckIn(string sessionId, DateTime time);
     }
 
     public class UserSessionService : IUserSessionService
@@ -58,6 +62,14 @@ namespace GameUser.Features.UserSessions
         public async Task<UserSessionEntity> GetUserSessionByToken(string token)
         {
             return await userSessionRepository.FindOneAsync(x => x.SSOToken == token);
+        }
+
+        public async Task ReCheckIn(string sessionId, DateTime time)
+        {
+            var update = Builders<UserSessionEntity>.Update
+                .Set(session => session.ReCheckInTime, time);
+
+            await userSessionRepository.UpdateOneAsync(session => session.SessionId == sessionId, update);
         }
     }
 }

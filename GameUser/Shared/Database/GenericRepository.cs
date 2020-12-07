@@ -1,10 +1,8 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace GameUser.Shared.Database
 {
@@ -13,6 +11,8 @@ namespace GameUser.Shared.Database
         Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression);
 
         Task InsertOneAsync(TDocument document);
+
+        Task UpdateOneAsync(Expression<Func<TDocument, bool>> filterExpression, UpdateDefinition<TDocument> update);
     }
 
     public class GenericRepository<TDocument> : IGenericRepository<TDocument> where TDocument : IDocument
@@ -23,6 +23,9 @@ namespace GameUser.Shared.Database
         {
             collection = database.GetCollection<TDocument>(Document.GetCollectionName(typeof(TDocument)));
         }
+
+        public virtual Task UpdateOneAsync(Expression<Func<TDocument, bool>> filterExpression, UpdateDefinition<TDocument> update)
+        => collection.UpdateOneAsync(filterExpression, update);
 
         public virtual Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression)
         => collection.Find(filterExpression).FirstOrDefaultAsync();

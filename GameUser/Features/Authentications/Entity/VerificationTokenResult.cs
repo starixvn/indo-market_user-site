@@ -2,7 +2,7 @@
 
 namespace GameUser.Features.Authentications.Entity
 {
-    public class VerifyTokenResult: ApiResult
+    public class VerificationTokenResult: ApiResult
     {
         public int MemberId { get; set; }
 
