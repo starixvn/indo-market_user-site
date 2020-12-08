@@ -1,8 +1,6 @@
-﻿using GameUser.Features.ApiComminicators;
-
-namespace GameUser.Features.Authentications.Entity
+﻿namespace GameUser.Features.ApiComminicators.Models
 {
-    public class UserSignInRequest : ApiRequest
+    public class VerificationTokenRequest
     {
         public string BrowserUserAgent { get; set; }
 

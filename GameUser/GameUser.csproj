@@ -11,6 +11,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\GameServerApiComunicators\NewFolder1\**" />
+    <EmbeddedResource Remove="Features\GameServerApiComunicators\NewFolder1\**" />
+    <None Remove="Features\GameServerApiComunicators\NewFolder1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Features\Avatars\profile-picture.plist.meta.json" />
   </ItemGroup>
 
@@ -34,10 +40,12 @@
     <PackageReference Include="MongoDB.Driver" Version="2.11.3" />
     <PackageReference Include="NETCore.MailKit" Version="2.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Refit" Version="5.2.4" />
     <PackageReference Include="Sentry.AspNetCore" Version="2.1.6" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.6.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.6.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.6.3" />
+    <PackageReference Include="System.Runtime.Caching" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>

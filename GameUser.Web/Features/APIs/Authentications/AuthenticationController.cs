@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
+using GameUser.Features.ApiComminicators.Models;
 using GameUser.Features.Authentications;
-using GameUser.Features.Authentications.Entity;
+using GameUser.Features.Authentications.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,7 @@ namespace GameUser.Web.Features.APIs.Authentications
         }
 
         [HttpPost("signin")]
-        public async Task<JsonResult> SignIn(UserSignInRequest request)
+        public async Task<JsonResult> SignIn(VerificationTokenRequest request)
         {
             var result = await authenticationService.SignIn(request);
 

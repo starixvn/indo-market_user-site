@@ -1,7 +1,6 @@
 namespace GameUser.Web
 {
     using System;
-    using System.Collections.Generic;
     using AutoMapper;
     using GameUser.Web.Shared.Configurations;
     using GameUser.Web.Shared.Middlewares;

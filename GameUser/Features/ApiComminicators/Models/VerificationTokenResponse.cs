@@ -1,8 +1,6 @@
-﻿using GameUser.Features.ApiComminicators;
-
-namespace GameUser.Features.Authentications.Entity
+﻿namespace GameUser.Features.ApiComminicators.Models
 {
-    public class VerificationTokenResult: ApiResult
+    public class VerificationTokenResponse
     {
         public int MemberId { get; set; }
 
@@ -21,5 +19,11 @@ namespace GameUser.Features.Authentications.Entity
         public string Seq { get; set; }
 
         public string SiteId { get; set; }
+
+        public bool IsSuccessful { get; set; }
+
+        public int Code { get; set; }
+
+        public string Message { get; set; }
     }
 }

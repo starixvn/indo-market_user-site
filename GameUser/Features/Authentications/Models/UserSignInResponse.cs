@@ -1,4 +1,4 @@
-﻿namespace GameUser.Features.Authentications.Entity
+﻿namespace GameUser.Features.Authentications.Models
 {
     public class UserSignInResponse
     {
