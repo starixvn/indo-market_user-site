@@ -99,7 +99,7 @@ namespace GameUser.Web
             });
 
             app.UseRouting();
-
+            app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -117,6 +117,8 @@ namespace GameUser.Web
                     pattern: "{controller=Feedback}/{action=Add}");
                 endpoints.MapHealthChecks("/health");
             });
+
+            
         }
     }
 }

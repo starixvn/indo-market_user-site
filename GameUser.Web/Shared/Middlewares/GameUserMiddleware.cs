@@ -1,4 +1,5 @@
-﻿using Features.GameUser.GameServerApiComunicators;
+﻿using System.Linq;
+using Features.GameUser.GameServerApiComunicators;
 using GameUser.Features.ApiComminicators;
 using GameUser.Features.Authentications;
 using GameUser.Features.Avatars;
@@ -12,6 +13,7 @@ using GameUser.Features.UserSessions;
 using GameUser.Shared.Configurations;
 using GameUser.Shared.Database;
 using GameUser.Shared.Wrapper;
+using GameUser.Web.Shared.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,6 +24,8 @@ namespace GameUser.Web.Shared.Middlewares
         public static void ConfigGameUser(this IServiceCollection services, IConfiguration configuration)
         {
             var configReader = new ConfigReader(configuration);
+
+            services.SettingCors(configuration);
             services.AddSingleton(typeof(IConfigReader), configReader);
             services.AddSharedServices();
             services.InitEmail(configReader);
@@ -42,6 +46,19 @@ namespace GameUser.Web.Shared.Middlewares
             services.AddSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddSingleton(typeof(ISystemIOWrapper), typeof(SystemIOWrapper));
             services.AddSingleton(typeof(IMailKitWrapper), typeof(MailKitWrapper));
+        }
+
+        public static void SettingCors(this IServiceCollection services, IConfiguration configuration)
+        {
+            var corsSettings = new CorsSettings();
+
+            configuration.GetSection("Cors").Bind(corsSettings);
+
+            services.AddCors(cors => cors.AddDefaultPolicy(options
+            => options
+                .WithOrigins(corsSettings.AllowUrls.ToArray())
+                .AllowAnyHeader()
+                .AllowAnyMethod()));
         }
     }
 }
