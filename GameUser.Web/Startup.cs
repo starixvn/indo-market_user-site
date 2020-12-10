@@ -33,7 +33,7 @@ namespace GameUser.Web
             services.AddLocalizationSettings(Configuration);
 
             services.AddHttpContextAccessor();
-
+            services.AddHealthChecks();
 
             services.ConfigGameUser(Configuration);
 
@@ -97,6 +97,7 @@ namespace GameUser.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Feedback}/{action=Add}");
+                endpoints.MapHealthChecks("/health");
             });            
         }
     }
