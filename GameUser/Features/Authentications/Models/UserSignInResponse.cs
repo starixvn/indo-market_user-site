@@ -1,4 +1,6 @@
-﻿namespace GameUser.Features.Authentications.Models
+﻿using System;
+
+namespace GameUser.Features.Authentications.Models
 {
     public class UserSignInResponse
     {
@@ -11,5 +13,7 @@
         public string Session { get; set; }
 
         public string Currency { get; set; }
+
+        public DateTime ExpiredIn { get; set; }
     }
 }

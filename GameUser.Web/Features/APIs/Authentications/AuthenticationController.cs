@@ -28,11 +28,11 @@ namespace GameUser.Web.Features.APIs.Authentications
         }
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> RefreshSession(RefreshSessionRequest request)
+        public async Task<JsonResult> RefreshSession(RefreshSessionRequest request)
         {
-            await authenticationService.Refresh(request);
+            var result = await authenticationService.Refresh(request);
 
-            return Ok();
+            return Json(result);
         }
 
         [HttpPost("verify")]
