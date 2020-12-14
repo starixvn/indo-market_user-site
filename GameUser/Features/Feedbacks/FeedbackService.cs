@@ -10,6 +10,7 @@ using Microsoft.Extensions.Localization;
 using Sentry;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -97,7 +98,8 @@ namespace GameUser.Features.Feedbacks
         {
             var feedbackTypes = await GetTypes("en");
             var category = feedbackTypes.FirstOrDefault(x => x.Value == feedback.Category).Text;
-            var subject = $"Saba Club{(environment.Contains("PRO") ? string.Empty : "_" + environment)}_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{custId}_{category}";
+            var titleDate = $"[{DateTime.UtcNow.AddHours(8).ToString("yyyy/MM/dd", new CultureInfo("en-US"))}]";
+            var subject = $"Saba Club{(environment.Contains("PRO") ? string.Empty : "_" + environment)}_{titleDate}_{nickname}_{custId}_{category}";
             var body = $"Dear Saba Club, " +
                 $"{Environment.NewLine}{Environment.NewLine}" +
                 $"{feedback.Description} " +
