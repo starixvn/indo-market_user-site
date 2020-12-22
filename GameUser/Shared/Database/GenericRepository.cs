@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Bson;
@@ -13,6 +15,10 @@ namespace GameUser.Shared.Database
         Task InsertOneAsync(TDocument document);
 
         Task UpdateOneAsync(Expression<Func<TDocument, bool>> filterExpression, UpdateDefinition<TDocument> update);
+
+        Task<IEnumerable<TDocument>> FilterByAsync(Expression<Func<TDocument, bool>> filterExpression);
+
+        IQueryable<TDocument> AsQueryable();
     }
 
     public class GenericRepository<TDocument> : IGenericRepository<TDocument> where TDocument : IDocument
@@ -35,6 +41,16 @@ namespace GameUser.Shared.Database
             document.Id = ObjectId.GenerateNewId();
 
             return collection.InsertOneAsync(document);
+        }
+
+        public virtual async Task<IEnumerable<TDocument>> FilterByAsync(Expression<Func<TDocument, bool>> filterExpression)
+        {
+            return (await collection.FindAsync(filterExpression)).ToEnumerable();
+        }
+
+        public virtual IQueryable<TDocument> AsQueryable()
+        {
+            return collection.AsQueryable();
         }
     }
 }
