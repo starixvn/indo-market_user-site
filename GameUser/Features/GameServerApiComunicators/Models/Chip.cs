@@ -13,9 +13,11 @@
 
     public class Chip
     {
+        public bool Enabled { get; set; } = true;
+
         public string Label { get; set; }
 
-        public string Value { get; set; }
+        public int Value { get; set; }
 
         public ChipTheme Theme { get; set; }
     }
