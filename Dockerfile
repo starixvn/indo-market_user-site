@@ -2,7 +2,7 @@ FROM registry.nexdev.net:5050/docker/dotnet/core/sdk:3.1 AS builder
 
 WORKDIR /src
 
-COPY ./GameUser ./GGameUser
+COPY ./GameUser ./GameUser
 COPY ./GameUser.Web/GameUser.Web.csproj ./GameUser.Web/GameUser.Web.csproj
 
 WORKDIR /src/GameUser.Web/
