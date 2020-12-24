@@ -6,7 +6,7 @@ namespace GameUser.Features.GameServerApiComunicators.Models
     {
         public IList<string> Currencies { get; set; }
 
-        public string DefaultChip { get; set; }
+        public int DefaultChip { get; set; }
 
         public string MarketName { get; set; }
 
