@@ -8,7 +8,7 @@ COPY ./GameUser.Web/GameUser.Web.csproj ./GameUser.Web/GameUser.Web.csproj
 WORKDIR /src/GameUser.Web/
 RUN dotnet restore -v diag
 
-COPY ./GameUser/GameUser.Web/ .
+COPY ./GameUser.Web/ .
 
 RUN dotnet publish -r linux-x64 --self-contained false -o /app
 
