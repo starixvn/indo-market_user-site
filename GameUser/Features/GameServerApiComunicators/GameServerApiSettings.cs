@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Features.GameUser.GameServerApiComunicators
+﻿namespace Features.GameUser.GameServerApiComunicators
 {
     public class GameServerApiSettings
     {

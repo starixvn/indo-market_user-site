@@ -6,7 +6,7 @@ namespace GameUser.Features.GameSettings
     {
         public static void InitGameSettings(this IServiceCollection services)
         {
-            services.AddScoped<IGameSettingsService, GameSettingsService>();
+            services.AddSingleton<IGameSettingsService, GameSettingsService>();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using GameUser.Shared.Wrapper;
 using IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,7 @@ namespace GameUser.Features.BackendAuthentications
         private static readonly object lockObj = new object();
         private static TokenResponse tokenResponse;
         private static DateTime lastTokenRequest;
+        private static IDateTimeProvider dateTimeProvider;
 
         public static void InitBackendAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
@@ -23,6 +25,11 @@ namespace GameUser.Features.BackendAuthentications
             configuration.GetSection(nameof(BackendAuthenticationSettings)).Bind(backendAuthenticationSettings);
 
             services.AddSingleton(backendAuthenticationSettings);
+        }
+
+        public static void SetDateTimeProvider(IDateTimeProvider dateTimeProvider)
+        {
+            BackendAuthentication.dateTimeProvider = dateTimeProvider;
         }
 
         public static RefitSettings GetRefitSettings()
@@ -36,7 +43,8 @@ namespace GameUser.Features.BackendAuthentications
         public static async Task<string> GetAccessToken()
         {
             const int fiveMinutes = 5;
-            var isTokenExpired = tokenResponse == null || lastTokenRequest.AddSeconds(tokenResponse.ExpiresIn) < DateTime.Now.AddMinutes(fiveMinutes);
+            var now = dateTimeProvider.Now();
+            var isTokenExpired = tokenResponse == null || lastTokenRequest.AddSeconds(tokenResponse.ExpiresIn) < now.AddMinutes(fiveMinutes);
 
             if (isTokenExpired)
             {
@@ -66,7 +74,7 @@ namespace GameUser.Features.BackendAuthentications
                     Scope = backendAuthenticationSettings.ClientId,
                 });
 
-                lastTokenRequest = DateTime.Now;
+                lastTokenRequest = now;
             }
 
             return tokenResponse.AccessToken;

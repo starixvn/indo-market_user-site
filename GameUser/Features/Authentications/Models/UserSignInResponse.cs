@@ -4,16 +4,30 @@ namespace GameUser.Features.Authentications.Models
 {
     public class UserSignInResponse
     {
-        public bool IsAuthenticated { get; set; }
+        public UserSignInResponse(bool isAuthenticate = false)
+        {
+            IsAuthenticated = isAuthenticate;
+        }
 
-        public string Username { get; set; }
+        public UserSignInResponse(bool isAuthenticate, string username, string language, string session, string currency, DateTime expiredIn) : this(isAuthenticate)
+        {
+            Username = username;
+            Language = language;
+            Session = session;
+            Currency = currency;
+            ExpiredIn = expiredIn;
+        }
 
-        public string Language { get; set; }
+        public bool IsAuthenticated { get; }
 
-        public string Session { get; set; }
+        public string Username { get; }
 
-        public string Currency { get; set; }
+        public string Language { get; }
 
-        public DateTime ExpiredIn { get; set; }
+        public string Session { get; }
+
+        public string Currency { get; }
+
+        public DateTime ExpiredIn { get; }
     }
 }

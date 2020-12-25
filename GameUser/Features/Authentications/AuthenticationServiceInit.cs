@@ -6,7 +6,7 @@ namespace GameUser.Features.Authentications
     {
         public static void InitAuthenticationService(this IServiceCollection services)
         {
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddSingleton<IAuthenticationService, AuthenticationService>();
         }
     }
 }

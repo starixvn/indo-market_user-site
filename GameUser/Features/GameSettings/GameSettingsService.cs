@@ -30,7 +30,7 @@ namespace GameUser.Features.GameSettings
         {
             var result = await memoryCache.GetOrCreateAsync(CacheKey, cache =>
              {
-                 cache.SetSlidingExpiration(TimeSpan.FromSeconds(gameServerApiSettings.GameSettingsCacheTimeout));
+                 cache.SetAbsoluteExpiration(TimeSpan.FromSeconds(gameServerApiSettings.GameSettingsCacheTimeout));
 
                  return gameServerApi.GetGameSettings();
              });

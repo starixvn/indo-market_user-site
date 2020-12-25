@@ -39,6 +39,7 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitAuthenticationService();
             services.InitGameServerApi(configuration);
             services.InitGameSettings();
+            services.InitBackendAuthentication();
         }
 
         public static void AddSharedServices(this IServiceCollection services)
@@ -46,6 +47,7 @@ namespace GameUser.Web.Shared.Middlewares
             services.AddSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddSingleton(typeof(ISystemIOWrapper), typeof(SystemIOWrapper));
             services.AddSingleton(typeof(IMailKitWrapper), typeof(MailKitWrapper));
+            services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         }
 
         public static void SettingCors(this IServiceCollection services, IConfiguration configuration)

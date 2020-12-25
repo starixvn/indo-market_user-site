@@ -5,6 +5,7 @@ using GameUser.Features.ApiComminicators.Models;
 using GameUser.Features.Authentications.Models;
 using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
+using GameUser.Shared.Wrapper;
 
 namespace GameUser.Features.Authentications
 {
@@ -23,12 +24,14 @@ namespace GameUser.Features.Authentications
         private readonly IApi api;
         private readonly IUserService userService;
         private readonly IUserSessionService userSessionService;
+        private readonly IDateTimeProvider dateTimeProvider;
 
-        public AuthenticationService(IApi api, IUserService userService, IUserSessionService userSessionService)
+        public AuthenticationService(IApi api, IUserService userService, IUserSessionService userSessionService, IDateTimeProvider dateTimeProvider)
         {
             this.api = api;
             this.userService = userService;
             this.userSessionService = userSessionService;
+            this.dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<UserSignInResponse> SignIn(VerificationTokenRequest request)
@@ -39,22 +42,12 @@ namespace GameUser.Features.Authentications
             {
                 var user = await CreateUserIfNotExist(verificationResult);
                 var userSession = await AddSessionIfNotExist(user, verificationResult, request);
+                var expiredIn = userSession.ReCheckInTime.AddMinutes(sessionTimeout);
 
-                return new UserSignInResponse
-                {
-                    Currency = userSession.Currency,
-                    IsAuthenticated = true,
-                    Language = userSession.Language,
-                    Session = userSession.SessionId,
-                    Username = userSession.UserName,
-                    ExpiredIn = userSession.ReCheckInTime.AddMinutes(sessionTimeout)
-                };
+                return new UserSignInResponse(true, userSession.UserName, userSession.Language, userSession.SessionId, userSession.Currency, expiredIn);
             }
 
-            return new UserSignInResponse
-            {
-                IsAuthenticated = false
-            };
+            return new UserSignInResponse();
         }
 
         public async Task<RefreshSessionResponse> Refresh(RefreshSessionRequest request)
@@ -64,15 +57,13 @@ namespace GameUser.Features.Authentications
 
             if (isValidRequest && !IsExpiredSession(userSession))
             {
-                var now = DateTime.Now;
+                var now = this.dateTimeProvider.Now();
 
                 await userSessionService.ReCheckIn(request.Session, now);
 
-                return new RefreshSessionResponse
-                {
-                    IsSuccessful = true,
-                    ExpiredIn = now.AddMinutes(sessionTimeout)
-                };
+                var expiredIn = now.AddMinutes(sessionTimeout);
+
+                return new RefreshSessionResponse(true, expiredIn);
             }
 
             return new RefreshSessionResponse();
@@ -108,7 +99,7 @@ namespace GameUser.Features.Authentications
                         MemberId = verifyTokenResult.MemberId,
                         MemberName = verifyTokenResult.MemberName,
                         UserName = verifyTokenResult.MemberKey,
-                        RegDate = DateTime.Now,
+                        RegDate = this.dateTimeProvider.Now(),
                         Password = Guid.NewGuid().ToString()
                     }
                 };
@@ -126,6 +117,7 @@ namespace GameUser.Features.Authentications
             if (session == null)
             {
                 var sessionId = $"{Guid.NewGuid()}";
+                var now = this.dateTimeProvider.Now();
                 var userSession = new UserSessionEntity
                 {
                     BrowserUserAgent = request.BrowserUserAgent,
@@ -136,9 +128,9 @@ namespace GameUser.Features.Authentications
                     MemberId = verifyTokenResult.MemberId,
                     MemberName = verifyTokenResult.MemberName,
                     OWSeq = verifyTokenResult.Seq,
-                    ReCheckInTime = DateTime.Now,
+                    ReCheckInTime = now,
                     SiteId = verifyTokenResult.SiteId,
-                    SSOTime = DateTime.Now,
+                    SSOTime = now,
                     SSOToken = request.Token,
                     UserId = user.Id.ToString(),
                     UserName = verifyTokenResult.MemberKey,
