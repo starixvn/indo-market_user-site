@@ -1,5 +1,5 @@
 include:
-  - project: 'ci/repos-ci/nex3_l3_user_site_ci'
+  - project: 'ci/repos-ci/nex3_l3_user_site'
     ref: master
     file: 'gitlab-ci.yml'
     
