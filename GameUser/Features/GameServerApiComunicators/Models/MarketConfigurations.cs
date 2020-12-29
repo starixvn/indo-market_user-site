@@ -10,6 +10,8 @@ namespace GameUser.Features.GameServerApiComunicators.Models
 
         public string MarketName { get; set; }
 
+        public float Rate { get; set; }
+
         public IList<GameConfigurations> Settings { get; set; }
     }
 }
