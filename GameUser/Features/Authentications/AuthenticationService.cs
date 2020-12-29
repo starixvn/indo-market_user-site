@@ -86,7 +86,7 @@ namespace GameUser.Features.Authentications
 
         private async Task<UserEntity> CreateUserIfNotExist(VerificationTokenResponse verifyTokenResult)
         {
-            var user = await userService.GetUser(verifyTokenResult.MemberKey);
+            var user = await userService.GetUser(verifyTokenResult.MemberKey.ToLower());
 
             if (user == null)
             {
