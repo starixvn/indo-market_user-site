@@ -98,7 +98,7 @@ namespace GameUser.Features.Authentications
                         Currency = verifyTokenResult.Currency,
                         MemberId = verifyTokenResult.MemberId,
                         MemberName = verifyTokenResult.MemberName,
-                        UserName = verifyTokenResult.MemberKey,
+                        UserName = verifyTokenResult.MemberKey.ToLower(),
                         RegDate = this.dateTimeProvider.Now(),
                         Password = Guid.NewGuid().ToString()
                     }
@@ -133,7 +133,7 @@ namespace GameUser.Features.Authentications
                     SSOTime = now,
                     SSOToken = request.Token,
                     UserId = user.Id.ToString(),
-                    UserName = verifyTokenResult.MemberKey,
+                    UserName = verifyTokenResult.MemberKey.ToLower(),
                     SessionId = sessionId
                 };
 

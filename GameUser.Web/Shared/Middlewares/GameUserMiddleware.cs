@@ -14,6 +14,7 @@ using GameUser.Shared.Configurations;
 using GameUser.Shared.Database;
 using GameUser.Shared.Wrapper;
 using GameUser.Web.Shared.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -48,6 +49,7 @@ namespace GameUser.Web.Shared.Middlewares
             services.AddSingleton(typeof(ISystemIOWrapper), typeof(SystemIOWrapper));
             services.AddSingleton(typeof(IMailKitWrapper), typeof(MailKitWrapper));
             services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         public static void SettingCors(this IServiceCollection services, IConfiguration configuration)

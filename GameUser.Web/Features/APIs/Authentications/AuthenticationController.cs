@@ -4,6 +4,7 @@ using GameUser.Features.Authentications;
 using GameUser.Features.Authentications.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameUser.Web.Features.APIs.Authentications
@@ -13,15 +14,21 @@ namespace GameUser.Web.Features.APIs.Authentications
     public class AuthenticationController : Controller
     {
         private readonly IAuthenticationService authenticationService;
+        private readonly IHttpContextAccessor accessor;
 
-        public AuthenticationController(IAuthenticationService authenticationService)
+        public AuthenticationController(IAuthenticationService authenticationService, IHttpContextAccessor accessor)
         {
             this.authenticationService = authenticationService;
+            this.accessor = accessor;
         }
 
         [HttpPost("signin")]
         public async Task<JsonResult> SignIn(VerificationTokenRequest request)
         {
+            var ip = accessor.HttpContext.Connection.RemoteIpAddress.ToString();
+
+            request.Ip = ip;
+
             var result = await authenticationService.SignIn(request);
 
             return Json(result);
