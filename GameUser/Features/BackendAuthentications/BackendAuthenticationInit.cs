@@ -1,4 +1,4 @@
-﻿using GameUser.Shared.Wrapper;
+﻿using GameUser.Shared.Wrappers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GameUser.Features.BackendAuthentications

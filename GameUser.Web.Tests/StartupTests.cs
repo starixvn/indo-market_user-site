@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using GameUser.Web.Features.Feedbacks;
-using GameUser.Web.Shared.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -41,7 +40,7 @@ namespace GameUser.Web.Tests
             configuration["Email:ReceiverEmail"].Returns("Email:ReceiverEmail");
             configuration["Email:Account"].Returns("Email:Account");
             configuration["Email:Password"].Returns("Email:Password");
-           
+
             // Act
             startup.ConfigureServices(services);
             services.AddSingleton(typeof(ISentryClient), new SentryClient(new SentryOptions { Dsn = new Dsn("https://60d32dc98cc14367b14d362f7d4cbf0b@sentryuat.sabagame.com/151") }));
@@ -52,6 +51,6 @@ namespace GameUser.Web.Tests
             var serviceProvider = services.BuildServiceProvider();
             var controller = serviceProvider.GetService<FeedbackController>();
             controller.Should().NotBeNull();
-        }        
+        }
     }
 }

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace GameUser.Shared.Wrapper
+namespace GameUser.Shared.Wrappers
 {
     public interface ISystemIOWrapper
     {

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Features.GameUser.GameServerApiComunicators;
+﻿using Features.GameUser.GameServerApiComunicators;
 using GameUser.Features.ApiComminicators;
 using GameUser.Features.Authentications;
 using GameUser.Features.Avatars;
@@ -12,11 +11,12 @@ using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Configurations;
 using GameUser.Shared.Database;
-using GameUser.Shared.Wrapper;
+using GameUser.Shared.Wrappers;
 using GameUser.Web.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace GameUser.Web.Shared.Middlewares
 {
@@ -46,10 +46,11 @@ namespace GameUser.Web.Shared.Middlewares
         public static void AddSharedServices(this IServiceCollection services)
         {
             services.AddSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddSingleton(typeof(ISystemIOWrapper), typeof(SystemIOWrapper));
-            services.AddSingleton(typeof(IMailKitWrapper), typeof(MailKitWrapper));
+            services.AddSingleton<ISystemIOWrapper, SystemIOWrapper>();
+            services.AddSingleton<IMailKitWrapper, MailKitWrapper>();
             services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IHttpRequestWrapper, HttpRequestWrapper>();
         }
 
         public static void SettingCors(this IServiceCollection services, IConfiguration configuration)

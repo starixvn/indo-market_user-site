@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GameUser.Shared.Wrapper
+namespace GameUser.Shared.Wrappers
 {
     public interface IDateTimeProvider
     {

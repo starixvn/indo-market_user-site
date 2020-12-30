@@ -5,7 +5,7 @@ using GameUser.Features.ApiComminicators.Models;
 using GameUser.Features.Authentications.Models;
 using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
-using GameUser.Shared.Wrapper;
+using GameUser.Shared.Wrappers;
 
 namespace GameUser.Features.Authentications
 {

@@ -1,4 +1,4 @@
-﻿using GameUser.Shared.Wrapper;
+﻿using GameUser.Shared.Wrappers;
 using MimeKit;
 using NETCore.MailKit;
 using NETCore.MailKit.Core;

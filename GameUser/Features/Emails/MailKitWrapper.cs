@@ -1,4 +1,4 @@
-﻿using GameUser.Shared.Wrapper;
+﻿using GameUser.Shared.Wrappers;
 using NETCore.MailKit;
 using NETCore.MailKit.Infrastructure.Internal;
 using System;
