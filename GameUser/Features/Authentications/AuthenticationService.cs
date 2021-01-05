@@ -5,6 +5,7 @@ using GameUser.Features.ApiComminicators.Models;
 using GameUser.Features.Authentications.Models;
 using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
+using GameUser.Shared.Models;
 using GameUser.Shared.Wrappers;
 
 namespace GameUser.Features.Authentications
@@ -124,7 +125,7 @@ namespace GameUser.Features.Authentications
                     ClientId = verifyTokenResult.ClientId,
                     Currency = verifyTokenResult.Currency,
                     Ip = request.Ip,
-                    Language = verifyTokenResult.Language,
+                    Language = Languages.Convert(verifyTokenResult.Language),
                     MemberId = verifyTokenResult.MemberId,
                     MemberName = verifyTokenResult.MemberName,
                     OWSeq = verifyTokenResult.Seq,

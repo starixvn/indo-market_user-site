@@ -1,4 +1,5 @@
 ﻿using System;
+using GameUser.Shared.Models;
 
 namespace GameUser.Features.Authentications.Models
 {
@@ -12,7 +13,7 @@ namespace GameUser.Features.Authentications.Models
         public UserSignInResponse(bool isAuthenticate, string username, string language, string session, string currency, DateTime expiredIn) : this(isAuthenticate)
         {
             Username = username;
-            Language = language;
+            Language = Languages.Convert(language);
             Session = session;
             Currency = currency;
             ExpiredIn = expiredIn;
