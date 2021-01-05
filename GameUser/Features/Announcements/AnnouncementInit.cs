@@ -6,7 +6,7 @@ namespace GameUser.Features.Announcements
     {
         public static void InitAnnouncement(this IServiceCollection services)
         {
-            services.AddScoped<IAnnouncementService, AnnouncementService>();
+            services.AddSingleton<IAnnouncementService, AnnouncementService>();
         }
     }
 }
