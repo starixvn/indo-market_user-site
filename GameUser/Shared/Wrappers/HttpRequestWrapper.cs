@@ -28,7 +28,7 @@ namespace GameUser.Shared.Wrappers
 
             if (tryUseXForwardHeader)
             {
-                ip = SplitCsv(GetHeaderValueAs<string>(accessor, "X-Forwarded-For")).FirstOrDefault();
+                ip = SplitCsv(GetHeaderValueAs<string>(accessor, "X-Forwarded-For"))?.FirstOrDefault();
             }
 
             // RemoteIpAddress is always null in DNX RC1 Update1 (bug).
