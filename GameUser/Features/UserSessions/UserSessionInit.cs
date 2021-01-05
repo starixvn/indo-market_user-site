@@ -7,7 +7,7 @@ namespace GameUser.Features.UserSessions
     {
         public static void InitUserSession(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IUserSessionService, UserSessionService>();            
+            services.AddSingleton<IUserSessionService, UserSessionService>();            
         }
     }
 }

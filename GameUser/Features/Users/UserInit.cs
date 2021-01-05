@@ -6,7 +6,7 @@ namespace GameUser.Features.Users
     {
         public static void InitUser(this IServiceCollection services)
         {
-            services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<IUserService, UserService>();
         }
     }
 }
