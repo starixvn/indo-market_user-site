@@ -1,5 +1,7 @@
-﻿using GameUser.Shared.Database;
+﻿using System;
 using System.Threading.Tasks;
+using GameUser.Shared.Database;
+using MongoDB.Driver;
 
 namespace GameUser.Features.UserSessions
 {
@@ -10,6 +12,12 @@ namespace GameUser.Features.UserSessions
         Task<UserInfoEntity> GetUserInfo(string sessionId);
 
         Task<UserInfoEntity> GetUserInfo(UserSessionEntity userSession);
+
+        Task<UserSessionEntity> GetUserSessionByToken(string token);
+
+        Task<UserSessionEntity> CreateUserSession(UserSessionEntity userSession);
+
+        Task ReCheckIn(string sessionId, DateTime time);
     }
 
     public class UserSessionService : IUserSessionService
@@ -23,6 +31,15 @@ namespace GameUser.Features.UserSessions
         {
             this.userSessionRepository = userSessionRepository;
             this.userInfoRepository = userInfoRepository;
+        }
+
+        public async Task<UserSessionEntity> CreateUserSession(UserSessionEntity userSession)
+        {
+            await userSessionRepository.InsertOneAsync(userSession);
+
+            var newUserSession = await GetUserSession(userSession.SessionId);
+
+            return newUserSession;
         }
 
         public async Task<UserInfoEntity> GetUserInfo(string sessionId)
@@ -39,7 +56,20 @@ namespace GameUser.Features.UserSessions
 
         public async Task<UserSessionEntity> GetUserSession(string sessionId)
         {
-            return await this.userSessionRepository.FindOneAsync(x => x.SessionId == sessionId);
+            return await userSessionRepository.FindOneAsync(x => x.SessionId == sessionId);
+        }
+
+        public async Task<UserSessionEntity> GetUserSessionByToken(string token)
+        {
+            return await userSessionRepository.FindOneAsync(x => x.SSOToken == token);
+        }
+
+        public async Task ReCheckIn(string sessionId, DateTime time)
+        {
+            var update = Builders<UserSessionEntity>.Update
+                .Set(session => session.ReCheckInTime, time);
+
+            await userSessionRepository.UpdateOneAsync(session => session.SessionId == sessionId, update);
         }
     }
 }

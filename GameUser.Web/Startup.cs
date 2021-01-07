@@ -1,19 +1,19 @@
 namespace GameUser.Web
 {
+    using System;
     using AutoMapper;
-    using GameUser.Web.Shared;
     using GameUser.Web.Shared.Configurations;
     using GameUser.Web.Shared.Middlewares;
     using Microsoft.AspNetCore.Authentication.Cookies;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Rewrite;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Options;
-    using System;
+    using Microsoft.IdentityModel.Tokens;
+    using Microsoft.OpenApi.Models;
 
     public class Startup
     {
@@ -34,35 +34,46 @@ namespace GameUser.Web
 
             services.AddHttpContextAccessor();
             services.AddHealthChecks();
-
             services.ConfigGameUser(Configuration);
 
-            services.AddMvc(o => o.Conventions.Add(new FeatureConvention()))
-                  .AddRazorOptions(options =>
-                  {
-                      // {0} - Action Name
-                      // {1} - Controller Name
-                      // {2} - Area Name
-                      // {3} - Feature Name
-                      // Replace normal view location entirely
-                      options.ViewLocationFormats.Clear();
-                      options.ViewLocationFormats.Add("/Features/{3}/{1}/{0}.cshtml");
-                      options.ViewLocationFormats.Add("/Features/{3}/Views/{0}.cshtml");
-                      options.ViewLocationFormats.Add("/Features/{3}/{0}.cshtml");
-                      options.ViewLocationFormats.Add("/Features/_Shared/{0}.cshtml");
-                      options.ViewLocationFormats.Add("/Features/_Shared/Components/{0}.cshtml");
-                      options.ViewLocationExpanders.Add(new FeatureViewLocationExpander());
-                  });
+            services.AddSwaggerGen(swagger =>
+            {
+                swagger.SwaggerDoc(name: "v1", new OpenApiInfo { Title = "User APIs", Version = "v1" });
+            });
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                 .AddCookie(options =>
+                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
                  {
                      options.ExpireTimeSpan = TimeSpan.FromHours(1);
                      options.LoginPath = "/Error/NotAuthorized";
                      options.AccessDeniedPath = "/Error/NotAuthorized";
+                 })
+                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                 {
+                     options.Authority = Configuration["BackendAuthenticationSettings:Address"];
+                     options.RequireHttpsMetadata = false;
+                     options.TokenValidationParameters = new TokenValidationParameters
+                     {
+                         ValidAudiences = Configuration.GetSection("BackendAuthenticationSettings:Audiences").Get<string[]>()
+                     };
                  });
 
-            services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
+            services.AddMvc(o => o.Conventions.Add(new FeatureConvention()))
+                .AddRazorOptions(options =>
+                {
+                    // {0} - Action Name
+                    // {1} - Controller Name
+                    // {2} - Area Name
+                    // {3} - Feature Name
+                    // Replace normal view location entirely
+                    options.ViewLocationFormats.Clear();
+                    options.ViewLocationFormats.Add("/Features/{3}/{1}/{0}.cshtml");
+                    options.ViewLocationFormats.Add("/Features/{3}/Views/{0}.cshtml");
+                    options.ViewLocationFormats.Add("/Features/{3}/{0}.cshtml");
+                    options.ViewLocationFormats.Add("/Features/_Shared/{0}.cshtml");
+                    options.ViewLocationFormats.Add("/Features/_Shared/Components/{0}.cshtml");
+                    options.ViewLocationExpanders.Add(new FeatureViewLocationExpander());
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -77,11 +88,18 @@ namespace GameUser.Web
                 app.UseExceptionHandler("/Error/NotAuthorized");
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseRouting();
+            app.UseSwagger();
+            app.UseSwaggerUI(swagger =>
+            {
+                swagger.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "User APIs v1");
+            });
 
+            app.UseRouting();
+            app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -98,7 +116,9 @@ namespace GameUser.Web
                     name: "default",
                     pattern: "{controller=Feedback}/{action=Add}");
                 endpoints.MapHealthChecks("/health");
-            });            
+            });
+
+            
         }
     }
 }

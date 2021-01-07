@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using FluentAssertions;
 using GameUser.Features.FileUploads;
-using GameUser.Shared.Wrapper;
+using GameUser.Shared.Wrappers;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 using Sentry;

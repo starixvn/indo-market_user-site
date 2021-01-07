@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore;
+﻿using System;
+using System.IO;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Sentry;
-using System;
-using System.IO;
 
 namespace GameUser.Web
 {
@@ -19,7 +19,7 @@ namespace GameUser.Web
 
                 host.Run();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 SentrySdk.CaptureException(e);
             }
@@ -36,7 +36,7 @@ namespace GameUser.Web
                .UseKestrel()
                .UseUrls($"http://*:{configuration["HostingPort"]}")
                .UseSentry()
-               .UseIISIntegration()               
+               .UseIISIntegration()
                .UseStartup<Startup>();
         }
     }

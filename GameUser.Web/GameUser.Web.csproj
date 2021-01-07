@@ -13,6 +13,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\APIs\Authentications\Requests\**" />
+    <Compile Remove="Features\APIs\Authentications\ViewModels\**" />
+    <Content Remove="Features\APIs\Authentications\Requests\**" />
+    <Content Remove="Features\APIs\Authentications\ViewModels\**" />
+    <EmbeddedResource Remove="Features\APIs\Authentications\Requests\**" />
+    <EmbeddedResource Remove="Features\APIs\Authentications\ViewModels\**" />
+    <None Remove="Features\APIs\Authentications\Requests\**" />
+    <None Remove="Features\APIs\Authentications\ViewModels\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="bundleconfig.json" />
     <Content Remove="compilerconfig.json" />
   </ItemGroup>
@@ -33,16 +44,17 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
-    <PackageReference Include="IdentityModel" Version="4.4.0" />
+    <PackageReference Include="IdentityModel" Version="4.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.10" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="3.1.9" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Localization" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.9" />
     <PackageReference Include="MongoDB.Bson" Version="2.11.3" />
     <PackageReference Include="MongoDB.Driver" Version="2.11.3" />
-    <PackageReference Include="Refit" Version="5.2.1" />
+    <PackageReference Include="Refit" Version="5.2.4" />
     <PackageReference Include="Sentry" Version="2.1.6" />
     <PackageReference Include="Sentry.AspNetCore" Version="2.1.6" />
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿using GameUser.Shared.Wrapper;
+﻿using GameUser.Shared.Wrappers;
 using Microsoft.AspNetCore.Http;
 using Sentry;
 using System;
