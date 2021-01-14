@@ -1,4 +1,6 @@
-﻿using Features.GameUser.GameServerApiComunicators;
+﻿using System.Linq;
+using Features.GameUser.GameServerApiComunicators;
+using GameUser.Features.Announcements;
 using GameUser.Features.ApiComminicators;
 using GameUser.Features.Authentications;
 using GameUser.Features.Avatars;
@@ -7,6 +9,7 @@ using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
 using GameUser.Features.GameSettings;
+using GameUser.Features.MarketManagement;
 using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Configurations;
@@ -41,6 +44,7 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitGameServerApi(configuration);
             services.InitGameSettings();
             services.InitBackendAuthentication();
+            services.InitAnnouncement();
         }
 
         public static void AddSharedServices(this IServiceCollection services)
