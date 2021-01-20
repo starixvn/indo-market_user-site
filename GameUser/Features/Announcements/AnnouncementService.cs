@@ -40,28 +40,36 @@ namespace GameUser.Features.Announcements
 
         public async Task<IEnumerable<AnnouncementEntity>> GetMessages(string currency)
         {
-            var cacheKey = currency.ToUpper();
-            var market = await memoryCache.GetOrCreateAsync(cacheKey, async cache =>
+            var cacheKey = $"ANNOUCEMENT_{currency.ToUpper()}";
+
+            var result = await memoryCache.GetOrCreateAsync(cacheKey, async cache =>
             {
+                IEnumerable<AnnouncementEntity> announcements = new List<AnnouncementEntity>();
                 cache.SetAbsoluteExpiration(TimeSpan.FromSeconds(settings.AnnouncementCacheTimeout));
 
-                var markets = await marketRepository.FilterByAsync(x => x.Enabled);
-                var market = markets.Where(market => market.Currencies.Any(dbCurrency => dbCurrency.ToUpperInvariant() == currency.ToUpperInvariant())).FirstOrDefault();
+                try
+                {
+                    var market = await GetMarket(currency);
 
-                return market;
+                    announcements = await announcementRepository.FilterByAsync(x => x.Status && x.EnabledMarkets.Contains(market.Id.ToString()));
+                }
+                catch (Exception exception)
+                {
+                    sentryClient.CaptureException(exception);
+                }
+
+                return announcements;
             });
 
-            try
-            {
-                return await announcementRepository.FilterByAsync(x => x.Status && x.EnabledMarkets.Contains(market.Id.ToString()));
-            }
-            catch (Exception exception)
-            {
-                sentryClient.CaptureException(exception);
-                var result = new List<AnnouncementEntity>();
+            return result;
+        }
 
-                return result;
-            }
+        private async Task<MarketEntity> GetMarket(string currency)
+        {
+            var markets = await marketRepository.FilterByAsync(x => x.Enabled);
+            var market = markets.Where(market => market.Currencies.Any(dbCurrency => dbCurrency.ToUpperInvariant() == currency.ToUpperInvariant())).FirstOrDefault();
+
+            return market;
         }
     }
 }
