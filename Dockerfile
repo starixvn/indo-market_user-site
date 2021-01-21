@@ -12,7 +12,7 @@ COPY ./GameUser.Web/ .
 
 RUN dotnet publish -r linux-x64 --self-contained false -o /app
 
-FROM registry.nexdev.net:5050/docker/dotnet/core/aspnet:3.1 AS base
+FROM registry.nexdev.net:5050/docker/dotnet/core/aspnet:3.1-buster-slim AS base
 
 WORKDIR /app
 COPY --from=builder /app .
