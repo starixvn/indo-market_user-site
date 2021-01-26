@@ -19,6 +19,6 @@ namespace GameUser.Web.Shared.Attributes
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(culture);
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
 
-        }
+        }       
     }
 }
