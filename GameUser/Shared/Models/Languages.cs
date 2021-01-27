@@ -1,8 +1,12 @@
-﻿namespace GameUser.Shared.Models
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace GameUser.Shared.Models
 {
     public static class Languages
     {
-        private static string defaultLanguage = "en";
+        private static readonly string defaultLanguage = "en";
+        private static readonly IList<string> supportedLanguages = new List<string> { "en", "id", "th" };
 
         public static string Convert(string language)
         {
@@ -11,17 +15,10 @@
                 return defaultLanguage;
             }
 
-            switch (language)
-            {
-                case "en-US":
-                    return "en";
-                case "id-ID":
-                    return "id";
-                case "th-TH":
-                    return "th";
-                default:
-                    return defaultLanguage;
-            }
+            var formatedLanguage = language.ToLowerInvariant().Substring(0, 2);
+            var existInSupportedLanguages = supportedLanguages.Any(sl => sl.Equals(formatedLanguage));
+
+            return existInSupportedLanguages ? formatedLanguage : defaultLanguage;
         }
     }
 }
