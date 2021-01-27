@@ -1,10 +1,10 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using MongoDB.Bson;
-using MongoDB.Driver;
 
 namespace GameUser.Shared.Database
 {
@@ -45,7 +45,9 @@ namespace GameUser.Shared.Database
 
         public virtual async Task<IEnumerable<TDocument>> FilterByAsync(Expression<Func<TDocument, bool>> filterExpression)
         {
-            return (await collection.FindAsync(filterExpression)).ToEnumerable();
+            var result = await collection.FindAsync(filterExpression);
+
+            return result.ToList();
         }
 
         public virtual IQueryable<TDocument> AsQueryable()

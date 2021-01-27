@@ -44,7 +44,7 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitGameServerApi(configuration);
             services.InitGameSettings();
             services.InitBackendAuthentication();
-            services.InitAnnouncement();
+            services.InitAnnouncement(configuration);
         }
 
         public static void AddSharedServices(this IServiceCollection services)

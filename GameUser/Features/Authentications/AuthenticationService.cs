@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using GameUser.Features.ApiComminicators;
 using GameUser.Features.ApiComminicators.Models;
@@ -21,6 +22,7 @@ namespace GameUser.Features.Authentications
 
     public class AuthenticationService : IAuthenticationService
     {
+        private const string UUSCurrencyName = "UUS";
         private static readonly int sessionTimeout = 20;
         private readonly IApi api;
         private readonly IUserService userService;
@@ -114,6 +116,7 @@ namespace GameUser.Features.Authentications
         private async Task<UserSessionEntity> AddSessionIfNotExist(UserEntity user, VerificationTokenResponse verifyTokenResult, VerificationTokenRequest request)
         {
             var session = await userSessionService.GetUserSessionByToken(request.Token);
+            var currency = GetMemberCurrency(verifyTokenResult);
 
             if (session == null)
             {
@@ -123,7 +126,7 @@ namespace GameUser.Features.Authentications
                 {
                     BrowserUserAgent = request.BrowserUserAgent,
                     ClientId = verifyTokenResult.ClientId,
-                    Currency = verifyTokenResult.Currency,
+                    Currency = currency,
                     Ip = request.Ip,
                     Language = Languages.Convert(verifyTokenResult.Language),
                     MemberId = verifyTokenResult.MemberId,
@@ -142,6 +145,25 @@ namespace GameUser.Features.Authentications
             }
 
             return session;
+        }
+
+        private static string GetMemberCurrency(VerificationTokenResponse verifyTokenResult)
+        {
+            var currency = verifyTokenResult.Currency;
+
+            if (!string.IsNullOrWhiteSpace(currency)
+                && currency.ToUpperInvariant() == UUSCurrencyName
+                && !string.IsNullOrWhiteSpace(verifyTokenResult.Seq)
+                && verifyTokenResult.Seq.Contains(','))
+            {
+                var seqWords = verifyTokenResult.Seq.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+                if (seqWords.Any())
+                {
+                    currency = $"{currency}-{seqWords.Last()}";
+                }
+            }
+
+            return currency;
         }
 
         private static bool IsExpiredSession(UserSessionEntity userSession)
