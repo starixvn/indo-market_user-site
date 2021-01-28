@@ -13,7 +13,7 @@ namespace GameUser.Features.Authentications.Models
         public UserSignInResponse(bool isAuthenticate, string username, string language, string session, string currency, DateTime expiredIn) : this(isAuthenticate)
         {
             Username = username;
-            Language = Languages.Convert(language);
+            Language = language;
             Session = session;
             Currency = currency;
             ExpiredIn = expiredIn;

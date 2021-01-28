@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Features.GameUser.GameServerApiComunicators;
+﻿using Features.GameUser.GameServerApiComunicators;
 using GameUser.Features.Announcements;
 using GameUser.Features.ApiComminicators;
 using GameUser.Features.Authentications;
@@ -9,7 +8,6 @@ using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
 using GameUser.Features.GameSettings;
-using GameUser.Features.MarketManagement;
 using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Configurations;
@@ -40,7 +38,7 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitBackendAuthentication(configuration);
             services.InitApi(configuration);
             services.InitUser();
-            services.InitAuthenticationService();
+            services.InitAuthenticationService(configReader);
             services.InitGameServerApi(configuration);
             services.InitGameSettings();
             services.InitBackendAuthentication();
