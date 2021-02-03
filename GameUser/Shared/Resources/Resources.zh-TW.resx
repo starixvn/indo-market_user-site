@@ -118,15 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="NewGame" xml:space="preserve">
-    <value>Request a new game</value>
+    <value>建議遊戲新功能</value>
   </data>
   <data name="OtherIssue" xml:space="preserve">
-    <value>Report other issues</value>
+    <value>回報其他問題</value>
   </data>
   <data name="ReportBug" xml:space="preserve">
-    <value>Report a bug</value>
+    <value>報告錯誤</value>
   </data>
   <data name="Something_Wrong" xml:space="preserve">
-    <value>An unexpected error occurred</value>
+    <value>發生意外錯誤</value>
   </data>
 </root>

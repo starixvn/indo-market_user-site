@@ -6,6 +6,7 @@ using GameUser.Features.ApiComminicators.Models;
 using GameUser.Features.Authentications.Models;
 using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
+using GameUser.Shared.Constants;
 using GameUser.Shared.Models;
 using GameUser.Shared.Wrappers;
 
@@ -29,7 +30,7 @@ namespace GameUser.Features.Authentications
         private readonly IUserSessionService userSessionService;
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly ICultureConfigs cultureConfigs;
-
+        
         public AuthenticationService(
             IApi api, 
             IUserService userService, 
@@ -188,6 +189,11 @@ namespace GameUser.Features.Authentications
 
         private string ConvertLanguage(string language)
         {
+            if(language == Language.ChineseNewSimplifiedCode)
+            {
+                language = Language.ChineseSimplifiedCode;
+            }
+
             if (string.IsNullOrWhiteSpace(language) || !cultureConfigs.SupportedCultures.Contains(language))
             {
                 return cultureConfigs.DefaultCulture;

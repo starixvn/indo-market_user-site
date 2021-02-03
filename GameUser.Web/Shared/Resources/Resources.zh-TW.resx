@@ -118,63 +118,64 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AddImage" xml:space="preserve">
-    <value>Add image</value>
+    <value>添加圖像</value>
   </data>
   <data name="Attachment" xml:space="preserve">
-    <value>Attachment</value>
+    <value>附件</value>
   </data>
   <data name="Attachment_Max_Size" xml:space="preserve">
-    <value>The maximum size of total attachments is 15M</value>
+    <value>所有附件檔案總計不得超過15MB</value>
   </data>
   <data name="Attachment_Supported_Types" xml:space="preserve">
-    <value>File is invalid. Please select an image file</value>
+    <value>檔案無效。請選擇圖像檔案</value>
   </data>
   <data name="BackToLobby" xml:space="preserve">
-    <value>Back to Lobby</value>
+    <value>回到大廳</value>
   </data>
   <data name="Description" xml:space="preserve">
-    <value>Description</value>
+    <value>說明</value>
   </data>
   <data name="Description_Cant_Empty" xml:space="preserve">
-    <value>The description can't be empty</value>
+    <value>說明不能為空</value>
   </data>
   <data name="Description_Hint" xml:space="preserve">
-    <value>Even though we can't reply to all messages personally, all sugestions are more than welcome and are taken into serious consideration.</value>
+    <value>"即使我們無法親自回覆所有訊息，
+我們都很樂意聽取您的意見，並會認真考慮。"</value>
   </data>
   <data name="Description_Max_Characters" xml:space="preserve">
-    <value>You have reached the maximum number of 500 characters</value>
+    <value>您已達字數限制500字。</value>
   </data>
   <data name="Errors" xml:space="preserve">
-    <value>Errors</value>
+    <value>錯誤</value>
   </data>
   <data name="GameSuggestion" xml:space="preserve">
-    <value>Game Suggestion</value>
+    <value>遊戲建議</value>
   </data>
   <data name="OK" xml:space="preserve">
-    <value>OK</value>
+    <value>確定</value>
   </data>
   <data name="PleaseTryAgain" xml:space="preserve">
-    <value>Please try again!</value>
+    <value>請重試！</value>
   </data>
   <data name="Please_Let_Us_Know" xml:space="preserve">
-    <value>Please first let us know what you'd like to do:</value>
+    <value>請告訴我們您的需求</value>
   </data>
   <data name="Something_Wrong" xml:space="preserve">
-    <value>An unexpected error occurred</value>
+    <value>發生意外錯誤</value>
   </data>
   <data name="Something_Wrong_On_Attachment" xml:space="preserve">
     <value>There is something wrong on Attachment Images</value>
   </data>
   <data name="Submit" xml:space="preserve">
-    <value>Submit</value>
+    <value>提交</value>
   </data>
   <data name="Successfully" xml:space="preserve">
-    <value>Successfully!</value>
+    <value>成功</value>
   </data>
   <data name="Successfully_Sent" xml:space="preserve">
-    <value>Thank you! Your request has been successfully sent</value>
+    <value>謝謝！您的請求已成功發出</value>
   </data>
   <data name="TryAgain" xml:space="preserve">
-    <value>Try Again</value>
+    <value>重試</value>
   </data>
 </root>
