@@ -55,9 +55,6 @@
     <EmbeddedResource Update="Shared\Resources\Resources.zh-TW.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Update="Shared\Resources\Resources.ko-KR.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Update="Shared\Resources\Resources.en-US.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

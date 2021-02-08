@@ -64,9 +64,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Shared\Resources\Resources.ko-KR.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Update="Shared\Resources\Resources.zh-CN.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
