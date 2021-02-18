@@ -107,6 +107,8 @@ namespace GameUser.Web
 
             app.UseMiddleware<ExceptionMiddleware>();
 
+            app.UseCustomRewriter();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

@@ -14,20 +14,10 @@ namespace GameUser.Web.Shared.Attributes
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            string culture = (string)context.RouteData.Values["culture"] ?? "en-US";
-
-            if (culture == "zh-CN") {
-                culture = "zh-Hans";
-            }
-
-            if (culture == "zh-TW")
-            {
-                culture = "zh-Hant";
-            }
+            string culture = (string)context.RouteData.Values["culture"] ?? "en-US";           
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(culture);
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
-
         }       
     }
 }
