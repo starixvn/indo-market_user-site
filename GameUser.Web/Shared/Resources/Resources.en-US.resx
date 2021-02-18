@@ -157,7 +157,7 @@
     <value>Please try again!</value>
   </data>
   <data name="Please_Let_Us_Know" xml:space="preserve">
-    <value>Please first let us know what you'd like to do:</value>
+    <value>Please first let us know what you'd like to do :</value>
   </data>
   <data name="Something_Wrong" xml:space="preserve">
     <value>An unexpected error occurred</value>

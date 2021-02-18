@@ -111,7 +111,7 @@ namespace GameUser.Web
             {
                 endpoints.MapControllerRoute(
                     name: "culture-route",
-                    pattern: "{culture=en}/{controller=Feedback}/{action=Add}");
+                    pattern: "{culture=en-US}/{controller=Feedback}/{action=Add}");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Feedback}/{action=Add}");

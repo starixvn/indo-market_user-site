@@ -96,7 +96,7 @@ namespace GameUser.Features.Feedbacks
 
         private async Task<EmailRequest> GenerateEmail(Feedback feedback, string nickname, int custId, string environment)
         {
-            var feedbackTypes = await GetTypes("en");
+            var feedbackTypes = await GetTypes("en-US");
             var category = feedbackTypes.FirstOrDefault(x => x.Value == feedback.Category).Text;
             var titleDate = $"[{DateTime.UtcNow.AddHours(8).ToString("yyyy/MM/dd", new CultureInfo("en-US"))}]";
             var subject = $"Saba Club{(environment.Contains("PRO") ? string.Empty : "_" + environment)}_{titleDate}_{nickname}_{custId}_{category}";
