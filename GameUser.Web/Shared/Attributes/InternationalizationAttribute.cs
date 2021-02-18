@@ -16,6 +16,15 @@ namespace GameUser.Web.Shared.Attributes
         {
             string culture = (string)context.RouteData.Values["culture"] ?? "en-US";
 
+            if (culture == "zh-CN") {
+                culture = "zh-Hans";
+            }
+
+            if (culture == "zh-TW")
+            {
+                culture = "zh-Hant";
+            }
+
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(culture);
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
 
