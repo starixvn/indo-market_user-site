@@ -120,7 +120,7 @@ class Feedback {
             errorMessage = this.viewResources.Description_Cant_Empty;           
         }
         else if (desc.length > 500) {
-            errorMessage = this.viewResources.this.viewResources.Description_Max_Characters;
+            errorMessage = this.viewResources.Description_Max_Characters;
             this.mainForm.find('#descText').val(desc.substring(0, 500));            
         }
 

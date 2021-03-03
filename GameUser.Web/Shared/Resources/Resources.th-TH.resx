@@ -124,7 +124,7 @@
     <value>ไฟล์แนบ</value>
   </data>
   <data name="Attachment_Max_Size" xml:space="preserve">
-    <value>The maximum size of total attachments is 15M</value>
+    <value>The maximum size of total attachments is 15MB</value>
   </data>
   <data name="Attachment_Supported_Types" xml:space="preserve">
     <value>File is invalid. Please select an image file</value>
