@@ -46,7 +46,7 @@ namespace GameUser.Features.Authentications
         }
 
         public async Task<UserSignInResponse> SignIn(VerificationTokenRequest request)
-        {
+        {            
             var verificationResult = await api.VerifyToken(request);
 
             if (verificationResult.IsSuccessful)
@@ -59,7 +59,7 @@ namespace GameUser.Features.Authentications
                 return new UserSignInResponse(true, userSession.UserName, language, userSession.SessionId, userSession.Currency, expiredIn);
             }
 
-            return new UserSignInResponse();
+            return new UserSignInResponse();           
         }
 
         public async Task<RefreshSessionResponse> Refresh(RefreshSessionRequest request)
@@ -147,7 +147,8 @@ namespace GameUser.Features.Authentications
                     SSOToken = request.Token,
                     UserId = user.Id.ToString(),
                     UserName = verifyTokenResult.MemberKey.ToLower(),
-                    SessionId = sessionId
+                    SessionId = sessionId,
+                    IsCash = verifyTokenResult.IsCash
                 };
 
                 session = await userSessionService.CreateUserSession(userSession);
