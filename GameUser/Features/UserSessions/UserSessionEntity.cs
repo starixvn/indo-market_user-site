@@ -55,9 +55,6 @@ namespace GameUser.Features.UserSessions
         public string MemberName { get; set; }
 
         [BsonElement("__v")]
-        public int Version { get; set; }
-
-        [BsonElement("isCash")]
-        public bool IsCash { get; set; }
+        public int Version { get; set; }       
     }
 }

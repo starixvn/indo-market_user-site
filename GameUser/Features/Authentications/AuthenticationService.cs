@@ -112,7 +112,8 @@ namespace GameUser.Features.Authentications
                         MemberName = verifyTokenResult.MemberName,
                         UserName = verifyTokenResult.MemberKey.ToLower(),
                         RegDate = this.dateTimeProvider.Now(),
-                        Password = Guid.NewGuid().ToString()
+                        Password = Guid.NewGuid().ToString(),
+                        IsCash = verifyTokenResult.IsCash
                     }
                 };
 
@@ -147,8 +148,7 @@ namespace GameUser.Features.Authentications
                     SSOToken = request.Token,
                     UserId = user.Id.ToString(),
                     UserName = verifyTokenResult.MemberKey.ToLower(),
-                    SessionId = sessionId,
-                    IsCash = verifyTokenResult.IsCash
+                    SessionId = sessionId
                 };
 
                 session = await userSessionService.CreateUserSession(userSession);
