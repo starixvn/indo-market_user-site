@@ -46,7 +46,7 @@ namespace GameUser.Features.Authentications
         }
 
         public async Task<UserSignInResponse> SignIn(VerificationTokenRequest request)
-        {            
+        {
             var verificationResult = await api.VerifyToken(request);
 
             if (verificationResult.IsSuccessful)
@@ -59,7 +59,7 @@ namespace GameUser.Features.Authentications
                 return new UserSignInResponse(true, userSession.UserName, language, userSession.SessionId, userSession.Currency, expiredIn);
             }
 
-            return new UserSignInResponse();           
+            return new UserSignInResponse();
         }
 
         public async Task<RefreshSessionResponse> Refresh(RefreshSessionRequest request)
@@ -162,14 +162,19 @@ namespace GameUser.Features.Authentications
             var currency = verifyTokenResult.Currency;
 
             if (!string.IsNullOrWhiteSpace(currency)
-                && currency.ToUpperInvariant() == UUSCurrencyName
-                && !string.IsNullOrWhiteSpace(verifyTokenResult.Seq)
-                && verifyTokenResult.Seq.Contains(','))
+                && currency.ToUpperInvariant() == UUSCurrencyName)
             {
-                var seqWords = verifyTokenResult.Seq.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
-                if (seqWords.Any())
+                if(!string.IsNullOrWhiteSpace(verifyTokenResult.Market))
                 {
-                    currency = $"{currency}-{seqWords.Last()}";
+                    currency = $"{currency}-{verifyTokenResult.Market.ToUpperInvariant()}";
+                }
+                else if (!string.IsNullOrWhiteSpace(verifyTokenResult.Seq) && verifyTokenResult.Seq.Contains(','))
+                {
+                    var seqWords = verifyTokenResult.Seq.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+                    if (seqWords.Any())
+                    {
+                        currency = $"{currency}-{seqWords.Last()}";
+                    }
                 }
             }
 
