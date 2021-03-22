@@ -139,8 +139,8 @@
     <value>說明不能為空</value>
   </data>
   <data name="Description_Hint" xml:space="preserve">
-    <value>"即使我們無法親自回覆所有訊息，
-我們都很樂意聽取您的意見，並會認真考慮。"</value>
+    <value>即使我們無法親自回覆所有訊息，
+我們都很樂意聽取您的意見，並會認真考慮。</value>
   </data>
   <data name="Description_Max_Characters" xml:space="preserve">
     <value>您已達字數限制500字。</value>
