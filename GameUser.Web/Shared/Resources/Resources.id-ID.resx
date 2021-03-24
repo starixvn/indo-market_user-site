@@ -118,19 +118,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AddImage" xml:space="preserve">
-    <value>Add image</value>
+    <value>Tambahkan gambar</value>
   </data>
   <data name="Attachment" xml:space="preserve">
     <value>Lampiran</value>
   </data>
   <data name="Attachment_Max_Size" xml:space="preserve">
-    <value>The maximum size of total attachments is 15MB</value>
+    <value>Ukuran maksimum dari total Lampiran adalah 15MB</value>
   </data>
   <data name="Attachment_Supported_Types" xml:space="preserve">
-    <value>File is invalid. Please select an image file</value>
+    <value>File tidak valid. Pilih file gambar</value>
   </data>
   <data name="BackToLobby" xml:space="preserve">
-    <value>Back to Lobby</value>
+    <value>Kembali ke Lobi</value>
   </data>
   <data name="Description" xml:space="preserve">
     <value>Deskripsi</value>
@@ -142,25 +142,28 @@
     <value>Meskipun kami tidak dapat membalas semua pesan secara pribadi,  Segala bentuk kritik dan saran anda akan Kami terima dan tinjau dengan serius</value>
   </data>
   <data name="Description_Max_Characters" xml:space="preserve">
-    <value>You have reached the maximum number of 500 characters</value>
+    <value>Anda telah mencapai jumlah maksimum 500 karakter</value>
   </data>
   <data name="Errors" xml:space="preserve">
-    <value>Errors</value>
+    <value>Kesalahan</value>
   </data>
   <data name="GameSuggestion" xml:space="preserve">
     <value>Saran permainan</value>
   </data>
   <data name="OK" xml:space="preserve">
-    <value>OK</value>
+    <value>Baik</value>
+  </data>
+  <data name="PleaseCloseWindow" xml:space="preserve">
+    <value>Harap tutup jendela saat ini dan coba login kembali lagi.</value>
   </data>
   <data name="PleaseTryAgain" xml:space="preserve">
-    <value>Please try again!</value>
+    <value>Silakan coba lagi!</value>
   </data>
   <data name="Please_Let_Us_Know" xml:space="preserve">
     <value>Harap beri tahu kami terlebih dahulu apa yang ingin Anda lakukan:</value>
   </data>
   <data name="Something_Wrong" xml:space="preserve">
-    <value>An unexpected error occurred</value>
+    <value>Terjadi kesalahan yang tidak terduga</value>
   </data>
   <data name="Something_Wrong_On_Attachment" xml:space="preserve">
     <value>There is something wrong on Attachment Images</value>
@@ -175,6 +178,9 @@
     <value>Terima kasih! Permintaan Anda telah berhasil dikirim</value>
   </data>
   <data name="TryAgain" xml:space="preserve">
-    <value>Try Again</value>
+    <value>Coba lagi</value>
+  </data>
+  <data name="YourSessionTimeOut" xml:space="preserve">
+    <value>Sesi Anda telah habis waktunya atau Anda belum login.</value>
   </data>
 </root>

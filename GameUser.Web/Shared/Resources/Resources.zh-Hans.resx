@@ -154,6 +154,9 @@
   <data name="OK" xml:space="preserve">
     <value>确定</value>
   </data>
+  <data name="PleaseCloseWindow" xml:space="preserve">
+    <value>请关闭视窗后再重新登入。</value>
+  </data>
   <data name="PleaseTryAgain" xml:space="preserve">
     <value>请重试！</value>
   </data>
@@ -177,5 +180,8 @@
   </data>
   <data name="TryAgain" xml:space="preserve">
     <value>重试</value>
+  </data>
+  <data name="YourSessionTimeOut" xml:space="preserve">
+    <value>您的时效已过期或是您尚未登入，</value>
   </data>
 </root>

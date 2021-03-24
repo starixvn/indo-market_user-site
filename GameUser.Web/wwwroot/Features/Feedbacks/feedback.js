@@ -125,8 +125,7 @@ class Feedback {
         }
 
         if (errorMessage === "") {
-            this.mainForm.find('#descErrors').hide();
-            this.mainForm.find('#descText').removeClass('error-border');
+            this.hideDescErrors();
             return true;
         }
         else {
@@ -141,14 +140,14 @@ class Feedback {
     }
 
     hideDescErrors() {
-        setTimeout(function () {
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(function () {
             this.mainForm.find('#descErrors').hide();
             this.mainForm.find('#descText').removeClass('error-border');
-        }.bind(this), 3000);
+        }.bind(this), 5000);
     }
 
     onDescKeyUp() {
-        console.log("key up");
         this.validateDescs(this.mainForm);
         this.updateWordCount();
     }

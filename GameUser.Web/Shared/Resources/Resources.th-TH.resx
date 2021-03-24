@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AddImage" xml:space="preserve">
-    <value>Add image</value>
+    <value>ใส่รูปภาพ</value>
   </data>
   <data name="Attachment" xml:space="preserve">
     <value>ไฟล์แนบ</value>
@@ -127,10 +127,10 @@
     <value>The maximum size of total attachments is 15MB</value>
   </data>
   <data name="Attachment_Supported_Types" xml:space="preserve">
-    <value>File is invalid. Please select an image file</value>
+    <value>ไฟล์ไม่ถูกต้อง กรุณาเลือกไฟล์ภาพ</value>
   </data>
   <data name="BackToLobby" xml:space="preserve">
-    <value>Back to Lobby</value>
+    <value>กลับไปที่ล็อบบี้</value>
   </data>
   <data name="Description" xml:space="preserve">
     <value>คำอธิบาย</value>
@@ -145,22 +145,25 @@
     <value>You have reached the maximum number of 500 characters</value>
   </data>
   <data name="Errors" xml:space="preserve">
-    <value>Errors</value>
+    <value>ข้อผิดพลาด</value>
   </data>
   <data name="GameSuggestion" xml:space="preserve">
     <value>คำแนะนำเกม</value>
   </data>
   <data name="OK" xml:space="preserve">
-    <value>OK</value>
+    <value>ตกลง</value>
+  </data>
+  <data name="PleaseCloseWindow" xml:space="preserve">
+    <value>กรุณาปิดหน้าต่างปัจจุบันและลองเข้าสู่ระบบอีกครั้ง.</value>
   </data>
   <data name="PleaseTryAgain" xml:space="preserve">
-    <value>Please try again!</value>
+    <value>กรุณาลองอีกครั้ง!</value>
   </data>
   <data name="Please_Let_Us_Know" xml:space="preserve">
     <value>โปรดแจ้งให้เราทราบว่าคุณต้องการทอะไร</value>
   </data>
   <data name="Something_Wrong" xml:space="preserve">
-    <value>An unexpected error occurred</value>
+    <value>เกิดความผิดพลาดขึ้น</value>
   </data>
   <data name="Something_Wrong_On_Attachment" xml:space="preserve">
     <value>There is something wrong on Attachment Images</value>
@@ -175,6 +178,9 @@
     <value>ขอบคุณ! ส่งคำขอของคุณเรียบร้อยแล้ว</value>
   </data>
   <data name="TryAgain" xml:space="preserve">
-    <value>Try Again</value>
+    <value>ลองอีกครั้ง</value>
+  </data>
+  <data name="YourSessionTimeOut" xml:space="preserve">
+    <value>หมดเวลาหรือคุณยังไม่ได้เข้าสู่ระบบ.</value>
   </data>
 </root>

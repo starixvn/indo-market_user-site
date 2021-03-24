@@ -153,6 +153,9 @@
   <data name="OK" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="PleaseCloseWindow" xml:space="preserve">
+    <value>Please close the current windows and try login again.</value>
+  </data>
   <data name="PleaseTryAgain" xml:space="preserve">
     <value>Please try again!</value>
   </data>
@@ -176,5 +179,8 @@
   </data>
   <data name="TryAgain" xml:space="preserve">
     <value>Try Again</value>
+  </data>
+  <data name="YourSessionTimeOut" xml:space="preserve">
+    <value>Your session has timed out or you have not logged in yet.</value>
   </data>
 </root>
