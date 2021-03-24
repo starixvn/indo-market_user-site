@@ -124,7 +124,7 @@
     <value>ไฟล์แนบ</value>
   </data>
   <data name="Attachment_Max_Size" xml:space="preserve">
-    <value>The maximum size of total attachments is 15MB</value>
+    <value>ขนาดของไฟล์ไม่ควรเกิน 15MB</value>
   </data>
   <data name="Attachment_Supported_Types" xml:space="preserve">
     <value>ไฟล์ไม่ถูกต้อง กรุณาเลือกไฟล์ภาพ</value>
@@ -142,7 +142,7 @@
     <value>ขอขอบคุณสำหรับคำแนะนำและความคิดเห็นที่ทุกท่านสละเวลาแจ้งเข้ามา ถึงแม้ว่าเราจะไม่สามารถตอบกลับทุกท่านได้แต่เราจะนำคำแนะนำไปดำเนินการเพื่อการบริการที่ดียิ่งขึ้น</value>
   </data>
   <data name="Description_Max_Characters" xml:space="preserve">
-    <value>You have reached the maximum number of 500 characters</value>
+    <value>จำนวนตัวอักษรของคุณเกินกว่า 500 ตัวอักษร</value>
   </data>
   <data name="Errors" xml:space="preserve">
     <value>ข้อผิดพลาด</value>
