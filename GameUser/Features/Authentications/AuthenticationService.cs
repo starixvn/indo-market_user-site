@@ -6,6 +6,7 @@ using GameUser.Features.ApiComminicators.Models;
 using GameUser.Features.Authentications.Models;
 using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
+using GameUser.Shared.Constants;
 using GameUser.Shared.Models;
 using GameUser.Shared.Wrappers;
 
@@ -28,13 +29,20 @@ namespace GameUser.Features.Authentications
         private readonly IUserService userService;
         private readonly IUserSessionService userSessionService;
         private readonly IDateTimeProvider dateTimeProvider;
-
-        public AuthenticationService(IApi api, IUserService userService, IUserSessionService userSessionService, IDateTimeProvider dateTimeProvider)
+        private readonly ICultureConfigs cultureConfigs;
+        
+        public AuthenticationService(
+            IApi api, 
+            IUserService userService, 
+            IUserSessionService userSessionService, 
+            IDateTimeProvider dateTimeProvider,
+            ICultureConfigs cultureConfigs)
         {
             this.api = api;
             this.userService = userService;
             this.userSessionService = userSessionService;
             this.dateTimeProvider = dateTimeProvider;
+            this.cultureConfigs = cultureConfigs;
         }
 
         public async Task<UserSignInResponse> SignIn(VerificationTokenRequest request)
@@ -46,8 +54,9 @@ namespace GameUser.Features.Authentications
                 var user = await CreateUserIfNotExist(verificationResult);
                 var userSession = await AddSessionIfNotExist(user, verificationResult, request);
                 var expiredIn = userSession.ReCheckInTime.AddMinutes(sessionTimeout);
+                var language = ConvertLanguage(userSession.Language);
 
-                return new UserSignInResponse(true, userSession.UserName, userSession.Language, userSession.SessionId, userSession.Currency, expiredIn);
+                return new UserSignInResponse(true, userSession.UserName, language, userSession.SessionId, userSession.Currency, expiredIn);
             }
 
             return new UserSignInResponse();
@@ -103,7 +112,8 @@ namespace GameUser.Features.Authentications
                         MemberName = verifyTokenResult.MemberName,
                         UserName = verifyTokenResult.MemberKey.ToLower(),
                         RegDate = this.dateTimeProvider.Now(),
-                        Password = Guid.NewGuid().ToString()
+                        Password = Guid.NewGuid().ToString(),
+                        IsCash = verifyTokenResult.IsCash
                     }
                 };
 
@@ -128,7 +138,7 @@ namespace GameUser.Features.Authentications
                     ClientId = verifyTokenResult.ClientId,
                     Currency = currency,
                     Ip = request.Ip,
-                    Language = Languages.Convert(verifyTokenResult.Language),
+                    Language = ConvertLanguage(verifyTokenResult.Language),
                     MemberId = verifyTokenResult.MemberId,
                     MemberName = verifyTokenResult.MemberName,
                     OWSeq = verifyTokenResult.Seq,
@@ -152,14 +162,19 @@ namespace GameUser.Features.Authentications
             var currency = verifyTokenResult.Currency;
 
             if (!string.IsNullOrWhiteSpace(currency)
-                && currency.ToUpperInvariant() == UUSCurrencyName
-                && !string.IsNullOrWhiteSpace(verifyTokenResult.Seq)
-                && verifyTokenResult.Seq.Contains(','))
+                && currency.ToUpperInvariant() == UUSCurrencyName)
             {
-                var seqWords = verifyTokenResult.Seq.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
-                if (seqWords.Any())
+                if(!string.IsNullOrWhiteSpace(verifyTokenResult.Market))
                 {
-                    currency = $"{currency}-{seqWords.Last()}";
+                    currency = $"{currency}-{verifyTokenResult.Market.ToUpperInvariant()}";
+                }
+                else if (!string.IsNullOrWhiteSpace(verifyTokenResult.Seq) && verifyTokenResult.Seq.Contains(','))
+                {
+                    var seqWords = verifyTokenResult.Seq.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+                    if (seqWords.Any())
+                    {
+                        currency = $"{currency}-{seqWords.Last()}";
+                    }
                 }
             }
 
@@ -176,6 +191,21 @@ namespace GameUser.Features.Authentications
             }
 
             return true;
+        }
+
+        private string ConvertLanguage(string language)
+        {
+            if(language == Language.ChineseNewSimplifiedCode)
+            {
+                language = Language.ChineseSimplifiedCode;
+            }
+
+            if (string.IsNullOrWhiteSpace(language) || !cultureConfigs.SupportedCultures.Contains(language))
+            {
+                return cultureConfigs.DefaultCulture;
+            }
+
+            return language;
         }
     }
 }

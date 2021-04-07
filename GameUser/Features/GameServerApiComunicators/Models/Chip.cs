@@ -21,4 +21,9 @@
 
         public ChipTheme Theme { get; set; }
     }
+
+    public class SimpleChip
+    {
+        public string Label { get; set; }
+    }
 }

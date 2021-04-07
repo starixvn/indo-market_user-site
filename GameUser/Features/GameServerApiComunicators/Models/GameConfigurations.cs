@@ -12,6 +12,6 @@ namespace GameUser.Features.GameServerApiComunicators.Models
 
         public int SortOrder { get; set; }
 
-        public IList<Chip> Chips { get; set; }
+        public IList<SimpleChip> Chips { get; set; }
     }
 }

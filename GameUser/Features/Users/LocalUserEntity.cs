@@ -27,5 +27,8 @@ namespace GameUser.Features.Users
 
         [BsonElement("currency")]
         public string Currency { get; set; }
+
+        [BsonElement("isCash")]
+        public bool IsCash { get; set; }
     }
 }

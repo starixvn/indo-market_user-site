@@ -25,5 +25,9 @@
         public int Code { get; set; }
 
         public string Message { get; set; }
+
+        public bool IsCash { get; set; }
+
+        public string Market { get; set; }
     }
 }

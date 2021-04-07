@@ -139,7 +139,7 @@
             }
             else
             {
-                return new RedirectResult("/Error/NotAuthorized");
+                return new RedirectResult(string.Format("/{0}/Error/NotAuthorized", context.RouteData.Values["culture"]));
             }            
         }
     }

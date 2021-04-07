@@ -117,64 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AddImage" xml:space="preserve">
-    <value>Add image</value>
+  <data name="NewGame" xml:space="preserve">
+    <value>建议游戏新功能</value>
   </data>
-  <data name="Attachment" xml:space="preserve">
-    <value>Attachment</value>
+  <data name="OtherIssue" xml:space="preserve">
+    <value>回报其他问题</value>
   </data>
-  <data name="Attachment_Max_Size" xml:space="preserve">
-    <value>The maximum size of total attachments is 15M</value>
-  </data>
-  <data name="Attachment_Supported_Types" xml:space="preserve">
-    <value>File is invalid. Please select an image file</value>
-  </data>
-  <data name="BackToLobby" xml:space="preserve">
-    <value>Back to Lobby</value>
-  </data>
-  <data name="Description" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="Description_Cant_Empty" xml:space="preserve">
-    <value>The description can't be empty</value>
-  </data>
-  <data name="Description_Hint" xml:space="preserve">
-    <value>Even though we can't reply to all messages personally, all sugestions are more than welcome and are taken into serious consideration.</value>
-  </data>
-  <data name="Description_Max_Characters" xml:space="preserve">
-    <value>You have reached the maximum number of 500 characters</value>
-  </data>
-  <data name="Errors" xml:space="preserve">
-    <value>Errors</value>
-  </data>
-  <data name="GameSuggestion" xml:space="preserve">
-    <value>Game Suggestion</value>
-  </data>
-  <data name="OK" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="PleaseTryAgain" xml:space="preserve">
-    <value>Please try again!</value>
-  </data>
-  <data name="Please_Let_Us_Know" xml:space="preserve">
-    <value>Please first let us know what you'd like to do:</value>
+  <data name="ReportBug" xml:space="preserve">
+    <value>报告错误</value>
   </data>
   <data name="Something_Wrong" xml:space="preserve">
-    <value>An unexpected error occurred</value>
-  </data>
-  <data name="Something_Wrong_On_Attachment" xml:space="preserve">
-    <value>There is something wrong on Attachment Images</value>
-  </data>
-  <data name="Submit" xml:space="preserve">
-    <value>Submit</value>
-  </data>
-  <data name="Successfully" xml:space="preserve">
-    <value>Successfully!</value>
-  </data>
-  <data name="Successfully_Sent" xml:space="preserve">
-    <value>Thank you! Your request has been successfully sent</value>
-  </data>
-  <data name="TryAgain" xml:space="preserve">
-    <value>Try Again</value>
+    <value>发生意外错误</value>
   </data>
 </root>

@@ -57,7 +57,7 @@ namespace GameUser.Web.Features.Feedbacks
                 Feedback = new FeedbackViewModel(),
                 FeedbackTypeOptions = feedbackTypes.ToList(),
                 NickName = userInfo.Name,
-                Culture = (string)httpContext.HttpContext.Request.RouteValues["culture"] ?? "en",
+                Culture = (string)httpContext.HttpContext.Request.RouteValues["culture"] ?? "en-US",
                 Avatar = await avatarService.GetAvatar(userInfo.AvatarId.ToString()),
                 CustId = userSession.MemberId
             };
