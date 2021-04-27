@@ -8,6 +8,9 @@ using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Constants;
 using GameUser.Shared.Wrappers;
+using Newtonsoft.Json;
+using Sentry;
+using Sentry.Protocol;
 
 namespace GameUser.Features.Authentications
 {
@@ -29,19 +32,22 @@ namespace GameUser.Features.Authentications
         private readonly IUserSessionService userSessionService;
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly ICultureConfigs cultureConfigs;
-        
+        private readonly ISentryClient sentryClient;
+
         public AuthenticationService(
             IApi api, 
             IUserService userService, 
             IUserSessionService userSessionService, 
             IDateTimeProvider dateTimeProvider,
-            ICultureConfigs cultureConfigs)
+            ICultureConfigs cultureConfigs,
+            ISentryClient sentryClient)
         {
             this.api = api;
             this.userService = userService;
             this.userSessionService = userSessionService;
             this.dateTimeProvider = dateTimeProvider;
             this.cultureConfigs = cultureConfigs;
+            this.sentryClient = sentryClient;
         }
 
         public async Task<UserSignInResponse> SignIn(VerificationTokenRequest request)
@@ -68,7 +74,7 @@ namespace GameUser.Features.Authentications
                     return new UserSignInResponse(true, userSession.UserName, language, userSession.SessionId, userSession.Currency, expiredIn);
                 } else
                 {
-                    // TODO Write Log
+                    sentryClient.CaptureMessage($"Brand verification failed on {DateTime.UtcNow}. User: {JsonConvert.SerializeObject(user.Local)}. SSO Brand Name: {verificationResult.BrandName}", SentryLevel.Error);
                 }
             }
 
