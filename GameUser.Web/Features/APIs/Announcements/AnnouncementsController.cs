@@ -1,6 +1,8 @@
 ﻿using GameUser.Features.Annoucements;
 using GameUser.Features.Announcements;
+using GameUser.Shared.SessionFilterAuthentications;
 using GameUser.Web.Features.APIs.Announcements.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +22,7 @@ namespace GameUser.Web.Features.APIs.MessageAnnouncement
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = SessionFilterAuthenticationDefaults.AuthenticationScheme)]
         public async Task<JsonResult> Get(string currency = "uus")
         {
             var announcementMessages = await this.announcementService.GetMessages(currency);
