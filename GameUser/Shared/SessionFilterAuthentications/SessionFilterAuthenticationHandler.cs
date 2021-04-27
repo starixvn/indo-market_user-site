@@ -50,7 +50,7 @@ namespace GameUser.Shared.SessionFilterAuthentications
             {
                 var currentSession = await userSessionService.GetUserSession(sessionId);
 
-                if (!IsExpiredSession(currentSession))
+                if (IsExpiredSession(currentSession))
                 {
                     cache.Dispose();
                 } else
