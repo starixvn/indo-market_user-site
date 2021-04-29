@@ -5,7 +5,8 @@ using System;
 namespace GameUser.Features.UserInfos
 {
     [BsonIgnoreExtraElements]
-    class UserInfoEntity: Document
+    [BsonCollection("userinfos")]
+    public class UserInfoEntity: Document
     {
         [BsonElement("name")]
         public string Name { get; set; }
@@ -26,7 +27,7 @@ namespace GameUser.Features.UserInfos
         public DateTime JoinedOn { get; set; }
 
         [BsonElement("red")]
-        public double Balance { get; set; }
+        public double Red { get; set; }
 
         [BsonElement("type")]
         public bool Type { get; set; }
