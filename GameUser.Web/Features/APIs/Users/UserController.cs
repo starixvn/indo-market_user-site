@@ -1,5 +1,4 @@
 ﻿using GameUser.Features.UserInfos;
-using GameUser.Shared.SessionFilterAuthentications;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +25,7 @@ namespace GameUser.Web.Features.APIs.Users
 
             if (!string.IsNullOrEmpty(userId))
             {
-                userInfo = await userInfoService.GetUserInfo(userId);
+                userInfo = await userInfoService.GetUserInfoFromCache(userId);
             }
 
             return Json(userInfo);
