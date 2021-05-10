@@ -104,7 +104,7 @@ namespace GameUser.Tests.Features.Feedbacks
             entity.Category.Should().Be(feedback.Category);
             entity.Description.Should().Be(feedback.Description);
             entity.Nickname.Should().Be(nickname);
-            emailRequest.Subject.Should().Be($"Saba Club_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{"Request a new game"}");
+            emailRequest.Subject.Should().Be($"Vgaming_[{DateTime.Now:dd/MM/yyyy}]_{nickname}_{"Request a new game"}");
             emailRequest.Body.Should().Be(expectedBody);
             emailRequest.Attachments.Should().BeEquivalentTo(files);
             emailRequest.ToAddress.Should().Be("recever@gmail.com");
