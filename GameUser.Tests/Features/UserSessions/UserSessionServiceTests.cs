@@ -16,8 +16,7 @@ namespace GameUser.Tests.Features.UserSessions
         {
             // Arrange
             var repository = Substitute.For<IGenericRepository<UserSessionEntity>>();
-            var userInfoRepository = Substitute.For<IGenericRepository<UserInfoEntity>>(); 
-            var service = new UserSessionService(repository, userInfoRepository);
+            var service = new UserSessionService(repository);
 
             var userSessionEntity = new UserSessionEntity
             {
@@ -45,27 +44,6 @@ namespace GameUser.Tests.Features.UserSessions
 
             // Assert
             result.Should().Be(userSessionEntity);
-        }
-
-        [Fact]
-        public async Task GetUserInfo_WhenCalled_FindUserInfo()
-        {
-            // Arrange
-            var repository = Substitute.For<IGenericRepository<UserSessionEntity>>();
-            var userInfoRepository = Substitute.For<IGenericRepository<UserInfoEntity>>();
-            var service = new UserSessionService(repository, userInfoRepository);
-
-            var userSessionEntity = new UserSessionEntity();
-            repository.FindOneAsync(Arg.Any<Expression<Func<UserSessionEntity, bool>>>()).Returns(userSessionEntity);
-
-            var userInfo = new UserInfoEntity();
-            userInfoRepository.FindOneAsync(Arg.Any<Expression<Func<UserInfoEntity, bool>>>()).Returns(userInfo);
-
-            // Act
-            var result = await service.GetUserInfo("abc");
-
-            // Assert
-            result.Should().Be(userInfo);
         }
     }
 }

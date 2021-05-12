@@ -1,5 +1,6 @@
 ﻿using GameUser.Features.Avatars;
 using GameUser.Features.Feedbacks;
+using GameUser.Features.UserInfos;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Models;
 using GameUser.Web.Features.Feedbacks.Requests;
@@ -27,6 +28,7 @@ namespace GameUser.Web.Features.Feedbacks
         private readonly IAvatarService avatarService;
         private readonly IUserSessionService userSessionService;
         private readonly IStringLocalizer<Resources> localizer;
+        private readonly IUserInfoService userInfoService;
 
         public FeedbackController(
             IHttpContextAccessor httpContext,
@@ -34,7 +36,8 @@ namespace GameUser.Web.Features.Feedbacks
             IAppSettings appSetting,
             IAvatarService avatarService,
             IUserSessionService userSessionService,
-            IStringLocalizer<Resources> localizer)
+            IStringLocalizer<Resources> localizer,
+            IUserInfoService userInfoService)
         {
             this.httpContext = httpContext;
             this.feedbackService = feedbackService;
@@ -42,6 +45,7 @@ namespace GameUser.Web.Features.Feedbacks
             this.avatarService = avatarService;
             this.userSessionService = userSessionService;
             this.localizer = localizer;
+            this.userInfoService = userInfoService;
         }
 
         [HttpGet]
@@ -50,7 +54,7 @@ namespace GameUser.Web.Features.Feedbacks
             var feedbackTypes = await feedbackService.GetTypes();
             var sessionId = feedbackRequest.SessionId ?? this.httpContext.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "sessionid").Value;
             var userSession = await userSessionService.GetUserSession(sessionId);
-            var userInfo = await userSessionService.GetUserInfo(userSession);
+            var userInfo = await userInfoService.GetUserInfo(userSession.UserId);
 
             var model = new GetFeedbackViewModel
             {
