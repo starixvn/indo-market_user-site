@@ -8,8 +8,6 @@ namespace GameUser.Features.UserInfos
     public interface IUserInfoService
     {
         Task<UserInfoEntity> GetUserInfo(string userId);
-
-        Task<UserInfoEntity> GetUserInfoFromCache(string userId);
     }
 
     public class UserInfoService : IUserInfoService
@@ -27,24 +25,24 @@ namespace GameUser.Features.UserInfos
 
         public async Task<UserInfoEntity> GetUserInfo(string userId)
         {
-            var userInfo = await repository.FindOneAsync(info => info.UserId == userId);
 
-            return userInfo;
-        }
-
-        public async Task<UserInfoEntity> GetUserInfoFromCache(string userId)
-        {
             var info = await memoryCache.GetOrCreateAsync(userId, cache =>
             {
                 var timeout = TimeSpan.FromMinutes(settings.CacheTimeout);
 
                 cache.SetSlidingExpiration(timeout);
 
-                return GetUserInfo(userId);
-
+                return GetUserInfoFromDatabase(userId);
             });
 
             return info;
+        }
+
+        protected async Task<UserInfoEntity> GetUserInfoFromDatabase(string userId)
+        {
+            var userInfo = await repository.FindOneAsync(info => info.UserId == userId);
+
+            return userInfo;
         }
     }
 }

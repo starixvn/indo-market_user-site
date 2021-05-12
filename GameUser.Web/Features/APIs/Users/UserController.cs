@@ -25,7 +25,7 @@ namespace GameUser.Web.Features.APIs.Users
 
             if (!string.IsNullOrEmpty(userId))
             {
-                userInfo = await userInfoService.GetUserInfoFromCache(userId);
+                userInfo = await userInfoService.GetUserInfo(userId);
             }
 
             return Json(userInfo);

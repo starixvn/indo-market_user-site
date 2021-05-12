@@ -78,14 +78,8 @@ namespace GameUser.Shared.Wrappers
                 .Select(s => s.Trim())
                 .ToList();
 
-        public string GetUserAgent(IHttpContextAccessor accessor)
-        {
-            return GetHeaderValueAs<string>(accessor, "User-Agent");
-        }
+        public string GetUserAgent(IHttpContextAccessor accessor) => GetHeaderValueAs<string>(accessor, "User-Agent");
 
-        public string GetAuthorizationToken(IHttpContextAccessor accessor)
-        {
-            return GetHeaderValueAs<string>(accessor, "Authorization");
-        }
+        public string GetAuthorizationToken(IHttpContextAccessor accessor) => GetHeaderValueAs<string>(accessor, "Authorization");
     }
 }
