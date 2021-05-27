@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using GameUser.Shared.Database;
+using MongoDB.Driver;
 
 namespace GameUser.Features.Users
 {
@@ -8,6 +9,9 @@ namespace GameUser.Features.Users
         Task<UserEntity> CreateUser(UserEntity userEntity);
 
         Task<UserEntity> GetUser(string userName);
+
+
+        Task UpdateBrandName(string username, string brandName);
     }
 
     public class UserService : IUserService
@@ -31,6 +35,23 @@ namespace GameUser.Features.Users
         public async Task<UserEntity> GetUser(string userName)
         {
             var user = await userRepository.FindOneAsync(user => user.Local.UserName == userName);
+
+            return user;
+        }
+
+        public async Task UpdateBrandName(string username, string brandName)
+        {
+            var update = Builders<UserEntity>.Update
+                .Set(user => user.Local.BrandName, brandName);
+
+            await UpdateUser(username, update);
+        }
+
+        protected async Task<UserEntity> UpdateUser(string username, UpdateDefinition<UserEntity> userUpdater)
+        {
+            await userRepository.UpdateOneAsync(user => user.Local.UserName == username, userUpdater);
+
+            var user = await GetUser(username);
 
             return user;
         }

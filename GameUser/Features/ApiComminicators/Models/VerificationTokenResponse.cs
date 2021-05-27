@@ -29,5 +29,9 @@
         public bool IsCash { get; set; }
 
         public string Market { get; set; }
+
+        public string SiteName { get; set; }
+
+        public string BrandName { get; set; }
     }
 }

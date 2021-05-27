@@ -9,6 +9,10 @@ namespace GameUser.Shared.Wrappers
     public interface IHttpRequestWrapper
     {
         string GetClientIp(IHttpContextAccessor accessor);
+
+        string GetUserAgent(IHttpContextAccessor accessor);
+
+        string GetAuthorizationToken(IHttpContextAccessor accessor);
     }
 
     public class HttpRequestWrapper : IHttpRequestWrapper
@@ -73,5 +77,9 @@ namespace GameUser.Shared.Wrappers
                 .Split(',')
                 .Select(s => s.Trim())
                 .ToList();
+
+        public string GetUserAgent(IHttpContextAccessor accessor) => GetHeaderValueAs<string>(accessor, "User-Agent");
+
+        public string GetAuthorizationToken(IHttpContextAccessor accessor) => GetHeaderValueAs<string>(accessor, "Authorization");
     }
 }

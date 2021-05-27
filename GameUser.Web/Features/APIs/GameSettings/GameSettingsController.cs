@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
 using GameUser.Features.GameSettings;
+using GameUser.Shared.SessionFilterAuthentications;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameUser.Web.Features.APIs.GameSettings
@@ -16,6 +18,7 @@ namespace GameUser.Web.Features.APIs.GameSettings
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = SessionFilterAuthenticationDefaults.AuthenticationScheme)]
         public async Task<JsonResult> Get()
         {
             var result = await gameSettingsService.GetGameSettings();

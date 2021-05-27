@@ -2,6 +2,7 @@ namespace GameUser.Web
 {
     using System;
     using AutoMapper;
+    using GameUser.Shared.SessionFilterAuthentications;
     using GameUser.Web.Shared.Configurations;
     using GameUser.Web.Shared.Middlewares;
     using Microsoft.AspNetCore.Authentication.Cookies;
@@ -56,7 +57,8 @@ namespace GameUser.Web
                      {
                          ValidAudiences = Configuration.GetSection("BackendAuthenticationSettings:Audiences").Get<string[]>()
                      };
-                 });
+                 })
+                 .AddScheme<SessionFilterAuthenticationOptions, SessionFilterAuthenticationHandler>(SessionFilterAuthenticationDefaults.AuthenticationScheme, null);
 
             services.AddMvc(o => o.Conventions.Add(new FeatureConvention()))
                 .AddRazorOptions(options =>

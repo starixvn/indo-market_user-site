@@ -52,10 +52,10 @@
     .feedback .header .icon {
       background: url("Images/Logo.png") no-repeat;
       background-size: contain;
-      width: 120px;
-      height: 50px;
-      margin-right: 10%;
-      margin-top: 3px; }
+      width: 180px;
+      height: auto;
+      margin-right: 7%;
+      margin-top: -2px; }
   .feedback .footer {
     background: url("Images/footer.png");
     text-align: center;

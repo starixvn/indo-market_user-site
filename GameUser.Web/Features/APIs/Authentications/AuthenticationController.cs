@@ -1,12 +1,14 @@
-﻿using System.Threading.Tasks;
-using GameUser.Features.ApiComminicators.Models;
+﻿using GameUser.Features.ApiComminicators.Models;
 using GameUser.Features.Authentications;
 using GameUser.Features.Authentications.Models;
+using GameUser.Shared.SessionFilterAuthentications;
 using GameUser.Shared.Wrappers;
+using GameUser.Web.Features.APIs.Authentications.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace GameUser.Web.Features.APIs.Authentications
 {
@@ -20,7 +22,7 @@ namespace GameUser.Web.Features.APIs.Authentications
 
         public AuthenticationController(
             IAuthenticationService authenticationService,
-            IHttpContextAccessor accessor, 
+            IHttpContextAccessor accessor,
             IHttpRequestWrapper httpRequestWrapper)
         {
             this.authenticationService = authenticationService;
@@ -29,19 +31,31 @@ namespace GameUser.Web.Features.APIs.Authentications
         }
 
         [HttpPost("signin")]
-        public async Task<JsonResult> SignIn(VerificationTokenRequest request)
+        public async Task<JsonResult> SignIn(SignInRequest request)
         {
-            request.Ip = httpRequestWrapper.GetClientIp(accessor);
+            var authenticationRequet = new VerificationTokenRequest
+            {
+                Ip = httpRequestWrapper.GetClientIp(accessor),
+                Token = request.Token,
+                BrowserUserAgent = httpRequestWrapper.GetUserAgent(accessor)
+            };
 
-            var result = await authenticationService.SignIn(request);
+            var result = await authenticationService.SignIn(authenticationRequet);
 
             return Json(result);
         }
 
         [HttpPost("refresh")]
-        public async Task<JsonResult> RefreshSession(RefreshSessionRequest request)
+        [Authorize(AuthenticationSchemes = SessionFilterAuthenticationDefaults.AuthenticationScheme)]
+        public async Task<JsonResult> RefreshSession()
         {
-            var result = await authenticationService.Refresh(request);
+            var refreshSessionRequest = new RefreshSessionRequest
+            {
+                BrowserUserAgent = httpRequestWrapper.GetUserAgent(accessor),
+                Session = httpRequestWrapper.GetAuthorizationToken(accessor),
+            };
+
+            var result = await authenticationService.Refresh(refreshSessionRequest);
 
             return Json(result);
         }

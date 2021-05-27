@@ -99,8 +99,8 @@ namespace GameUser.Features.Feedbacks
             var feedbackTypes = await GetTypes("en-US");
             var category = feedbackTypes.FirstOrDefault(x => x.Value == feedback.Category).Text;
             var titleDate = $"[{DateTime.UtcNow.AddHours(8).ToString("yyyy/MM/dd", new CultureInfo("en-US"))}]";
-            var subject = $"Saba Club{(environment.Contains("PRO") ? string.Empty : "_" + environment)}_{titleDate}_{nickname}_{custId}_{category}";
-            var body = $"Dear Saba Club, " +
+            var subject = $"Vgaming{(environment.Contains("PRO") ? string.Empty : "_" + environment)}_{titleDate}_{nickname}_{custId}_{category}";
+            var body = $"Dear Vgaming, " +
                 $"{Environment.NewLine}{Environment.NewLine}" +
                 $"{feedback.Description} " +
                 $"{Environment.NewLine}{Environment.NewLine}" +
