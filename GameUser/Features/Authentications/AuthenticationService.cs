@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using GameUser.Features.ApiComminicators;
+﻿using GameUser.Features.ApiComminicators;
 using GameUser.Features.ApiComminicators.Models;
 using GameUser.Features.Authentications.Models;
 using GameUser.Features.Users;
@@ -11,6 +8,9 @@ using GameUser.Shared.Wrappers;
 using Newtonsoft.Json;
 using Sentry;
 using Sentry.Protocol;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GameUser.Features.Authentications
 {
@@ -26,21 +26,22 @@ namespace GameUser.Features.Authentications
     public class AuthenticationService : IAuthenticationService
     {
         private const string UUSCurrencyName = "UUS";
-        private static readonly int sessionTimeout = 20;
         private readonly IApi api;
         private readonly IUserService userService;
         private readonly IUserSessionService userSessionService;
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly ICultureConfigs cultureConfigs;
         private readonly ISentryClient sentryClient;
+        private readonly UserSessionSettings userSessionSettings;
 
         public AuthenticationService(
-            IApi api, 
-            IUserService userService, 
-            IUserSessionService userSessionService, 
+            IApi api,
+            IUserService userService,
+            IUserSessionService userSessionService,
             IDateTimeProvider dateTimeProvider,
             ICultureConfigs cultureConfigs,
-            ISentryClient sentryClient)
+            ISentryClient sentryClient,
+            UserSessionSettings userSessionSettings)
         {
             this.api = api;
             this.userService = userService;
@@ -48,6 +49,7 @@ namespace GameUser.Features.Authentications
             this.dateTimeProvider = dateTimeProvider;
             this.cultureConfigs = cultureConfigs;
             this.sentryClient = sentryClient;
+            this.userSessionSettings = userSessionSettings;
         }
 
         public async Task<UserSignInResponse> SignIn(VerificationTokenRequest request)
@@ -68,11 +70,12 @@ namespace GameUser.Features.Authentications
                     }
 
                     var userSession = await AddSessionIfNotExist(user, verificationResult, request);
-                    var expiredIn = userSession.ReCheckInTime.AddMinutes(sessionTimeout);
+                    var expiredIn = userSession.ReCheckInTime.AddMinutes(userSessionSettings.SessionDuration);
                     var language = ConvertLanguage(userSession.Language);
 
                     return new UserSignInResponse(true, userSession.UserName, language, userSession.SessionId, userSession.Currency, expiredIn);
-                } else
+                }
+                else
                 {
                     sentryClient.CaptureMessage($"Brand verification failed on {DateTime.UtcNow}. User: {JsonConvert.SerializeObject(user.Local)}. SSO Brand Name: {verificationResult.BrandName}", SentryLevel.Error);
                 }
@@ -86,13 +89,13 @@ namespace GameUser.Features.Authentications
             var userSession = await userSessionService.GetUserSession(request.Session);
             var isValidRequest = userSession != null && Equals(request.BrowserUserAgent, userSession.BrowserUserAgent);
 
-            if (isValidRequest && !IsExpiredSession(userSession))
+            if (isValidRequest && !userSessionService.IsExpiredSession(userSession))
             {
                 var now = dateTimeProvider.Now();
 
                 await userSessionService.ReCheckIn(request.Session, now);
 
-                var expiredIn = now.AddMinutes(sessionTimeout);
+                var expiredIn = now.AddMinutes(userSessionSettings.SessionDuration);
 
                 return new RefreshSessionResponse(true, expiredIn);
             }
@@ -105,7 +108,7 @@ namespace GameUser.Features.Authentications
             var userSession = await userSessionService.GetUserSession(request.Session);
             var isValidRequest = userSession != null && Equals(request.BrowserUserAgent, userSession.BrowserUserAgent);
 
-            return !isValidRequest || IsExpiredSession(userSession) ? new VerificationSessionResult
+            return !isValidRequest || userSessionService.IsExpiredSession(userSession) ? new VerificationSessionResult
             {
                 IsSuccessful = false
             } : new VerificationSessionResult
@@ -186,7 +189,7 @@ namespace GameUser.Features.Authentications
             if (!string.IsNullOrWhiteSpace(currency)
                 && currency.ToUpperInvariant() == UUSCurrencyName)
             {
-                if(!string.IsNullOrWhiteSpace(verifyTokenResult.Market))
+                if (!string.IsNullOrWhiteSpace(verifyTokenResult.Market))
                 {
                     currency = $"{currency}-{verifyTokenResult.Market.ToUpperInvariant()}";
                 }
@@ -203,21 +206,9 @@ namespace GameUser.Features.Authentications
             return currency;
         }
 
-        private static bool IsExpiredSession(UserSessionEntity userSession)
-        {
-            if (userSession != null)
-            {
-                var isExpired = userSession.ReCheckInTime.AddMinutes(sessionTimeout) < DateTime.UtcNow;
-
-                return isExpired;
-            }
-
-            return true;
-        }
-
         private string ConvertLanguage(string language)
         {
-            if(language == Language.ChineseNewSimplifiedCode)
+            if (language == Language.ChineseNewSimplifiedCode)
             {
                 language = Language.ChineseSimplifiedCode;
             }

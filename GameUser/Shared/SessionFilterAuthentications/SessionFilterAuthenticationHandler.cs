@@ -1,6 +1,5 @@
 ﻿using GameUser.Features.UserSessions;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -15,11 +14,9 @@ namespace GameUser.Shared.SessionFilterAuthentications
 {
     public class SessionFilterAuthenticationHandler : AuthenticationHandler<SessionFilterAuthenticationOptions>
     {
-        private readonly IMemoryCache memoryCache;
         private readonly IUserSessionService userSessionService;
         private readonly ISentryClient sentryClient;
 
-        private static readonly int sessionTimeout = 20;
         private static readonly string userAgentKey = "User-Agent";
         private static readonly string authorizationKey = "Authorization";
 
@@ -28,12 +25,10 @@ namespace GameUser.Shared.SessionFilterAuthentications
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock,
-            IMemoryCache memoryCache,
             IUserSessionService userSessionService,
             ISentryClient sentryClient)
             : base(options, logger, encoder, clock)
         {
-            this.memoryCache = memoryCache;
             this.userSessionService = userSessionService;
             this.sentryClient = sentryClient;
         }
@@ -46,11 +41,11 @@ namespace GameUser.Shared.SessionFilterAuthentications
             }
 
             var sessionId = Request.Headers[authorizationKey];
-            var session = await GetUserSession(sessionId);
+            var session = await userSessionService.GetUserSession(sessionId);
 
             WriteLog(session);
 
-            if (IsExpiredSession(session) || !IsSameUserAgent(session))
+            if (userSessionService.IsExpiredSession(session) || !IsSameUserAgent(session))
             {
                 return Fail();
             }
@@ -58,7 +53,8 @@ namespace GameUser.Shared.SessionFilterAuthentications
             return Success();
         }
 
-        private void WriteLog(UserSessionEntity session) {
+        private void WriteLog(UserSessionEntity session)
+        {
             if (!IsSameUserAgent(session))
             {
                 var userInfo = new
@@ -83,7 +79,7 @@ namespace GameUser.Shared.SessionFilterAuthentications
         {
             var isValidRequest = false;
             var isContainsSpecialHeaders = Request.Headers.ContainsKey(authorizationKey) && Request.Headers.ContainsKey(userAgentKey);
-            
+
             if (isContainsSpecialHeaders)
             {
                 string token = Request.Headers[authorizationKey];
@@ -92,43 +88,6 @@ namespace GameUser.Shared.SessionFilterAuthentications
             }
 
             return isValidRequest;
-        }
-
-        private async Task<UserSessionEntity> GetUserSession(string sessionId)
-        {
-            var session = await memoryCache.GetOrCreateAsync(sessionId, async cache =>
-            {
-                var currentSession = await userSessionService.GetUserSession(sessionId);
-
-                if (IsExpiredSession(currentSession))
-                {
-                    cache.Dispose();
-                }
-                else
-                {
-                    var timeout = currentSession.ReCheckInTime.AddMinutes(sessionTimeout);
-                    var relative = timeout.Subtract(currentSession.ReCheckInTime);
-
-                    cache.SetAbsoluteExpiration(relative);
-                }
-
-                return currentSession;
-
-            });
-
-            return session;
-        }
-
-        private bool IsExpiredSession(UserSessionEntity userSession)
-        {
-            if (userSession != null)
-            {
-                var isExpired = userSession.ReCheckInTime.AddMinutes(sessionTimeout) < DateTime.UtcNow;
-
-                return isExpired;
-            }
-
-            return true;
         }
 
         private bool IsSameUserAgent(UserSessionEntity userSession)
