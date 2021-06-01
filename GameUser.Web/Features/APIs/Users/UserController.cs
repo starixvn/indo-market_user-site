@@ -1,6 +1,9 @@
 ﻿using GameUser.Features.UserInfos;
+using GameUser.Shared.SessionFilterAuthentications;
+using GameUser.Shared.Wrappers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -11,10 +14,14 @@ namespace GameUser.Web.Features.APIs.Users
     public class UserController : Controller
     {
         private readonly IUserInfoService userInfoService;
+        private readonly IHttpContextAccessor accessor;
+        private readonly IHttpRequestWrapper httpRequestWrapper;
 
-        public UserController(IUserInfoService userInfoService)
+        public UserController(IUserInfoService userInfoService, IHttpContextAccessor accessor, IHttpRequestWrapper httpRequestWrapper)
         {
             this.userInfoService = userInfoService;
+            this.accessor = accessor;
+            this.httpRequestWrapper = httpRequestWrapper;
         }
 
         [HttpGet("UserInfo")]
@@ -29,6 +36,15 @@ namespace GameUser.Web.Features.APIs.Users
             }
 
             return Json(userInfo);
+        }
+
+        [HttpGet("existed")]
+        [Authorize(AuthenticationSchemes = SessionFilterAuthenticationDefaults.AuthenticationScheme)]
+        public Task<bool> IsUserExisted()
+        {
+            var session = httpRequestWrapper.GetAuthorizationToken(accessor);
+
+            return userInfoService.IsUserExisted(session);
         }
     }
 }

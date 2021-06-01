@@ -1,7 +1,7 @@
 namespace GameUser.Web
 {
-    using System;
     using AutoMapper;
+    using GameUser.Features.BackendAuthentications;
     using GameUser.Shared.SessionFilterAuthentications;
     using GameUser.Web.Shared.Configurations;
     using GameUser.Web.Shared.Middlewares;
@@ -15,6 +15,7 @@ namespace GameUser.Web
     using Microsoft.Extensions.Hosting;
     using Microsoft.IdentityModel.Tokens;
     using Microsoft.OpenApi.Models;
+    using System;
 
     public class Startup
     {
@@ -110,6 +111,7 @@ namespace GameUser.Web
             app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseCustomRewriter();
+            app.UseBackendAuthenticationTokenStore();
 
             app.UseEndpoints(endpoints =>
             {
@@ -121,8 +123,6 @@ namespace GameUser.Web
                     pattern: "{controller=Feedback}/{action=Add}");
                 endpoints.MapHealthChecks("/health");
             });
-
-            
         }
     }
 }

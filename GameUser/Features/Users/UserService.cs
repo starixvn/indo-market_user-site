@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using GameUser.Shared.Database;
+﻿using GameUser.Shared.Database;
 using MongoDB.Driver;
+using System.Threading.Tasks;
 
 namespace GameUser.Features.Users
 {
@@ -9,7 +9,6 @@ namespace GameUser.Features.Users
         Task<UserEntity> CreateUser(UserEntity userEntity);
 
         Task<UserEntity> GetUser(string userName);
-
 
         Task UpdateBrandName(string username, string brandName);
     }

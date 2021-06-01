@@ -8,6 +8,7 @@ using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
 using GameUser.Features.GameSettings;
+using GameUser.Features.MiddleSite;
 using GameUser.Features.UserInfos;
 using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
@@ -47,6 +48,7 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitBackendAuthentication();
             services.InitAnnouncement(configuration);
             services.InitUserInfo();
+            services.InitMiddleSite(configuration);
         }
 
         public static void AddSharedServices(this IServiceCollection services)
