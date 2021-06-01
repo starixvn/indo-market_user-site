@@ -14,10 +14,12 @@ using GameUser.Features.UserSessions;
 using GameUser.Shared.Configurations;
 using GameUser.Shared.Database;
 using GameUser.Shared.Wrappers;
+using GameUser.Web.Shared.Configurations;
 using GameUser.Web.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Linq;
 
 namespace GameUser.Web.Shared.Middlewares
@@ -28,7 +30,7 @@ namespace GameUser.Web.Shared.Middlewares
         {
             var configReader = new ConfigReader(configuration);
 
-            services.SettingCors(configuration);
+            services.SettingCors(configuration, configReader);
             services.AddSingleton(typeof(IConfigReader), configReader);
             services.AddSharedServices();
             services.InitEmail(configReader);
@@ -57,17 +59,31 @@ namespace GameUser.Web.Shared.Middlewares
             services.AddSingleton<IHttpRequestWrapper, HttpRequestWrapper>();
         }
 
-        public static void SettingCors(this IServiceCollection services, IConfiguration configuration)
+        public static void SettingCors(this IServiceCollection services, IConfiguration configuration, IConfigReader configReader)
         {
+            var appSettings = new AppSettings(configReader);
             var corsSettings = new CorsSettings();
 
             configuration.GetSection("Cors").Bind(corsSettings);
 
             services.AddCors(cors => cors.AddDefaultPolicy(options
-            => options
-                .WithOrigins(corsSettings.AllowUrls.ToArray())
-                .AllowAnyHeader()
-                .AllowAnyMethod()));
+            =>
+            {
+                if (appSettings.Env.StartsWith("LOCAL", StringComparison.OrdinalIgnoreCase))
+                {
+                    options.SetIsOriginAllowed(origin => true);
+                }
+                else
+                {
+                    options
+                        .WithOrigins(corsSettings.AllowUrls.ToArray());
+                }
+                
+
+                options
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            }));
         }
     }
 }
