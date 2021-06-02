@@ -1,6 +1,8 @@
 ﻿using GameUser.Features.UserInfos;
+using GameUser.Features.UserInfos.Models;
 using GameUser.Shared.SessionFilterAuthentications;
 using GameUser.Shared.Wrappers;
+using GameUser.Web.Features.APIs.Users.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -45,6 +47,22 @@ namespace GameUser.Web.Features.APIs.Users
             var session = httpRequestWrapper.GetAuthorizationToken(accessor);
 
             return userInfoService.IsUserExisted(session);
+        }
+
+        [HttpPost("create")]
+        [Authorize(AuthenticationSchemes = SessionFilterAuthenticationDefaults.AuthenticationScheme)]
+        public async Task<JsonResult> CreateUserInfo(CreateUserRequest request)
+        {
+            var session = httpRequestWrapper.GetAuthorizationToken(accessor);
+            var isUserExisted = await userInfoService.IsUserExisted(session);
+            var result = new CreateUserInfoResult();
+
+            if (!isUserExisted)
+            {
+                result = await userInfoService.CreateUserInfo(session, request.Nickname);
+            }
+
+            return Json(result);
         }
     }
 }

@@ -1,8 +1,11 @@
-﻿using GameUser.Features.Users;
+﻿using GameUser.Features.MiddleSite;
+using GameUser.Features.UserInfos.Models;
+using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Database;
 using GameUser.Shared.Wrappers;
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace GameUser.Features.UserInfos
@@ -13,7 +16,7 @@ namespace GameUser.Features.UserInfos
 
         Task<bool> IsUserExisted(string sessionId);
 
-        Task<UserInfoEntity> CreateUserInfo(string sessionId, string nickname);
+        Task<CreateUserInfoResult> CreateUserInfo(string sessionId, string nickname);
     }
 
     public class UserInfoService : IUserInfoService
@@ -22,36 +25,50 @@ namespace GameUser.Features.UserInfos
         private readonly IUserSessionService userSessionService;
         private readonly IUserService userService;
         private readonly IDateTimeProvider dateTimeProvider;
+        private readonly IMiddleSiteService middleSiteService;
 
-        public UserInfoService(IGenericRepository<UserInfoEntity> repository, IUserSessionService userSessionService, IDateTimeProvider dateTimeProvider, IUserService userService)
+        public UserInfoService(
+            IGenericRepository<UserInfoEntity> repository,
+            IUserSessionService userSessionService,
+            IDateTimeProvider dateTimeProvider,
+            IUserService userService,
+            IMiddleSiteService middleSiteService)
         {
             this.repository = repository;
             this.userSessionService = userSessionService;
             this.dateTimeProvider = dateTimeProvider;
             this.userService = userService;
+            this.middleSiteService = middleSiteService;
         }
 
-        public async Task<UserInfoEntity> CreateUserInfo(string sessionId, string nickname)
+        public async Task<CreateUserInfoResult> CreateUserInfo(string sessionId, string nickname)
         {
             var session = await userSessionService.GetUserSession(sessionId);
-            var localUser = await userService.GetUser(session.UserName);
-            var userInfo = new UserInfoEntity
+            var errorMessage = await ValidateNickname(nickname, session.UserName);
+
+            if (string.IsNullOrEmpty(errorMessage))
             {
-                UID = session.MemberId,
-                UserId = session.UserId,
-                Name = nickname,
-                JoinedOn = dateTimeProvider.Now(),
-                Currency = session.Currency,
-                AvatarId = GetAvatarId(),
-                IsCash = localUser.Local.IsCash,
-                BrandName = localUser.Local.BrandName,
-                Red = 0,
-                Type = false
-            };
+                var localUser = await userService.GetUser(session.UserName);
+                var userInfo = new UserInfoEntity
+                {
+                    UID = session.MemberId,
+                    UserId = session.UserId,
+                    Name = nickname,
+                    JoinedOn = dateTimeProvider.Now(),
+                    Currency = session.Currency,
+                    AvatarId = GetAvatarId(),
+                    IsCash = localUser.Local.IsCash,
+                    BrandName = localUser.Local.BrandName,
+                    Red = 0,
+                    Type = false
+                };
 
-            await repository.InsertOneAsync(userInfo);
+                await repository.InsertOneAsync(userInfo);
 
-            return userInfo;
+                return new CreateUserInfoResult();
+            }
+
+            return new CreateUserInfoResult(errorMessage);
         }
 
         public async Task<UserInfoEntity> GetUserInfo(string userId)
@@ -76,12 +93,47 @@ namespace GameUser.Features.UserInfos
             return result;
         }
 
-
         private int GetAvatarId()
         {
             var random = new Random();
 
             return random.Next(1, 40);
+        }
+
+        private async Task<string> ValidateNickname(string nickname, string username)
+        {
+            const string maxCharacterNameKey = "maxCharacterName";
+            const string cannotTheSameAsUsernameKey = "cannotTheSameAsUsername";
+            const string noSpecialCharacterKey = "noSpecialCharacter";
+            const string characterNameExistedKey = "characterNameExisted";
+
+            var pattern = @"([a-zA-Z0-9]){3,14}";
+
+            if (string.IsNullOrEmpty(nickname) || nickname.Length < 3 || nickname.Length >= 14)
+            {
+                return maxCharacterNameKey;
+            }
+            else if (string.Compare(nickname, username) == 0)
+            {
+                return cannotTheSameAsUsernameKey;
+            }
+            else if (!Regex.IsMatch(nickname, pattern))
+            {
+                return noSpecialCharacterKey;
+            }
+            else
+            {
+                var isNicknameExisted = await middleSiteService.IsNicknameExisted(nickname);
+
+                if (isNicknameExisted)
+                {
+                    return characterNameExistedKey;
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
         }
     }
 }
