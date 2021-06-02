@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Caching.Memory;
 using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GameUser.Features.UserSessions
@@ -17,6 +19,10 @@ namespace GameUser.Features.UserSessions
         Task ReCheckIn(string sessionId, DateTime time);
 
         bool IsExpiredSession(UserSessionEntity userSession);
+
+        Task<string> ChangeSessionId(string sessionId);
+
+        Task UpdateSessionLanguage(string sessionId, string language);
     }
 
     public class UserSessionService : IUserSessionService
@@ -59,11 +65,12 @@ namespace GameUser.Features.UserSessions
                     var timeout = currentSession.ReCheckInTime.AddMinutes(sessionSettings.SessionDuration);
                     var relative = timeout.Subtract(currentSession.ReCheckInTime);
 
+                    RemoveOldSession(currentSession.OldSessionIds);
+
                     cache.SetAbsoluteExpiration(relative);
                 }
 
                 return currentSession;
-
             });
 
             return session;
@@ -95,5 +102,53 @@ namespace GameUser.Features.UserSessions
         }
 
         private Task<UserSessionEntity> GetUserSessionFromDB(string sessionId) => userSessionRepository.FindOneAsync(x => x.SessionId == sessionId);
+
+        private void RemoveOldSession(IEnumerable<string> ids)
+        {
+            if (ids != null)
+            {
+                foreach (var id in ids)
+                {
+                    memoryCache.Remove(id);
+                }
+            }
+        }
+
+        public async Task<string> ChangeSessionId(string sessionId)
+        {
+            var session = await GetUserSession(sessionId);
+
+            if (!IsExpiredSession(session))
+            {
+                var newSessionId = $"{Guid.NewGuid()}";
+                var oldIds = session.OldSessionIds.ToList();
+
+                oldIds.Add(sessionId);
+
+                var update = Builders<UserSessionEntity>.Update.Set(session => session.OldSessionIds, oldIds).Set(session => session.SessionId, newSessionId);
+
+                await UpdateUserSession(sessionId, update);
+
+                return newSessionId;
+            }
+
+            return string.Empty;
+        }
+
+        public async Task UpdateSessionLanguage(string sessionId, string language)
+        {
+            var update = Builders<UserSessionEntity>.Update.Set(session => session.Language, language);
+
+            await UpdateUserSession(sessionId, update);
+        }
+
+        protected async Task<UserSessionEntity> UpdateUserSession(string sessionId, UpdateDefinition<UserSessionEntity> updater)
+        {
+            await userSessionRepository.UpdateOneAsync(session => session.SessionId == sessionId, updater);
+
+            var session = await GetUserSessionFromDB(sessionId);
+
+            return session;
+        }
     }
 }

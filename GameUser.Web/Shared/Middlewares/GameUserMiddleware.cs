@@ -10,6 +10,7 @@ using GameUser.Features.FileUploads;
 using GameUser.Features.GameSettings;
 using GameUser.Features.MiddleSite;
 using GameUser.Features.UserInfos;
+using GameUser.Features.UserLanguages;
 using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Configurations;
@@ -49,6 +50,7 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitAnnouncement(configuration);
             services.InitUserInfo();
             services.InitMiddleSite(configuration);
+            services.InitUserLanguage();
         }
 
         public static void AddSharedServices(this IServiceCollection services)
@@ -80,7 +82,6 @@ namespace GameUser.Web.Shared.Middlewares
                     options
                         .WithOrigins(corsSettings.AllowUrls.ToArray());
                 }
-                
 
                 options
                     .AllowAnyHeader()

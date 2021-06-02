@@ -11,6 +11,8 @@ namespace GameUser.Features.Users
         Task<UserEntity> GetUser(string userName);
 
         Task UpdateBrandName(string username, string brandName);
+
+        Task UpdateLanguage(string username, string langauge);
     }
 
     public class UserService : IUserService
@@ -42,6 +44,14 @@ namespace GameUser.Features.Users
         {
             var update = Builders<UserEntity>.Update
                 .Set(user => user.Local.BrandName, brandName);
+
+            await UpdateUser(username, update);
+        }
+
+        public async Task UpdateLanguage(string username, string langauge)
+        {
+            var update = Builders<UserEntity>.Update
+                .Set(user => user.Local.Language, langauge);
 
             await UpdateUser(username, update);
         }

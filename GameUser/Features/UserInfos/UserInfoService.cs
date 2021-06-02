@@ -107,7 +107,7 @@ namespace GameUser.Features.UserInfos
             const string noSpecialCharacterKey = "noSpecialCharacter";
             const string characterNameExistedKey = "characterNameExisted";
 
-            var pattern = @"([a-zA-Z0-9]){3,14}";
+            var pattern = @"^([a-zA-Z0-9]){3,14}$";
 
             if (string.IsNullOrEmpty(nickname) || nickname.Length < 3 || nickname.Length >= 14)
             {

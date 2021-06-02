@@ -1,5 +1,7 @@
 ﻿using GameUser.Features.UserInfos;
 using GameUser.Features.UserInfos.Models;
+using GameUser.Features.UserLanguages;
+using GameUser.Features.UserLanguages.Models;
 using GameUser.Shared.SessionFilterAuthentications;
 using GameUser.Shared.Wrappers;
 using GameUser.Web.Features.APIs.Users.Models;
@@ -18,12 +20,14 @@ namespace GameUser.Web.Features.APIs.Users
         private readonly IUserInfoService userInfoService;
         private readonly IHttpContextAccessor accessor;
         private readonly IHttpRequestWrapper httpRequestWrapper;
+        private readonly IUserLanguageService userLanguageService;
 
-        public UserController(IUserInfoService userInfoService, IHttpContextAccessor accessor, IHttpRequestWrapper httpRequestWrapper)
+        public UserController(IUserInfoService userInfoService, IHttpContextAccessor accessor, IHttpRequestWrapper httpRequestWrapper, IUserLanguageService userLanguageService)
         {
             this.userInfoService = userInfoService;
             this.accessor = accessor;
             this.httpRequestWrapper = httpRequestWrapper;
+            this.userLanguageService = userLanguageService;
         }
 
         [HttpGet("UserInfo")]
@@ -61,6 +65,16 @@ namespace GameUser.Web.Features.APIs.Users
             {
                 result = await userInfoService.CreateUserInfo(session, request.Nickname);
             }
+
+            return Json(result);
+        }
+
+        [HttpPost("language")]
+        [Authorize(AuthenticationSchemes = SessionFilterAuthenticationDefaults.AuthenticationScheme)]
+        public async Task<JsonResult> ChangeUserLanguage(ChangeUserLanguageRequest request)
+        {
+            var session = httpRequestWrapper.GetAuthorizationToken(accessor);
+            var result = await userLanguageService.ChangeLanguage(new ChangeLanguageResquest { Language = request.Language, SessionId = session });
 
             return Json(result);
         }

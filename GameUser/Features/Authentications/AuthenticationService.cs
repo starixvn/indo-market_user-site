@@ -3,12 +3,12 @@ using GameUser.Features.ApiComminicators.Models;
 using GameUser.Features.Authentications.Models;
 using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
-using GameUser.Shared.Constants;
 using GameUser.Shared.Wrappers;
 using Newtonsoft.Json;
 using Sentry;
 using Sentry.Protocol;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -62,16 +62,15 @@ namespace GameUser.Features.Authentications
                 var machedBrandName = string.Equals(verificationResult.BrandName, user.Local.BrandName, StringComparison.OrdinalIgnoreCase);
                 var brandNameIsEmpty = string.IsNullOrEmpty(user.Local.BrandName);
 
+                await UpdateBrandName(user.Local.UserName, user.Local.BrandName, verificationResult.BrandName);
+
                 if (machedBrandName || brandNameIsEmpty)
                 {
-                    if (brandNameIsEmpty)
-                    {
-                        await userService.UpdateBrandName(user.Local.UserName, verificationResult.BrandName);
-                    }
-
                     var userSession = await AddSessionIfNotExist(user, verificationResult, request);
                     var expiredIn = userSession.ReCheckInTime.AddMinutes(userSessionSettings.SessionDuration);
-                    var language = ConvertLanguage(userSession.Language);
+                    var language = cultureConfigs.ConvertLanguage(userSession.Language);
+
+                    await UpdateLanguage(user.Local.UserName, user.Local.Language, language);
 
                     return new UserSignInResponse(true, userSession.UserName, language, userSession.SessionId, userSession.Currency, expiredIn);
                 }
@@ -137,7 +136,8 @@ namespace GameUser.Features.Authentications
                         Password = Guid.NewGuid().ToString(),
                         IsCash = verifyTokenResult.IsCash,
                         BrandName = verifyTokenResult.BrandName,
-                        SiteName = verifyTokenResult.SiteName
+                        SiteName = verifyTokenResult.SiteName,
+                        Language = cultureConfigs.ConvertLanguage(verifyTokenResult.Language)
                     }
                 };
 
@@ -162,7 +162,7 @@ namespace GameUser.Features.Authentications
                     ClientId = verifyTokenResult.ClientId,
                     Currency = currency,
                     Ip = request.Ip,
-                    Language = ConvertLanguage(verifyTokenResult.Language),
+                    Language = cultureConfigs.ConvertLanguage(user.Local.Language),
                     MemberId = verifyTokenResult.MemberId,
                     MemberName = verifyTokenResult.MemberName,
                     OWSeq = verifyTokenResult.Seq,
@@ -173,7 +173,8 @@ namespace GameUser.Features.Authentications
                     UserId = user.Id.ToString(),
                     UserName = verifyTokenResult.MemberKey.ToLower(),
                     SessionId = sessionId,
-                    BrandName = verifyTokenResult.BrandName
+                    BrandName = verifyTokenResult.BrandName,
+                    OldSessionIds = new List<string>()
                 };
 
                 session = await userSessionService.CreateUserSession(userSession);
@@ -206,19 +207,20 @@ namespace GameUser.Features.Authentications
             return currency;
         }
 
-        private string ConvertLanguage(string language)
+        private async Task UpdateBrandName(string username, string oldBrandName, string newBrandName)
         {
-            if (language == Language.ChineseNewSimplifiedCode)
+            if (string.IsNullOrEmpty(oldBrandName) && !string.IsNullOrEmpty(newBrandName))
             {
-                language = Language.ChineseSimplifiedCode;
+                await userService.UpdateBrandName(username, newBrandName);
             }
+        }
 
-            if (string.IsNullOrWhiteSpace(language) || !cultureConfigs.SupportedCultures.Contains(language))
+        private async Task UpdateLanguage(string username, string oldLanguage, string newLangauge)
+        {
+            if (string.IsNullOrEmpty(oldLanguage) && !string.IsNullOrEmpty(newLangauge))
             {
-                return cultureConfigs.DefaultCulture;
+                await userService.UpdateLanguage(username, newLangauge);
             }
-
-            return language;
         }
     }
 }
