@@ -48,7 +48,7 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitGameSettings();
             services.InitBackendAuthentication();
             services.InitAnnouncement(configuration);
-            services.InitUserInfo();
+            services.InitUserInfo(configuration);
             services.InitMiddleSite(configuration);
             services.InitUserLanguage();
         }

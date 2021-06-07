@@ -4,6 +4,7 @@ using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Database;
 using GameUser.Shared.Wrappers;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -26,8 +27,12 @@ namespace GameUser.Features.UserInfos
         private readonly IUserService userService;
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly IMiddleSiteService middleSiteService;
+        private readonly IMemoryCache memoryCache;
+        private readonly UserInfoSettings settings;
 
         public UserInfoService(
+            IMemoryCache memoryCache,
+            UserInfoSettings settings,
             IGenericRepository<UserInfoEntity> repository,
             IUserSessionService userSessionService,
             IDateTimeProvider dateTimeProvider,
@@ -39,6 +44,8 @@ namespace GameUser.Features.UserInfos
             this.dateTimeProvider = dateTimeProvider;
             this.userService = userService;
             this.middleSiteService = middleSiteService;
+            this.memoryCache = memoryCache;
+            this.settings = settings;
         }
 
         public async Task<CreateUserInfoResult> CreateUserInfo(string sessionId, string nickname)
@@ -73,7 +80,21 @@ namespace GameUser.Features.UserInfos
 
         public async Task<UserInfoEntity> GetUserInfo(string userId)
         {
-            var userInfo = await repository.FindOneAsync(info => info.UserId == userId);
+            var userInfo = await memoryCache.GetOrCreateAsync(userId, async cache =>
+            {
+                var user = await GetUserInfoFromDB(userId);
+
+                if (user == null)
+                {
+                    cache.Dispose();
+                }
+                else
+                {
+                    cache.SetAbsoluteExpiration(TimeSpan.FromMinutes(settings.CacheTimeout));
+                }
+
+                return user;
+            });
 
             return userInfo;
         }
@@ -92,6 +113,8 @@ namespace GameUser.Features.UserInfos
 
             return result;
         }
+
+        private Task<UserInfoEntity> GetUserInfoFromDB(string userId) => repository.FindOneAsync(info => info.UserId == userId);
 
         private int GetAvatarId()
         {

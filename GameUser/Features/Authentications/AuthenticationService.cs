@@ -1,6 +1,7 @@
 ﻿using GameUser.Features.ApiComminicators;
 using GameUser.Features.ApiComminicators.Models;
 using GameUser.Features.Authentications.Models;
+using GameUser.Features.UserInfos;
 using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Wrappers;
@@ -33,6 +34,7 @@ namespace GameUser.Features.Authentications
         private readonly ICultureConfigs cultureConfigs;
         private readonly ISentryClient sentryClient;
         private readonly UserSessionSettings userSessionSettings;
+        private readonly IUserInfoService userInfoService;
 
         public AuthenticationService(
             IApi api,
@@ -41,7 +43,8 @@ namespace GameUser.Features.Authentications
             IDateTimeProvider dateTimeProvider,
             ICultureConfigs cultureConfigs,
             ISentryClient sentryClient,
-            UserSessionSettings userSessionSettings)
+            UserSessionSettings userSessionSettings,
+            IUserInfoService userInfoService)
         {
             this.api = api;
             this.userService = userService;
@@ -50,6 +53,7 @@ namespace GameUser.Features.Authentications
             this.cultureConfigs = cultureConfigs;
             this.sentryClient = sentryClient;
             this.userSessionSettings = userSessionSettings;
+            this.userInfoService = userInfoService;
         }
 
         public async Task<UserSignInResponse> SignIn(VerificationTokenRequest request)
@@ -106,8 +110,9 @@ namespace GameUser.Features.Authentications
         {
             var userSession = await userSessionService.GetUserSession(request.Session);
             var isValidRequest = userSession != null && Equals(request.BrowserUserAgent, userSession.BrowserUserAgent);
+            var isUserExsited = await userInfoService.IsUserExisted(request.Session);
 
-            return !isValidRequest || userSessionService.IsExpiredSession(userSession) ? new VerificationSessionResult
+            return !isValidRequest || !isUserExsited || userSessionService.IsExpiredSession(userSession) ? new VerificationSessionResult
             {
                 IsSuccessful = false
             } : new VerificationSessionResult
