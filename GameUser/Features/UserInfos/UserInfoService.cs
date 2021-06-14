@@ -1,13 +1,13 @@
-﻿using GameUser.Features.MiddleSite;
+﻿using System;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using GameUser.Features.MiddleSite;
 using GameUser.Features.UserInfos.Models;
 using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Database;
 using GameUser.Shared.Wrappers;
 using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace GameUser.Features.UserInfos
 {
@@ -29,6 +29,7 @@ namespace GameUser.Features.UserInfos
         private readonly IMiddleSiteService middleSiteService;
         private readonly IMemoryCache memoryCache;
         private readonly UserInfoSettings settings;
+        private readonly Func<int, int, int> randomFunc = DefaultRandomFunc;
 
         public UserInfoService(
             IMemoryCache memoryCache,
@@ -47,6 +48,23 @@ namespace GameUser.Features.UserInfos
             this.memoryCache = memoryCache;
             this.settings = settings;
         }
+
+        internal UserInfoService(
+            IMemoryCache memoryCache,
+            UserInfoSettings settings,
+            IGenericRepository<UserInfoEntity> repository,
+            IUserSessionService userSessionService,
+            IDateTimeProvider dateTimeProvider,
+            IUserService userService,
+            IMiddleSiteService middleSiteService,
+            Func<int, int, int> randomFunc) 
+            : this(memoryCache, settings, repository, userSessionService, dateTimeProvider, userService, middleSiteService)
+        {
+            this.randomFunc = randomFunc;
+        }
+
+        private static int DefaultRandomFunc(int min, int max)
+            => new Random().Next(min, max);
 
         public async Task<CreateUserInfoResult> CreateUserInfo(string sessionId, string nickname)
         {
@@ -116,12 +134,7 @@ namespace GameUser.Features.UserInfos
 
         private Task<UserInfoEntity> GetUserInfoFromDB(string userId) => repository.FindOneAsync(info => info.UserId == userId);
 
-        private int GetAvatarId()
-        {
-            var random = new Random();
-
-            return random.Next(1, 40);
-        }
+        private int GetAvatarId() => this.randomFunc(1, 40);
 
         private async Task<string> ValidateNickname(string nickname, string username)
         {
