@@ -1,14 +1,14 @@
-﻿using GameUser.Features.UserSessions;
+﻿using System;
+using System.Security.Claims;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
+using GameUser.Features.UserSessions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Sentry;
 using Sentry.Protocol;
-using System;
-using System.Security.Claims;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 
 namespace GameUser.Shared.SessionFilterAuthentications
 {

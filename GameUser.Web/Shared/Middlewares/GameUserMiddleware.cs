@@ -1,4 +1,6 @@
-﻿using Features.GameUser.GameServerApiComunicators;
+﻿using System;
+using System.Linq;
+using Features.GameUser.GameServerApiComunicators;
 using GameUser.Features.Announcements;
 using GameUser.Features.ApiComminicators;
 using GameUser.Features.Authentications;
@@ -21,8 +23,6 @@ using GameUser.Web.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Linq;
 
 namespace GameUser.Web.Shared.Middlewares
 {

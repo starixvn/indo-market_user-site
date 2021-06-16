@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using FluentAssertions;
 using GameUser.Features.Avatars;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.UserInfos;
@@ -10,8 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Extensions.Localization;
 using NSubstitute;
-using System.Collections.Generic;
-using System.Reflection;
 using Xunit;
 
 namespace GameUser.Web.Tests.Shared.Configurations

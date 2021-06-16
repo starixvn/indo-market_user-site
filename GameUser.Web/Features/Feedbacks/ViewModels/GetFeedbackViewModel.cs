@@ -1,7 +1,6 @@
-﻿using GameUser.Features.Avatars;
-using GameUser.Features.Feedbacks;
+﻿using System.Collections.Generic;
+using GameUser.Features.Avatars;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
 
 namespace GameUser.Web.Features.Feedbacks.ViewModels
 {

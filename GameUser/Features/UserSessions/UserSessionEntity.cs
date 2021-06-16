@@ -1,7 +1,7 @@
-﻿using GameUser.Shared.Database;
-using MongoDB.Bson.Serialization.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using GameUser.Shared.Database;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace GameUser.Features.UserSessions
 {

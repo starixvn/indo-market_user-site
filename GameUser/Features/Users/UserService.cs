@@ -1,6 +1,6 @@
-﻿using GameUser.Shared.Database;
+﻿using System.Threading.Tasks;
+using GameUser.Shared.Database;
 using MongoDB.Driver;
-using System.Threading.Tasks;
 
 namespace GameUser.Features.Users
 {

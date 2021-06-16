@@ -1,9 +1,4 @@
-﻿using GameUser.Features.Feedbacks;
-using GameUser.Web.Features.Feedbacks.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using GameUser.Web.Features.Feedbacks.ViewModels;
 
 namespace GameUser.Web.Features.Feedbacks.Requests
 {

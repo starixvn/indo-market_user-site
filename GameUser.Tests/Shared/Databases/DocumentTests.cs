@@ -9,7 +9,7 @@ namespace GameUser.Tests.Shared.Databases
     {
         [Fact]
         public void GetCollectionName_WhenCalled_ReturnCollectionName()
-        {         
+        {
             // Act
             var result = Document.GetCollectionName(typeof(FeedbackEntity));
 

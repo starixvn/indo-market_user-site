@@ -1,5 +1,6 @@
 namespace GameUser.Web
 {
+    using System;
     using AutoMapper;
     using GameUser.Features.BackendAuthentications;
     using GameUser.Shared.SessionFilterAuthentications;
@@ -15,7 +16,6 @@ namespace GameUser.Web
     using Microsoft.Extensions.Hosting;
     using Microsoft.IdentityModel.Tokens;
     using Microsoft.OpenApi.Models;
-    using System;
 
     public class Startup
     {

@@ -1,24 +1,24 @@
-﻿using GameUser.Features.Emails;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
+using GameUser.Features.Emails;
 using GameUser.Features.FileUploads;
 using GameUser.Shared.Database;
-using GameUser.Shared.Enumerations;
 using GameUser.Shared.Models;
 using GameUser.Shared.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Localization;
 using Sentry;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GameUser.Features.Feedbacks
 {
     public interface IFeedbackService
     {
         Task<IEnumerable<SelectListItem>> GetTypes(string language = null);
+
         Task<UpdateResult> AddFeedbackAsync(Feedback feedback, string nickName, bool enabledStoreFile, string filePath, int custId, string enviroment);
     }
 
@@ -30,10 +30,10 @@ namespace GameUser.Features.Feedbacks
         private readonly IStringLocalizer<Resources> localizer;
         private readonly IEmailConfigs emailConfigs;
         private readonly IFileUploadService fileUploadService;
-        private readonly IEmailService emailService;        
+        private readonly IEmailService emailService;
 
         public FeedbackService(
-            IGenericRepository<FeedbackEntity> feedbackRepository, 
+            IGenericRepository<FeedbackEntity> feedbackRepository,
             ISentryClient sentryClient,
             IFeedbackTypeLocalization feedbackTypeLocalization,
             IStringLocalizer<Resources> localizer,
@@ -60,7 +60,7 @@ namespace GameUser.Features.Feedbacks
             try
             {
                 await SaveFeedbackAsync(feedback, nickName);
-                await StoreFileAsync(feedback.Files, enabledStoreFile, filePath);               
+                await StoreFileAsync(feedback.Files, enabledStoreFile, filePath);
                 var email = await GenerateEmail(feedback, nickName, custId, enviroment);
                 await emailService.SendAsync(email);
 
@@ -82,7 +82,7 @@ namespace GameUser.Features.Feedbacks
         }
 
         private async Task SaveFeedbackAsync(Feedback feedback, string nickName)
-        {           
+        {
             var feedbackEntity = new FeedbackEntity
             {
                 Time = DateTime.Now,
@@ -108,7 +108,7 @@ namespace GameUser.Features.Feedbacks
                 $"{Environment.NewLine}{Environment.NewLine}" +
                 $"This is an automated email. Please do not reply to it.";
 
-            return new EmailRequest(subject: subject, body: body, attachments: feedback.Files, toAddress: emailConfigs.ReceiverEmail);            
+            return new EmailRequest(subject: subject, body: body, attachments: feedback.Files, toAddress: emailConfigs.ReceiverEmail);
         }
     }
 }

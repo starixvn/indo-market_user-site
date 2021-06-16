@@ -1,7 +1,6 @@
-﻿using GameUser.Shared.Database;
+﻿using System.Collections.Generic;
+using GameUser.Shared.Database;
 using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
 
 namespace GameUser.Features.MarketManagement
 {

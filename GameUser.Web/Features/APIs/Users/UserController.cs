@@ -1,4 +1,5 @@
-﻿using GameUser.Features.UserInfos;
+﻿using System.Threading.Tasks;
+using GameUser.Features.UserInfos;
 using GameUser.Features.UserInfos.Models;
 using GameUser.Features.UserLanguages;
 using GameUser.Features.UserLanguages.Models;
@@ -9,7 +10,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace GameUser.Web.Features.APIs.Users
 {

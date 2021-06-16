@@ -1,10 +1,10 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using FluentAssertions;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Database;
 using NSubstitute;
-using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace GameUser.Tests.Features.UserSessions

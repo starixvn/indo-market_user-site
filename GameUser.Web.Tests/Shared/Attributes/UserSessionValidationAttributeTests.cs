@@ -1,13 +1,13 @@
-﻿using GameUser.Web.Shared.Attributes;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using GameUser.Web.Shared.Attributes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Moq;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace GameUser.Web.Tests.Shared.Attributes

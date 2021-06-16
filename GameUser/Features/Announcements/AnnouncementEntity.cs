@@ -1,13 +1,13 @@
 ﻿namespace GameUser.Features.Annoucements
 {
-    using GameUser.Shared.Database;
-    using MongoDB.Bson.Serialization.Attributes;
     using System;
     using System.Collections.Generic;
+    using GameUser.Shared.Database;
+    using MongoDB.Bson.Serialization.Attributes;
 
     [BsonIgnoreExtraElements]
     [BsonCollection("announcements")]
-    public class AnnouncementEntity: Document
+    public class AnnouncementEntity : Document
     {
         [BsonElement("title")]
         public string Title { get; set; }

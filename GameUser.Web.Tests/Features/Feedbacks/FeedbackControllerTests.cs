@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using FluentAssertions;
 using GameUser.Features.Avatars;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.UserInfos;
@@ -15,8 +17,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 using NSubstitute;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace GameUser.Web.Tests.Features.Feedbacks
@@ -53,8 +53,6 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             var routeValues = new RouteValueDictionary();
             routeValues.Add(key, value);
             httpRequest.RouteValues.Returns(routeValues);
-
-            
 
             var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer, userInfoService);
 
@@ -102,7 +100,6 @@ namespace GameUser.Web.Tests.Features.Feedbacks
                     files: request.Feedback.Files),
                 NickName = request.NickName
             };
-
 
             var expectedResult = new UpdateResult(true, string.Empty);
             feedbackService.AddFeedbackAsync(Arg.Any<Feedback>(), viewModel.NickName, Arg.Any<bool>(), Arg.Any<string>(), Arg.Any<int>(), Arg.Any<string>()).Returns(expectedResult);

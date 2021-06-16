@@ -1,8 +1,8 @@
-﻿using FluentAssertions;
+﻿using System.Threading.Tasks;
+using FluentAssertions;
 using GameUser.Features.Avatars;
 using NSubstitute;
 using Sentry;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace GameUser.Tests.Features.Avatars
@@ -17,7 +17,8 @@ namespace GameUser.Tests.Features.Avatars
         }
 
         [Fact]
-        public async Task GetAvatar_WhenError_ReturnDefaultAvatar() {
+        public async Task GetAvatar_WhenError_ReturnDefaultAvatar()
+        {
             // Arrange
             var service = new AvatarService(sentryClient);
 

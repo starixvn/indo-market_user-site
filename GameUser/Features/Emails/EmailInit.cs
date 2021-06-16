@@ -1,9 +1,8 @@
-﻿using GameUser.Shared.Configurations;
-using Microsoft.Extensions.Configuration;
+﻿using System;
+using GameUser.Shared.Configurations;
 using Microsoft.Extensions.DependencyInjection;
 using NETCore.MailKit.Extensions;
 using NETCore.MailKit.Infrastructure.Internal;
-using System;
 
 namespace GameUser.Features.Emails
 {
@@ -12,7 +11,7 @@ namespace GameUser.Features.Emails
         public static void InitEmail(this IServiceCollection services, IConfigReader configReader)
         {
             var emailConfigs = new EmailConfigs(configReader);
-            services.AddSingleton(typeof(IEmailConfigs), emailConfigs);            
+            services.AddSingleton(typeof(IEmailConfigs), emailConfigs);
 
             services.AddMailKit(optionBuilder =>
             {
@@ -24,7 +23,7 @@ namespace GameUser.Features.Emails
                     SenderEmail = emailConfigs.SenderEmail,
                     Account = emailConfigs.Account,
                     Password = emailConfigs.Password,
-                    Security = emailConfigs.Security                  
+                    Security = emailConfigs.Security
                 };
 
                 if (mailKitOptions.Server == null)

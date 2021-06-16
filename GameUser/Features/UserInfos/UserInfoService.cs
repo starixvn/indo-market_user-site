@@ -57,7 +57,7 @@ namespace GameUser.Features.UserInfos
             IDateTimeProvider dateTimeProvider,
             IUserService userService,
             IMiddleSiteService middleSiteService,
-            Func<int, int, int> randomFunc) 
+            Func<int, int, int> randomFunc)
             : this(memoryCache, settings, repository, userSessionService, dateTimeProvider, userService, middleSiteService)
         {
             this.randomFunc = randomFunc;

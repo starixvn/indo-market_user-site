@@ -1,24 +1,27 @@
-﻿using MailKit.Net.Smtp;
-using MimeKit;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
+using MailKit.Net.Smtp;
+using MimeKit;
 
 namespace GameUser.Features.Emails
 {
     public interface ISmtpClientWrapper : IDisposable
     {
         bool IsConnected { get; }
+
         Task AuthenticateAsync(string userName, string password);
+
         Task ConnectAsync(string host, int port, bool useSsl);
+
         Task SendAsync(MimeMessage message);
+
         Task DisconnectAsync(bool quit);
     }
 
     public sealed class SmtpClientWrapper : ISmtpClientWrapper
     {
         private readonly SmtpClient smtpClient;
+
         public SmtpClientWrapper(SmtpClient smtpClient)
         {
             this.smtpClient = smtpClient;

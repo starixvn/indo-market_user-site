@@ -1,23 +1,22 @@
 ﻿namespace GameUser.Web.Shared.Attributes
 {
-    using GameUser.Features.UserSessions;
-    using Microsoft.AspNetCore.Authentication;
-    using Microsoft.AspNetCore.Authentication.Cookies;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Filters;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Security.Claims;
     using System.Threading.Tasks;
+    using GameUser.Features.UserSessions;
+    using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Authentication.Cookies;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Filters;
 
     public interface IUserSessionValidationAttribute : IAsyncAuthorizationFilter
     {
         public Task<bool> VerifyUserSessionAndCheckInTime(string sessionId, AuthorizationFilterContext context);
 
         public Task SignIn(string sessionId, AuthorizationFilterContext context);
-
     }
 
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
@@ -27,10 +26,10 @@
 
         private readonly int expiredMinuteCookie = 30;
 
-        private readonly string sessionIdKey = "sessionid";                
+        private readonly string sessionIdKey = "sessionid";
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
-        {           
+        {
             if (context.HttpContext.User.Identity.IsAuthenticated)
             {
                 var sessionId = context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == sessionIdKey).Value;
@@ -71,7 +70,7 @@
         }
 
         public async Task<bool> VerifyUserSessionAndCheckInTime(string sessionId, AuthorizationFilterContext context)
-        {            
+        {
             if (context != null)
             {
                 var currentDateUTC = DateTime.UtcNow;
@@ -98,7 +97,7 @@
             }
 
             return false;
-        }        
+        }
 
         public async Task SignIn(string sessionId, AuthorizationFilterContext context)
         {
@@ -118,19 +117,19 @@
             await context.HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
-                authProperties);                        
+                authProperties);
         }
 
         public async Task SignOut(AuthorizationFilterContext context)
         {
-            if(context.HttpContext.User.Identity.IsAuthenticated)
+            if (context.HttpContext.User.Identity.IsAuthenticated)
             {
                 await context.HttpContext.SignOutAsync();
             }
         }
 
         private static IActionResult Redirect(AuthorizationFilterContext context)
-        {            
+        {
             string requestedWith = context.HttpContext.Request.Headers["X-Requested-With"];
 
             if (requestedWith == "XMLHttpRequest")
@@ -140,7 +139,7 @@
             else
             {
                 return new RedirectResult(string.Format("/{0}/Error/NotAuthorized", context.RouteData.Values["culture"]));
-            }            
+            }
         }
     }
 }

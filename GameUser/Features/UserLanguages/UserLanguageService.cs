@@ -1,8 +1,8 @@
-﻿using GameUser.Features.Authentications;
+﻿using System.Threading.Tasks;
+using GameUser.Features.Authentications;
 using GameUser.Features.UserLanguages.Models;
 using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
-using System.Threading.Tasks;
 
 namespace GameUser.Features.UserLanguages
 {
@@ -28,17 +28,17 @@ namespace GameUser.Features.UserLanguages
         {
             var language = cultureConfigs.ConvertLanguage(request.Language);
             var session = await userSessionService.GetUserSession(request.SessionId);
-            var sessionId = await userSessionService.ChangeSessionId(request.SessionId);
+            var newSessionId = await userSessionService.ChangeSessionId(session);
 
-            if (!string.IsNullOrEmpty(sessionId))
+            if (!string.IsNullOrEmpty(newSessionId))
             {
                 await userService.UpdateLanguage(session.UserName, language);
-                await userSessionService.UpdateSessionLanguage(sessionId, language);
+                await userSessionService.UpdateSessionLanguage(newSessionId, language);
             }
 
             return new ChangeLanguageResponse
             {
-                SessionId = sessionId,
+                SessionId = newSessionId,
                 Language = language
             };
         }

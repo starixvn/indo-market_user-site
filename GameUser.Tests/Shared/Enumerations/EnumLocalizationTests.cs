@@ -1,9 +1,9 @@
-﻿using FluentAssertions;
+﻿using System.Linq;
+using FluentAssertions;
 using GameUser.Features.Feedbacks;
 using GameUser.Shared.Enumerations;
 using GameUser.Shared.Resources;
 using Microsoft.Extensions.Localization;
-using System.Linq;
 using Xunit;
 
 namespace GameUser.Tests.Shared.Enumerations

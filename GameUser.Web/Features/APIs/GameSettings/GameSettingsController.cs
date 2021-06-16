@@ -8,7 +8,7 @@ namespace GameUser.Web.Features.APIs.GameSettings
 {
     [ApiController]
     [Route("api/gamesettings")]
-    public class GameSettingsController: Controller
+    public class GameSettingsController : Controller
     {
         private readonly IGameSettingsService gameSettingsService;
 

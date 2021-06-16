@@ -1,6 +1,6 @@
-﻿using GameUser.Web.Shared.Attributes;
+﻿using System.Collections.Generic;
+using GameUser.Web.Shared.Attributes;
 using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
 
 namespace GameUser.Web.Features.Feedbacks.ViewModels
 {

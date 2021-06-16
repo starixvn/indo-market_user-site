@@ -2,7 +2,7 @@
 
 namespace GameUser.Shared.SessionFilterAuthentications
 {
-    public class SessionFilterAuthenticationOptions: AuthenticationSchemeOptions
+    public class SessionFilterAuthenticationOptions : AuthenticationSchemeOptions
     {
     }
 }

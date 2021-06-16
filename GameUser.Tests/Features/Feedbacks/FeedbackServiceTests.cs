@@ -1,4 +1,9 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+using FluentAssertions;
 using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
@@ -9,11 +14,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Localization;
 using NSubstitute;
 using Sentry;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace GameUser.Tests.Features.Feedbacks
@@ -37,12 +37,12 @@ namespace GameUser.Tests.Features.Feedbacks
             emailConfigs = Substitute.For<IEmailConfigs>();
             fileUploadService = Substitute.For<IFileUploadService>();
             emailService = Substitute.For<IEmailService>();
-        }        
+        }
 
         [Fact]
         public async Task GetTypes_WhenCalled_ReturnListOfFeedbackTypes()
         {
-            // Arrange  
+            // Arrange
             var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization, localizer, emailConfigs, fileUploadService, emailService);
             var expectedResult = new List<SelectListItem> {
                 new SelectListItem { Value = "NewGame", Text = "Request a new game"},
@@ -64,8 +64,8 @@ namespace GameUser.Tests.Features.Feedbacks
         [InlineData(false)]
         public async Task AddFeedback_WhenSuccess_CallInsert(bool enabledStoreFile)
         {
-            // Arrange             
-            var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization, localizer, emailConfigs, fileUploadService, emailService); 
+            // Arrange
+            var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization, localizer, emailConfigs, fileUploadService, emailService);
 
             var expectedResult = new List<SelectListItem> {
                 new SelectListItem { Value = "NewGame", Text = "Request a new game"},
@@ -88,7 +88,6 @@ namespace GameUser.Tests.Features.Feedbacks
                 $"------------------------------------------------------" +
                 $"{Environment.NewLine}{Environment.NewLine}" +
                 $"This is an automated email. Please do not reply to it.";
-
 
             FeedbackEntity entity = null;
             await feedbackRepository.InsertOneAsync(Arg.Do<FeedbackEntity>(x => entity = x));
@@ -113,7 +112,7 @@ namespace GameUser.Tests.Features.Feedbacks
         [Fact]
         public async Task AddFeedback_WhenFailed_LogErrors()
         {
-            // Arrange             
+            // Arrange
             var service = new FeedbackService(feedbackRepository, sentryClient, feedbackTypeLocalization, localizer, emailConfigs, fileUploadService, emailService);
             var expectedResult = new List<SelectListItem> {
                 new SelectListItem { Value = "NewGame", Text = "Request a new game"},

@@ -1,5 +1,4 @@
 ﻿using System;
-using GameUser.Shared.Models;
 
 namespace GameUser.Features.Authentications.Models
 {

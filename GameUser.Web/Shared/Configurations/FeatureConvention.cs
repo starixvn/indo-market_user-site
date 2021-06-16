@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace GameUser.Web.Shared.Configurations
 {
@@ -16,9 +16,9 @@ namespace GameUser.Web.Shared.Configurations
         private static string GetFeatureName(TypeInfo controllerType)
         {
             string[] tokens = controllerType.FullName.Split('.');
-            if (!tokens.Any(t => t == "Features")) 
-            { 
-                return string.Empty; 
+            if (!tokens.Any(t => t == "Features"))
+            {
+                return string.Empty;
             }
 
             string featureName = tokens

@@ -1,4 +1,8 @@
-﻿using GameUser.Features.ApiComminicators;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GameUser.Features.ApiComminicators;
 using GameUser.Features.ApiComminicators.Models;
 using GameUser.Features.Authentications.Models;
 using GameUser.Features.UserInfos;
@@ -8,10 +12,6 @@ using GameUser.Shared.Wrappers;
 using Newtonsoft.Json;
 using Sentry;
 using Sentry.Protocol;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GameUser.Features.Authentications
 {
@@ -159,7 +159,7 @@ namespace GameUser.Features.Authentications
 
             if (session == null)
             {
-                var sessionId = $"{Guid.NewGuid()}";
+                var sessionId = Guid.NewGuid().ToString();
                 var now = dateTimeProvider.Now();
                 var userSession = new UserSessionEntity
                 {

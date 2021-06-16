@@ -1,10 +1,10 @@
-﻿using GameUser.Shared.Database;
-using Microsoft.Extensions.Caching.Memory;
-using MongoDB.Driver;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GameUser.Shared.Database;
+using Microsoft.Extensions.Caching.Memory;
+using MongoDB.Driver;
 
 namespace GameUser.Features.UserSessions
 {
@@ -20,7 +20,7 @@ namespace GameUser.Features.UserSessions
 
         bool IsExpiredSession(UserSessionEntity userSession);
 
-        Task<string> ChangeSessionId(string sessionId);
+        Task<string> ChangeSessionId(UserSessionEntity session);
 
         Task UpdateSessionLanguage(string sessionId, string language);
     }
@@ -114,20 +114,18 @@ namespace GameUser.Features.UserSessions
             }
         }
 
-        public async Task<string> ChangeSessionId(string sessionId)
+        public async Task<string> ChangeSessionId(UserSessionEntity session)
         {
-            var session = await GetUserSession(sessionId);
-
             if (!IsExpiredSession(session))
             {
-                var newSessionId = $"{Guid.NewGuid()}";
+                var newSessionId = Guid.NewGuid().ToString();
                 var oldIds = session.OldSessionIds.ToList();
 
-                oldIds.Add(sessionId);
+                oldIds.Add(session.SessionId);
 
                 var update = Builders<UserSessionEntity>.Update.Set(session => session.OldSessionIds, oldIds).Set(session => session.SessionId, newSessionId);
 
-                await UpdateUserSession(sessionId, update);
+                await UpdateUserSession(session.SessionId, update);
 
                 return newSessionId;
             }

@@ -1,7 +1,7 @@
-﻿using GameUser.Shared.Configurations;
-using GameUser.Web.Shared.Models;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
+using GameUser.Shared.Configurations;
+using GameUser.Web.Shared.Models;
 
 namespace GameUser.Web.Shared.Configurations
 {
@@ -43,7 +43,7 @@ namespace GameUser.Web.Shared.Configurations
 
         public string StoreFileFullPath()
         {
-            return Env == Constant.DEV ? Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), StoreFilePath) : StoreFilePath;            
-        }        
+            return Env == Constant.DEV ? Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), StoreFilePath) : StoreFilePath;
+        }
     }
 }

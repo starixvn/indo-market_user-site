@@ -1,12 +1,12 @@
-﻿using GameUser.Features.Annoucements;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GameUser.Features.Annoucements;
 using GameUser.Features.Announcements;
 using GameUser.Shared.SessionFilterAuthentications;
 using GameUser.Web.Features.APIs.Announcements.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GameUser.Web.Features.APIs.MessageAnnouncement
 {
@@ -14,11 +14,11 @@ namespace GameUser.Web.Features.APIs.MessageAnnouncement
     [Route("api/announcement")]
     public class AnnouncementsController : Controller
     {
-        private readonly IAnnouncementService announcementService;        
+        private readonly IAnnouncementService announcementService;
 
         public AnnouncementsController(IAnnouncementService announcementService)
         {
-            this.announcementService = announcementService;            
+            this.announcementService = announcementService;
         }
 
         [HttpGet]
@@ -36,8 +36,8 @@ namespace GameUser.Web.Features.APIs.MessageAnnouncement
             }
 
             return Json(new List<AnnouncementViewModel>());
-        } 
-        
+        }
+
         private AnnouncementViewModel TransformAnnoucement(AnnouncementEntity annoucementEntity)
         {
             return new AnnouncementViewModel

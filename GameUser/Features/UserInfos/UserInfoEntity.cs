@@ -1,12 +1,12 @@
-﻿using GameUser.Shared.Database;
+﻿using System;
+using GameUser.Shared.Database;
 using MongoDB.Bson.Serialization.Attributes;
-using System;
 
 namespace GameUser.Features.UserInfos
 {
     [BsonIgnoreExtraElements]
     [BsonCollection("userinfos")]
-    public class UserInfoEntity: Document
+    public class UserInfoEntity : Document
     {
         [BsonElement("name")]
         public string Name { get; set; }
@@ -31,7 +31,6 @@ namespace GameUser.Features.UserInfos
 
         [BsonElement("type")]
         public bool Type { get; set; }
-
 
         [BsonElement("isCash")]
         public bool IsCash { get; set; }

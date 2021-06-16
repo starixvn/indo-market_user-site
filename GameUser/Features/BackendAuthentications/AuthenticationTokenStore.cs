@@ -1,9 +1,9 @@
-﻿using GameUser.Shared.Wrappers;
-using IdentityModel.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using GameUser.Shared.Wrappers;
+using IdentityModel.Client;
 
 namespace GameUser.Features.BackendAuthentications
 {

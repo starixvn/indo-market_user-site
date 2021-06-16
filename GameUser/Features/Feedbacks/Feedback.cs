@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 namespace GameUser.Features.Feedbacks
 {
     public class Feedback
     {
-        public Feedback(){}
+        public Feedback()
+        {
+        }
 
         public Feedback(string category, string description, List<IFormFile> files)
         {

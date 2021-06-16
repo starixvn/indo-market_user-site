@@ -1,11 +1,11 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using GameUser.Web.Features.Feedbacks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Sentry;
-using System.Collections.Generic;
 using Xunit;
 
 namespace GameUser.Web.Tests

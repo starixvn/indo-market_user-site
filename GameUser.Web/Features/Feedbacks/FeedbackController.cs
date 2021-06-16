@@ -1,4 +1,6 @@
-﻿using GameUser.Features.Avatars;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using GameUser.Features.Avatars;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.UserInfos;
 using GameUser.Features.UserSessions;
@@ -11,9 +13,6 @@ using GameUser.Web.Shared.Resources;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GameUser.Web.Features.Feedbacks
 {

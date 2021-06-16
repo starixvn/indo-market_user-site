@@ -5,7 +5,7 @@ namespace GameUser.Features.Users
 {
     [BsonIgnoreExtraElements]
     [BsonCollection("users")]
-    public class UserEntity: Document
+    public class UserEntity : Document
     {
         [BsonElement("local")]
         public LocalUserEntity Local { get; set; }

@@ -1,5 +1,5 @@
-﻿using GameUser.Features.BackendAuthentications;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using GameUser.Features.BackendAuthentications;
 
 namespace GameUser.Features.MiddleSite
 {

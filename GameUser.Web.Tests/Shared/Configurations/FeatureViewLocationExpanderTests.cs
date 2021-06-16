@@ -1,4 +1,7 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 using GameUser.Web.Shared.Configurations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,9 +10,6 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Routing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
 namespace GameUser.Web.Tests.Shared.Configurations
@@ -21,11 +21,11 @@ namespace GameUser.Web.Tests.Shared.Configurations
         {
             // Arrange
             ViewLocationExpanderContext context = null;
-            var viewLocations = new List<string> { "view1", "view2"};
+            var viewLocations = new List<string> { "view1", "view2" };
             var expander = new FeatureViewLocationExpander();
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => expander.ExpandViewLocations(context, viewLocations).ToList());            
+            Assert.Throws<ArgumentNullException>(() => expander.ExpandViewLocations(context, viewLocations).ToList());
         }
 
         [Fact]

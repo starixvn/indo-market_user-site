@@ -1,8 +1,8 @@
-﻿using GameUser.Shared.Enumerations;
+﻿using System.Collections.Generic;
+using GameUser.Shared.Enumerations;
 using GameUser.Shared.Resources;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Localization;
-using System.Collections.Generic;
 
 namespace GameUser.Features.Feedbacks
 {

@@ -1,6 +1,6 @@
-﻿using GameUser.Shared.Configurations;
+﻿using System.Collections.Generic;
+using GameUser.Shared.Configurations;
 using GameUser.Shared.Constants;
-using System.Collections.Generic;
 
 namespace GameUser.Features.Authentications
 {

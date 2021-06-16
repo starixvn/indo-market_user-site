@@ -10,7 +10,8 @@ namespace GameUser.Tests.Features.Emails
     {
         private readonly IConfigReader configReader;
 
-        public EmailConfigsTests() {
+        public EmailConfigsTests()
+        {
             this.configReader = Substitute.For<IConfigReader>();
         }
 
