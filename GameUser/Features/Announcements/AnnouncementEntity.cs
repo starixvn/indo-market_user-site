@@ -5,6 +5,7 @@
     using System;
     using System.Collections.Generic;
 
+    [BsonIgnoreExtraElements]
     [BsonCollection("announcements")]
     public class AnnouncementEntity: Document
     {
