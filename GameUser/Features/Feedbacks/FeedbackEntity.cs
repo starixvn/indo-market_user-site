@@ -4,6 +4,7 @@ using System;
 
 namespace GameUser.Features.Feedbacks
 {
+    [BsonIgnoreExtraElements]
     [BsonCollection("feedbacks")]
     public class FeedbackEntity : Document
     {

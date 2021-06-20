@@ -4,6 +4,7 @@ using System;
 
 namespace GameUser.Features.UserSessions
 {
+    [BsonIgnoreExtraElements]
     [BsonCollection("usersessions")]
    public class UserSessionEntity : Document
     {
