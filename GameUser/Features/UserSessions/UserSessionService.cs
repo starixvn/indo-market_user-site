@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using GameUser.Shared.Database;
 using Microsoft.Extensions.Caching.Memory;
 using MongoDB.Driver;
+
+[assembly: InternalsVisibleTo("GameUser.Tests")]
 
 namespace GameUser.Features.UserSessions
 {
@@ -52,26 +55,7 @@ namespace GameUser.Features.UserSessions
 
         public async Task<UserSessionEntity> GetUserSession(string sessionId)
         {
-            var session = await memoryCache.GetOrCreateAsync(sessionId, async cache =>
-            {
-                var currentSession = await GetUserSessionFromDB(sessionId);
-
-                if (IsExpiredSession(currentSession))
-                {
-                    cache.Dispose();
-                }
-                else
-                {
-                    var timeout = currentSession.ReCheckInTime.AddMinutes(sessionSettings.SessionDuration);
-                    var relative = timeout.Subtract(currentSession.ReCheckInTime);
-
-                    RemoveOldSession(currentSession.OldSessionIds);
-
-                    cache.SetAbsoluteExpiration(relative);
-                }
-
-                return currentSession;
-            });
+            var session = await memoryCache.GetOrCreateAsync(sessionId, SessionCacheFactory);
 
             return session;
         }
@@ -147,6 +131,27 @@ namespace GameUser.Features.UserSessions
             var session = await GetUserSessionFromDB(sessionId);
 
             return session;
+        }
+
+        internal async Task<UserSessionEntity> SessionCacheFactory(ICacheEntry cache)
+        {
+            var currentSession = await GetUserSessionFromDB(cache.Key.ToString());
+
+            if (IsExpiredSession(currentSession))
+            {
+                cache.Dispose();
+            }
+            else
+            {
+                var timeout = currentSession.ReCheckInTime.AddMinutes(sessionSettings.SessionDuration);
+                var relative = timeout.Subtract(currentSession.ReCheckInTime);
+
+                RemoveOldSession(currentSession.OldSessionIds);
+
+                cache.SetAbsoluteExpiration(relative);
+            }
+
+            return currentSession;
         }
     }
 }

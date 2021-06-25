@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using GameUser.Features.MiddleSite;
@@ -8,6 +9,8 @@ using GameUser.Features.UserSessions;
 using GameUser.Shared.Database;
 using GameUser.Shared.Wrappers;
 using Microsoft.Extensions.Caching.Memory;
+
+[assembly: InternalsVisibleTo("GameUser.Tests")]
 
 namespace GameUser.Features.UserInfos
 {
@@ -22,6 +25,8 @@ namespace GameUser.Features.UserInfos
 
     public class UserInfoService : IUserInfoService
     {
+        private const int maximumAvatarId = 40;
+
         private readonly IGenericRepository<UserInfoEntity> repository;
         private readonly IUserSessionService userSessionService;
         private readonly IUserService userService;
@@ -98,23 +103,25 @@ namespace GameUser.Features.UserInfos
 
         public async Task<UserInfoEntity> GetUserInfo(string userId)
         {
-            var userInfo = await memoryCache.GetOrCreateAsync(userId, async cache =>
-            {
-                var user = await GetUserInfoFromDB(userId);
-
-                if (user == null)
-                {
-                    cache.Dispose();
-                }
-                else
-                {
-                    cache.SetAbsoluteExpiration(TimeSpan.FromMinutes(settings.CacheTimeout));
-                }
-
-                return user;
-            });
+            var userInfo = await memoryCache.GetOrCreateAsync(userId, UserInfoCacheFactory);
 
             return userInfo;
+        }
+
+        internal async Task<UserInfoEntity> UserInfoCacheFactory(ICacheEntry cache)
+        {
+            var user = await GetUserInfoFromDB(cache.Key.ToString());
+
+            if (user == null)
+            {
+                cache.Dispose();
+            }
+            else
+            {
+                cache.SetAbsoluteExpiration(TimeSpan.FromMinutes(settings.CacheTimeout));
+            }
+
+            return user;
         }
 
         public async Task<bool> IsUserExisted(string sessionId)
@@ -134,22 +141,23 @@ namespace GameUser.Features.UserInfos
 
         private Task<UserInfoEntity> GetUserInfoFromDB(string userId) => repository.FindOneAsync(info => info.UserId == userId);
 
-        private int GetAvatarId() => this.randomFunc(1, 40);
+        private int GetAvatarId() => randomFunc(1, maximumAvatarId);
 
-        private async Task<string> ValidateNickname(string nickname, string username)
+        internal async Task<string> ValidateNickname(string nickname, string username)
         {
             const string maxCharacterNameKey = "maxCharacterName";
             const string cannotTheSameAsUsernameKey = "cannotTheSameAsUsername";
             const string noSpecialCharacterKey = "noSpecialCharacter";
             const string characterNameExistedKey = "characterNameExisted";
+            const string pattern = @"^([a-zA-Z0-9]){3,14}$";
+            const int minimumNicknameLength = 3;
+            const int maximumNicknameLength = 14;
 
-            var pattern = @"^([a-zA-Z0-9]){3,14}$";
-
-            if (string.IsNullOrEmpty(nickname) || nickname.Length < 3 || nickname.Length >= 14)
+            if (string.IsNullOrEmpty(nickname) || nickname.Length < minimumNicknameLength || nickname.Length >= maximumNicknameLength)
             {
                 return maxCharacterNameKey;
             }
-            else if (string.Compare(nickname, username) == 0)
+            else if (nickname.Equals(username))
             {
                 return cannotTheSameAsUsernameKey;
             }
@@ -161,14 +169,7 @@ namespace GameUser.Features.UserInfos
             {
                 var isNicknameExisted = await middleSiteService.IsNicknameExisted(nickname);
 
-                if (isNicknameExisted)
-                {
-                    return characterNameExistedKey;
-                }
-                else
-                {
-                    return string.Empty;
-                }
+                return isNicknameExisted ? characterNameExistedKey : string.Empty;
             }
         }
     }

@@ -74,13 +74,13 @@ namespace GameUser.Features.Authentications
                     var expiredIn = userSession.ReCheckInTime.AddMinutes(userSessionSettings.SessionDuration);
                     var language = cultureConfigs.ConvertLanguage(userSession.Language);
 
-                    await UpdateLanguage(user.Local.UserName, user.Local.Language, language);
-
                     return new UserSignInResponse(true, userSession.UserName, language, userSession.SessionId, userSession.Currency, expiredIn);
                 }
                 else
                 {
-                    sentryClient.CaptureMessage($"Brand verification failed on {DateTime.UtcNow}. User: {JsonConvert.SerializeObject(user.Local)}. SSO Brand Name: {verificationResult.BrandName}", SentryLevel.Error);
+                    var message = $"Brand verification failed on {DateTime.UtcNow}. User: {JsonConvert.SerializeObject(user.Local)}. SSO Brand Name: {verificationResult.BrandName}";
+
+                    sentryClient.CaptureMessage(message, SentryLevel.Error);
                 }
             }
 
@@ -141,8 +141,7 @@ namespace GameUser.Features.Authentications
                         Password = Guid.NewGuid().ToString(),
                         IsCash = verifyTokenResult.IsCash,
                         BrandName = verifyTokenResult.BrandName,
-                        SiteName = verifyTokenResult.SiteName,
-                        Language = cultureConfigs.ConvertLanguage(verifyTokenResult.Language)
+                        SiteName = verifyTokenResult.SiteName
                     }
                 };
 
@@ -167,7 +166,7 @@ namespace GameUser.Features.Authentications
                     ClientId = verifyTokenResult.ClientId,
                     Currency = currency,
                     Ip = request.Ip,
-                    Language = cultureConfigs.ConvertLanguage(user.Local.Language),
+                    Language = cultureConfigs.ConvertLanguage(verifyTokenResult.Language),
                     MemberId = verifyTokenResult.MemberId,
                     MemberName = verifyTokenResult.MemberName,
                     OWSeq = verifyTokenResult.Seq,
@@ -217,14 +216,6 @@ namespace GameUser.Features.Authentications
             if (string.IsNullOrEmpty(oldBrandName) && !string.IsNullOrEmpty(newBrandName))
             {
                 await userService.UpdateBrandName(username, newBrandName);
-            }
-        }
-
-        private async Task UpdateLanguage(string username, string oldLanguage, string newLangauge)
-        {
-            if (string.IsNullOrEmpty(oldLanguage) && !string.IsNullOrEmpty(newLangauge))
-            {
-                await userService.UpdateLanguage(username, newLangauge);
             }
         }
     }

@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using GameUser.Features.Authentications;
 using GameUser.Features.UserLanguages.Models;
-using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
 
 namespace GameUser.Features.UserLanguages
@@ -14,13 +13,11 @@ namespace GameUser.Features.UserLanguages
     public class UserLanguageService : IUserLanguageService
     {
         private readonly IUserSessionService userSessionService;
-        private readonly IUserService userService;
         private readonly ICultureConfigs cultureConfigs;
 
-        public UserLanguageService(IUserSessionService userSessionService, IUserService userService, ICultureConfigs cultureConfigs)
+        public UserLanguageService(IUserSessionService userSessionService, ICultureConfigs cultureConfigs)
         {
             this.userSessionService = userSessionService;
-            this.userService = userService;
             this.cultureConfigs = cultureConfigs;
         }
 
@@ -32,7 +29,6 @@ namespace GameUser.Features.UserLanguages
 
             if (!string.IsNullOrEmpty(newSessionId))
             {
-                await userService.UpdateLanguage(session.UserName, language);
                 await userSessionService.UpdateSessionLanguage(newSessionId, language);
             }
 

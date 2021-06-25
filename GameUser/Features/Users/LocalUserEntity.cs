@@ -36,8 +36,5 @@ namespace GameUser.Features.Users
 
         [BsonElement("siteName")]
         public string SiteName { get; set; }
-
-        [BsonElement("language")]
-        public string Language { get; set; }
     }
 }
