@@ -57,6 +57,7 @@ namespace GameUser.Web.Tests.Shared.Attributes
             httpContextMock.Setup(x => x.User).Returns(new ClaimsPrincipal());
             httpContextMock.Setup(x => x.User.Identity).Returns(new ClaimsIdentity());
             httpContextMock.Setup(x => x.User.Identity.IsAuthenticated).Returns(false);
+            httpContextMock.Setup(x => x.Request.Headers["X-Requested-With"]).Returns(string.Empty);
 
             var attribute = new UserSessionValidationAttribute();
 
@@ -72,7 +73,7 @@ namespace GameUser.Web.Tests.Shared.Attributes
 
             await attribute.OnAuthorizationAsync(context);
 
-            Assert.Equal("/Error/NotAuthorized", ((RedirectResult)context.Result).Url);
+            Assert.Equal("//Error/NotAuthorized", ((RedirectResult)context.Result).Url);
         }
     }
 }

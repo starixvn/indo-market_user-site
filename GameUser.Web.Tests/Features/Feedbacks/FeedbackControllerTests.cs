@@ -65,11 +65,13 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             };
             feedbackService.GetTypes().Returns(feedbackTypes);
 
-            var expectedCulture = key == "culture" ? value : "en";
+            var expectedCulture = key == "culture" ? value : "en-US";
 
             var userInfo = new UserInfoEntity { AvatarId = 1, Name = "abc", UserId = "123" };
+            var session = new UserSessionEntity();
 
-            userInfoService.GetUserInfo(userInfo.UserId).Returns(userInfo);
+            userSessionService.GetUserSession(Arg.Any<string>()).Returns(session);
+            userInfoService.GetUserInfo(Arg.Any<string>()).Returns(userInfo);
 
             // Act
             var result = await controller.Add(feedbackRequest) as ViewResult;

@@ -68,8 +68,8 @@ namespace GameUser.Web.Tests.Shared.Attributes
             attribute.OnActionExecuting(context);
 
             // Assert
-            Thread.CurrentThread.CurrentCulture.Name.Should().Be("en");
-            Thread.CurrentThread.CurrentUICulture.Name.Should().Be("en");
+            Thread.CurrentThread.CurrentCulture.Name.Should().Be("en-US");
+            Thread.CurrentThread.CurrentUICulture.Name.Should().Be("en-US");
         }
     }
 }
