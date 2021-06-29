@@ -153,7 +153,7 @@ namespace GameUser.Features.UserInfos
             const int minimumNicknameLength = 3;
             const int maximumNicknameLength = 14;
 
-            if (string.IsNullOrEmpty(nickname) || nickname.Length < minimumNicknameLength || nickname.Length >= maximumNicknameLength)
+            if (string.IsNullOrEmpty(nickname) || nickname.Length < minimumNicknameLength || nickname.Length > maximumNicknameLength)
             {
                 return maxCharacterNameKey;
             }
