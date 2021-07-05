@@ -103,9 +103,12 @@ namespace GameUser.Features.UserInfos
 
         public async Task<UserInfoEntity> GetUserInfo(string userId)
         {
-            var userInfo = await memoryCache.GetOrCreateAsync(userId, UserInfoCacheFactory);
+            if(settings.CacheTimeout > 0)
+            {
+                return await memoryCache.GetOrCreateAsync(userId, UserInfoCacheFactory);
+            }    
 
-            return userInfo;
+            return await GetUserInfoFromDB(userId); ;
         }
 
         internal async Task<UserInfoEntity> UserInfoCacheFactory(ICacheEntry cache)
