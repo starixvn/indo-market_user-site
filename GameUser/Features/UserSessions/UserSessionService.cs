@@ -103,7 +103,7 @@ namespace GameUser.Features.UserSessions
             if (!IsExpiredSession(session))
             {
                 var newSessionId = Guid.NewGuid().ToString();
-                var oldIds = session.OldSessionIds.ToList();
+                var oldIds = session.OldSessionIds != null ? session.OldSessionIds.ToList() : new List<string>();
 
                 oldIds.Add(session.SessionId);
 
