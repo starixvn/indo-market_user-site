@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 
 namespace GameUser.Web.Shared.Middlewares
@@ -10,6 +11,10 @@ namespace GameUser.Web.Shared.Middlewares
         {
             var dbSettings = configuration.GetSection("DatabaseSettings");
             var mongoClient = new MongoClient(dbSettings["ConnectionString"]);
+            var conventionPack = new ConventionPack { new IgnoreExtraElementsConvention(true) };
+
+            ConventionRegistry.Register("ignoreExtraElements", conventionPack, t => true);
+
             services.AddSingleton<IMongoClient>(mongoClient);
             services.AddSingleton(mongoClient.GetDatabase(dbSettings["DatabaseName"]));
         }
