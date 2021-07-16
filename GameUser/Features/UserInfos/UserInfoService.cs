@@ -2,6 +2,8 @@
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using GameUser.Features.ApiComminicators;
+using GameUser.Features.ApiComminicators.Models;
 using GameUser.Features.MiddleSite;
 using GameUser.Features.UserInfos.Models;
 using GameUser.Features.Users;
@@ -9,6 +11,9 @@ using GameUser.Features.UserSessions;
 using GameUser.Shared.Database;
 using GameUser.Shared.Wrappers;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
+using Sentry;
+using Sentry.Protocol;
 
 [assembly: InternalsVisibleTo("GameUser.Tests")]
 
@@ -20,6 +25,8 @@ namespace GameUser.Features.UserInfos
 
         Task<bool> IsUserExisted(string sessionId);
 
+        Task<bool> CheckUserExistsAndEnterPortal(string sessionId);
+
         Task<CreateUserInfoResult> CreateUserInfo(string sessionId, string nickname);
     }
 
@@ -27,6 +34,7 @@ namespace GameUser.Features.UserInfos
     {
         private const int maximumAvatarId = 40;
 
+        private readonly IApi api;
         private readonly IGenericRepository<UserInfoEntity> repository;
         private readonly IUserSessionService userSessionService;
         private readonly IUserService userService;
@@ -35,26 +43,10 @@ namespace GameUser.Features.UserInfos
         private readonly IMemoryCache memoryCache;
         private readonly UserInfoSettings settings;
         private readonly Func<int, int, int> randomFunc = DefaultRandomFunc;
+        private readonly ISentryClient sentryClient;
 
         public UserInfoService(
-            IMemoryCache memoryCache,
-            UserInfoSettings settings,
-            IGenericRepository<UserInfoEntity> repository,
-            IUserSessionService userSessionService,
-            IDateTimeProvider dateTimeProvider,
-            IUserService userService,
-            IMiddleSiteService middleSiteService)
-        {
-            this.repository = repository;
-            this.userSessionService = userSessionService;
-            this.dateTimeProvider = dateTimeProvider;
-            this.userService = userService;
-            this.middleSiteService = middleSiteService;
-            this.memoryCache = memoryCache;
-            this.settings = settings;
-        }
-
-        internal UserInfoService(
+            IApi api,
             IMemoryCache memoryCache,
             UserInfoSettings settings,
             IGenericRepository<UserInfoEntity> repository,
@@ -62,8 +54,31 @@ namespace GameUser.Features.UserInfos
             IDateTimeProvider dateTimeProvider,
             IUserService userService,
             IMiddleSiteService middleSiteService,
-            Func<int, int, int> randomFunc)
-            : this(memoryCache, settings, repository, userSessionService, dateTimeProvider, userService, middleSiteService)
+            ISentryClient sentryClient)
+        {
+            this.api = api;
+            this.repository = repository;
+            this.userSessionService = userSessionService;
+            this.dateTimeProvider = dateTimeProvider;
+            this.userService = userService;
+            this.middleSiteService = middleSiteService;
+            this.memoryCache = memoryCache;
+            this.settings = settings;
+            this.sentryClient = sentryClient;
+        }
+
+        internal UserInfoService(
+            IApi api,
+            IMemoryCache memoryCache,
+            UserInfoSettings settings,
+            IGenericRepository<UserInfoEntity> repository,
+            IUserSessionService userSessionService,
+            IDateTimeProvider dateTimeProvider,
+            IUserService userService,
+            IMiddleSiteService middleSiteService,
+            Func<int, int, int> randomFunc,
+            ISentryClient sentryClient)
+            : this(api, memoryCache, settings, repository, userSessionService, dateTimeProvider, userService, middleSiteService, sentryClient)
         {
             this.randomFunc = randomFunc;
         }
@@ -94,6 +109,7 @@ namespace GameUser.Features.UserInfos
                 };
 
                 await repository.InsertOneAsync(userInfo);
+                await EnterPortal(session, nickname, true);
 
                 return new CreateUserInfoResult();
             }
@@ -137,6 +153,63 @@ namespace GameUser.Features.UserInfos
                 var user = await GetUserInfo(userSession.UserId);
 
                 result = user != null;
+            }
+
+            return result;
+        }
+
+        public async Task<bool> CheckUserExistsAndEnterPortal(string sessionId)
+        {
+            var userExists = await IsUserExisted(sessionId);
+
+            if (userExists)
+            {
+                var userSession = await userSessionService.GetUserSession(sessionId);
+                var user = await GetUserInfo(userSession.UserId);
+
+                await EnterPortal(userSession, user.Name, false);
+            }
+
+            return userExists;
+        }
+
+        protected async Task<bool> EnterPortal(UserSessionEntity userSession, string nickname, bool firstLogin)
+        {
+            var result = false;
+            var request = new EnterPortalRequest
+            {
+                CharacterName = nickname,
+                FirstLogin = firstLogin,
+                ObCustId = userSession.MemberId,
+                Seq = userSession.OWSeq,
+                SiteId = userSession.SiteId
+            };
+
+            try
+            {
+                var response = await api.EnterPortal(request);
+
+                result = response.Result != null && response.Result.IsSuccessful();
+
+                if (!result)
+                {
+                    var message = $"Notify Login Failure at ${DateTime.Now}\n\t" +
+                       $"Session: ${JsonConvert.SerializeObject(userSession)}\n\t" +
+                       $"Request: ${JsonConvert.SerializeObject(request)}\n\t" +
+                       $"Response: ${JsonConvert.SerializeObject(response)}";
+
+                    sentryClient.CaptureMessage(message, SentryLevel.Error);
+                }
+                
+            }
+            catch (Exception exception)
+            {
+                var message = $"Notify Login Error at ${DateTime.Now}\n\t" +
+                    $"Session: ${JsonConvert.SerializeObject(userSession)}\n\t" +
+                    $"Request: ${JsonConvert.SerializeObject(request)}\n\t" +
+                    $"Error: ${JsonConvert.SerializeObject(exception)}";
+
+                sentryClient.CaptureMessage(message, SentryLevel.Error);
             }
 
             return result;

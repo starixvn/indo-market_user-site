@@ -50,7 +50,7 @@ namespace GameUser.Web.Features.APIs.Users
         {
             var session = httpRequestWrapper.GetAuthorizationToken(accessor);
 
-            return userInfoService.IsUserExisted(session);
+            return userInfoService.CheckUserExistsAndEnterPortal(session);
         }
 
         [HttpPost("create")]

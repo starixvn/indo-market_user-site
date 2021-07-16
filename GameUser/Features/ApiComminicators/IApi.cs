@@ -9,5 +9,8 @@ namespace GameUser.Features.ApiComminicators
     {
         [Post("/AuthVerification/verify")]
         Task<VerificationTokenResponse> VerifyToken(VerificationTokenRequest request);
+
+        [Post("/Member/EnterPortal")]
+        Task<MemberApiResponse<EnterPortalResponse>> EnterPortal(EnterPortalRequest request);
     }
 }
