@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using FluentAssertions;
+using GameUser.Features.ApiComminicators;
 using GameUser.Features.MiddleSite;
 using GameUser.Features.UserInfos;
 using GameUser.Features.Users;
@@ -11,6 +12,7 @@ using GameUser.Shared.Wrappers;
 using MemoryCache.Testing.NSubstitute;
 using Microsoft.Extensions.Caching.Memory;
 using NSubstitute;
+using Sentry;
 using Xunit;
 
 namespace GameUser.Tests.Features.UserInfos
@@ -24,12 +26,16 @@ namespace GameUser.Tests.Features.UserInfos
         private readonly IMiddleSiteService middleSiteService;
         private readonly IMemoryCache memoryCache;
         private readonly UserInfoService service;
+        private readonly ISentryClient sentryClient;
+        private readonly IApi api;
 
         public UserInfoServiceTests()
         {
             var settings = new UserInfoSettings
             {
-                CacheTimeout = 10
+                CacheTimeout = 10,
+                CurrencyRegex = "",
+                NicknamePrefix = ""
             };
 
             memoryCache = Create.MockedMemoryCache();
@@ -38,7 +44,9 @@ namespace GameUser.Tests.Features.UserInfos
             userService = Substitute.For<IUserService>();
             dateTimeProvider = Substitute.For<IDateTimeProvider>();
             middleSiteService = Substitute.For<IMiddleSiteService>();
-            service = new UserInfoService(memoryCache, settings, repository, userSessionService, dateTimeProvider, userService, middleSiteService, RandomFunc);
+            sentryClient = Substitute.For<ISentryClient>();
+            api = Substitute.For<IApi>();
+            service = new UserInfoService(api, memoryCache, settings, repository, userSessionService, dateTimeProvider, userService, middleSiteService, RandomFunc, sentryClient);
         }
 
         [Fact]
@@ -204,7 +212,8 @@ namespace GameUser.Tests.Features.UserInfos
                 Local = new LocalUserEntity
                 {
                     IsCash = false,
-                    BrandName = "VG"
+                    BrandName = "VG",
+                    Currency = "IN"
                 }
             };
 

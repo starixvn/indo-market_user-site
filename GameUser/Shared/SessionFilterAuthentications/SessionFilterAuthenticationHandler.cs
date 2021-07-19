@@ -55,21 +55,16 @@ namespace GameUser.Shared.SessionFilterAuthentications
 
         private void WriteLog(UserSessionEntity session)
         {
-            if (!IsSameUserAgent(session))
+            if (userSessionService.IsExpiredSession(session) || !IsSameUserAgent(session))
             {
-                var userInfo = new
-                {
-                    session.UserName,
-                    session.UserId,
-                    session.BrandName,
-                    session.BrowserUserAgent,
-                    session.ClientId,
-                    session.SessionId
-                };
-
                 var requestUserAgent = Request.Headers[userAgentKey];
+                var sessionId = Request.Headers[authorizationKey];
 
-                var message = $"Request verification failed on ${DateTime.UtcNow}. User: ${JsonConvert.SerializeObject(userInfo)}. Browser user agent: ${requestUserAgent}";
+                var sessionJson = session != null ? JsonConvert.SerializeObject(session) : string.Empty;
+                var message = $"Request verification failed on ${DateTime.UtcNow}.\r\n" +
+                    $"Session: ${sessionJson}\r\n" +
+                    $"Browser user agent: ${requestUserAgent}\r\n" +
+                    $"SessionId: ${sessionId}";
 
                 sentryClient.CaptureMessage(message, SentryLevel.Warning);
             }
@@ -106,9 +101,6 @@ namespace GameUser.Shared.SessionFilterAuthentications
             return AuthenticateResult.Success(ticket);
         }
 
-        private AuthenticateResult Fail()
-        {
-            return AuthenticateResult.Fail("Unauthorized");
-        }
+        private static AuthenticateResult Fail() => AuthenticateResult.Fail("Unauthorized");
     }
 }

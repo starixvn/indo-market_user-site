@@ -94,11 +94,12 @@ namespace GameUser.Features.UserInfos
             if (string.IsNullOrEmpty(errorMessage))
             {
                 var localUser = await userService.GetUser(session.UserName);
+                var formatedNickname = FormatNickname(localUser.Local.Currency ?? string.Empty, nickname);
                 var userInfo = new UserInfoEntity
                 {
                     UID = session.MemberId,
                     UserId = session.UserId,
-                    Name = nickname,
+                    Name = formatedNickname,
                     JoinedOn = dateTimeProvider.Now(),
                     Currency = session.Currency,
                     AvatarId = GetAvatarId(),
@@ -109,7 +110,7 @@ namespace GameUser.Features.UserInfos
                 };
 
                 await repository.InsertOneAsync(userInfo);
-                await EnterPortal(session, nickname, true);
+                await EnterPortal(session, formatedNickname, true);
 
                 return new CreateUserInfoResult();
             }
@@ -119,12 +120,12 @@ namespace GameUser.Features.UserInfos
 
         public async Task<UserInfoEntity> GetUserInfo(string userId)
         {
-            if(settings.CacheTimeout > 0)
+            if (settings.CacheTimeout > 0)
             {
                 return await memoryCache.GetOrCreateAsync(userId, UserInfoCacheFactory);
-            }    
+            }
 
-            return await GetUserInfoFromDB(userId); ;
+            return await GetUserInfoFromDB(userId);
         }
 
         internal async Task<UserInfoEntity> UserInfoCacheFactory(ICacheEntry cache)
@@ -173,6 +174,18 @@ namespace GameUser.Features.UserInfos
             return userExists;
         }
 
+        private string FormatNickname(string currency, string nickname)
+        {
+            var regex = new Regex(settings.CurrencyRegex);
+
+            if (regex.IsMatch(currency))
+            {
+                return $"{settings.NicknamePrefix}{nickname}";
+            }
+
+            return nickname;
+        }
+
         protected async Task<bool> EnterPortal(UserSessionEntity userSession, string nickname, bool firstLogin)
         {
             var result = false;
@@ -200,7 +213,6 @@ namespace GameUser.Features.UserInfos
 
                     sentryClient.CaptureMessage(message, SentryLevel.Error);
                 }
-                
             }
             catch (Exception exception)
             {
