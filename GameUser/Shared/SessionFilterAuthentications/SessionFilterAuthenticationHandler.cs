@@ -17,8 +17,8 @@ namespace GameUser.Shared.SessionFilterAuthentications
         private readonly IUserSessionService userSessionService;
         private readonly ISentryClient sentryClient;
 
-        private static readonly string userAgentKey = "User-Agent";
-        private static readonly string authorizationKey = "Authorization";
+        private const string userAgentKey = "User-Agent";
+        private const string authorizationKey = "Authorization";
 
         public SessionFilterAuthenticationHandler(
             IOptionsMonitor<SessionFilterAuthenticationOptions> options,
@@ -40,34 +40,39 @@ namespace GameUser.Shared.SessionFilterAuthentications
                 return Fail();
             }
 
-            var sessionId = Request.Headers[authorizationKey];
-            var session = await userSessionService.GetUserSession(sessionId);
+            var authorized = false;
 
-            WriteLog(session);
-
-            if (userSessionService.IsExpiredSession(session) || !IsSameUserAgent(session))
+            try
             {
-                return Fail();
+                var sessionId = Request.Headers[authorizationKey];
+                var session = await userSessionService.GetUserSession(sessionId);
+
+                authorized = !userSessionService.IsExpiredSession(session) && IsSameUserAgent(session);
+
+                if (!authorized)
+                {
+                    WriteLog(session);
+                }
+            }
+            catch (Exception exception)
+            {
+                sentryClient.CaptureException(exception);
             }
 
-            return Success();
+            return authorized ? Success() : Fail();
         }
 
         private void WriteLog(UserSessionEntity session)
         {
-            if (userSessionService.IsExpiredSession(session) || !IsSameUserAgent(session))
-            {
-                var requestUserAgent = Request.Headers[userAgentKey];
-                var sessionId = Request.Headers[authorizationKey];
+            var requestUserAgent = Request.Headers[userAgentKey];
+            var sessionId = Request.Headers[authorizationKey];
+            var sessionJson = session != null ? JsonConvert.SerializeObject(session) : string.Empty;
+            var message = $"Session authentication failed on {DateTime.UtcNow}.\r\n" +
+                $"Session: {sessionJson}\r\n" +
+                $"Browser user agent: {requestUserAgent}\r\n" +
+                $"SessionId: {sessionId}";
 
-                var sessionJson = session != null ? JsonConvert.SerializeObject(session) : string.Empty;
-                var message = $"Request verification failed on ${DateTime.UtcNow}.\r\n" +
-                    $"Session: ${sessionJson}\r\n" +
-                    $"Browser user agent: ${requestUserAgent}\r\n" +
-                    $"SessionId: ${sessionId}";
-
-                sentryClient.CaptureMessage(message, SentryLevel.Warning);
-            }
+            sentryClient.CaptureMessage(message, SentryLevel.Warning);
         }
 
         private bool IsValidRequest()
