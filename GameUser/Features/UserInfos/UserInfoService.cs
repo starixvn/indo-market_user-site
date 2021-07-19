@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using GameUser.Features.UserSessions;
 using GameUser.Shared.Database;
 using GameUser.Shared.Wrappers;
 using Microsoft.Extensions.Caching.Memory;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 using Sentry;
 using Sentry.Protocol;
@@ -95,9 +97,10 @@ namespace GameUser.Features.UserInfos
             {
                 var localUser = await userService.GetUser(session.UserName);
                 var formatedNickname = FormatNickname(localUser.Local.Currency ?? string.Empty, nickname);
+                var latestUID = await GetLatestUID();
                 var userInfo = new UserInfoEntity
                 {
-                    UID = session.MemberId,
+                    UID = latestUID + 1,
                     UserId = session.UserId,
                     Name = formatedNickname,
                     JoinedOn = dateTimeProvider.Now(),
@@ -172,6 +175,20 @@ namespace GameUser.Features.UserInfos
             }
 
             return userExists;
+        }
+
+        private async Task<int> GetLatestUID()
+        {
+            var uidAssending = Builders<UserInfoEntity>.Sort.Descending(user => user.UID);
+            var findOptions = new FindOptions<UserInfoEntity>
+            {
+                Sort = uidAssending,
+                Limit = 1
+            };
+            var users = await repository.FindAsync(user => true, findOptions);
+            var latestUser = users.FirstOrDefault();
+
+            return latestUser?.UID ?? 0;
         }
 
         private string FormatNickname(string currency, string nickname)

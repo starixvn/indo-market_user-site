@@ -16,6 +16,8 @@ namespace GameUser.Shared.Database
 
         Task UpdateOneAsync(Expression<Func<TDocument, bool>> filterExpression, UpdateDefinition<TDocument> update);
 
+        Task<IEnumerable<TDocument>> FindAsync(Expression<Func<TDocument, bool>> filterExpression, FindOptions<TDocument> options = null);
+
         Task<IEnumerable<TDocument>> FilterByAsync(Expression<Func<TDocument, bool>> filterExpression);
 
         IQueryable<TDocument> AsQueryable();
@@ -35,6 +37,9 @@ namespace GameUser.Shared.Database
 
         public virtual Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filterExpression)
         => collection.Find(filterExpression).FirstOrDefaultAsync();
+
+        public virtual async Task<IEnumerable<TDocument>> FindAsync(Expression<Func<TDocument, bool>> filterExpression, FindOptions<TDocument> options = null)
+        => (await collection.FindAsync(filterExpression, options)).ToEnumerable();
 
         public virtual Task InsertOneAsync(TDocument document)
         {
