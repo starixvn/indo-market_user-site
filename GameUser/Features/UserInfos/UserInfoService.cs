@@ -223,20 +223,20 @@ namespace GameUser.Features.UserInfos
 
                 if (!result)
                 {
-                    var message = $"Notify Login Failure at ${DateTime.Now}\n\t" +
-                       $"Session: ${JsonConvert.SerializeObject(userSession)}\n\t" +
-                       $"Request: ${JsonConvert.SerializeObject(request)}\n\t" +
-                       $"Response: ${JsonConvert.SerializeObject(response)}";
+                    var message = $"Notify Login Failure at {DateTime.Now}\n\t" +
+                       $"Session: {JsonConvert.SerializeObject(userSession)}\n\t" +
+                       $"Request: {JsonConvert.SerializeObject(request)}\n\t" +
+                       $"Response: {JsonConvert.SerializeObject(response)}";
 
                     sentryClient.CaptureMessage(message, SentryLevel.Error);
                 }
             }
             catch (Exception exception)
             {
-                var message = $"Notify Login Error at ${DateTime.Now}\n\t" +
-                    $"Session: ${JsonConvert.SerializeObject(userSession)}\n\t" +
-                    $"Request: ${JsonConvert.SerializeObject(request)}\n\t" +
-                    $"Error: ${JsonConvert.SerializeObject(exception)}";
+                var message = $"Notify Login Error at {DateTime.Now}\n\t" +
+                    $"Session: {JsonConvert.SerializeObject(userSession)}\n\t" +
+                    $"Request: {JsonConvert.SerializeObject(request)}\n\t" +
+                    $"Error: {JsonConvert.SerializeObject(exception)}";
 
                 sentryClient.CaptureMessage(message, SentryLevel.Error);
             }
