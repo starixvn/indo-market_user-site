@@ -132,6 +132,9 @@
   <data name="BackToLobby" xml:space="preserve">
     <value>กลับไปที่ล็อบบี้</value>
   </data>
+  <data name="Copyright" xml:space="preserve">
+    <value>สงวนลิขสิทธิ์</value>
+  </data>
   <data name="Description" xml:space="preserve">
     <value>คำอธิบาย</value>
   </data>
