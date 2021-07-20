@@ -104,7 +104,7 @@ namespace GameUser.Features.UserInfos
                     UserId = session.UserId,
                     Name = formatedNickname,
                     JoinedOn = dateTimeProvider.Now(),
-                    Currency = session.Currency,
+                    Currency = localUser.Local.Currency,
                     AvatarId = GetAvatarId(),
                     IsCash = localUser.Local.IsCash,
                     BrandName = localUser.Local.BrandName,
