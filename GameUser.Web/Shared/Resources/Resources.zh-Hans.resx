@@ -132,6 +132,9 @@
   <data name="BackToLobby" xml:space="preserve">
     <value>返回大厅</value>
   </data>
+  <data name="Copyright" xml:space="preserve">
+    <value>保留所有权利</value>
+  </data>
   <data name="Description" xml:space="preserve">
     <value>描述</value>
   </data>

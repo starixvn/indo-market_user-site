@@ -1,8 +1,8 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using GameUser.Shared.Configurations;
 using Microsoft.Extensions.Configuration;
 using NSubstitute;
-using System;
 using Xunit;
 
 namespace GameUser.Tests.Shared
@@ -19,7 +19,8 @@ namespace GameUser.Tests.Shared
             try
             {
                 reader.GetValue<string>("abc");
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 e.Message.Should().Be("Key: abc");
             }

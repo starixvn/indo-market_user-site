@@ -1,5 +1,6 @@
-﻿using GameUser.Shared.Configurations;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using GameUser.Shared.Configurations;
+using GameUser.Shared.Constants;
 
 namespace GameUser.Features.Authentications
 {
@@ -7,6 +8,8 @@ namespace GameUser.Features.Authentications
     {
         public List<string> SupportedCultures { get; }
         public string DefaultCulture { get; }
+
+        public string ConvertLanguage(string language);
     }
 
     public class CultureConfigs : ICultureConfigs
@@ -18,6 +21,21 @@ namespace GameUser.Features.Authentications
         }
 
         public List<string> SupportedCultures { get; }
-        public string DefaultCulture { get ; }
+        public string DefaultCulture { get; }
+
+        public string ConvertLanguage(string language)
+        {
+            if (language == Language.ChineseNewSimplifiedCode)
+            {
+                language = Language.ChineseSimplifiedCode;
+            }
+
+            if (string.IsNullOrWhiteSpace(language) || !SupportedCultures.Contains(language))
+            {
+                return DefaultCulture;
+            }
+
+            return language;
+        }
     }
 }

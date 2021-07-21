@@ -10,7 +10,6 @@ namespace GameUser.Features.Users
 
         Task<UserEntity> GetUser(string userName);
 
-
         Task UpdateBrandName(string username, string brandName);
     }
 

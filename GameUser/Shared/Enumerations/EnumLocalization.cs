@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Localization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Localization;
 
 namespace GameUser.Shared.Enumerations
 {
@@ -18,13 +18,13 @@ namespace GameUser.Shared.Enumerations
 
         [Obsolete]
         public IEnumerable<SelectListItem> GetSelectListItems(string language = null)
-        {            
+        {
             var enums = Enum.GetValues(typeof(T1)).Cast<T1>();
             return enums.Select(x => new SelectListItem
             {
                 Value = x.ToString(),
-                Text = string.IsNullOrWhiteSpace(language) ? localizer[x.ToString()] : localizer.WithCulture(new CultureInfo(language))[x.ToString()]                
+                Text = string.IsNullOrWhiteSpace(language) ? localizer[x.ToString()] : localizer.WithCulture(new CultureInfo(language))[x.ToString()]
             });
-        }        
+        }
     }
 }

@@ -1,10 +1,7 @@
-﻿using GameUser.Shared.Wrappers;
-using MimeKit;
-using NETCore.MailKit;
-using NETCore.MailKit.Core;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MimeKit;
 
 namespace GameUser.Features.Emails
 {
@@ -19,7 +16,7 @@ namespace GameUser.Features.Emails
     {
         private readonly IMailKitWrapper mailKitWrapper;
 
-        public EmailService(IMailKitWrapper mailKitWrapper) 
+        public EmailService(IMailKitWrapper mailKitWrapper)
         {
             this.mailKitWrapper = mailKitWrapper;
         }
@@ -47,9 +44,9 @@ namespace GameUser.Features.Emails
         public async Task SendAsync(EmailRequest emailRequest)
         {
             var mimeMessage = new MimeMessage();
-            var builder = new BodyBuilder { TextBody = emailRequest.Body };            
-            
-            var mailToAddress = emailRequest.ToAddress.Split(new [] { ',', ';' });
+            var builder = new BodyBuilder { TextBody = emailRequest.Body };
+
+            var mailToAddress = emailRequest.ToAddress.Split(new[] { ',', ';' });
             var mailToList = new InternetAddressList();
             if (mailToAddress != null && mailToAddress.Any())
             {
@@ -73,7 +70,6 @@ namespace GameUser.Features.Emails
                         builder.Attachments.Add(attachment.FileName, memoryStream.ToArray());
                     }
                 }
-
             }
             mimeMessage.Body = builder.ToMessageBody();
 

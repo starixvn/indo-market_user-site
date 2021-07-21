@@ -1,14 +1,14 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using FluentAssertions;
 using GameUser.Features.Emails;
 using Microsoft.AspNetCore.Http;
 using MimeKit;
 using NETCore.MailKit.Infrastructure.Internal;
 using NSubstitute;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace GameUser.Tests.Features.Emails
@@ -37,7 +37,7 @@ namespace GameUser.Tests.Features.Emails
         [Fact]
         public async Task SendAsync_WhenConnected_SendEmail()
         {
-            // Arrange            
+            // Arrange
             emailClient.IsConnected.Returns(true);
             var message = new MimeMessage();
             var service = new EmailService(mailKit);

@@ -1,8 +1,6 @@
 ﻿namespace GameUser.Features.Emails
 {
-    using GameUser.Shared;
     using GameUser.Shared.Configurations;
-    using Microsoft.Extensions.Configuration;
 
     public interface IEmailConfigs
     {
@@ -25,8 +23,8 @@
 
     public class EmailConfigs : IEmailConfigs
     {
-        public EmailConfigs(IConfigReader configReader) 
-        {           
+        public EmailConfigs(IConfigReader configReader)
+        {
             Server = configReader.GetValue<string>("Email:Server");
             Port = configReader.GetValue<int>("Email:Port");
             Security = configReader.GetValue<bool>("Email:Security");
@@ -51,6 +49,6 @@
 
         public string Account { get; }
 
-        public string Password { get; }        
+        public string Password { get; }
     }
 }

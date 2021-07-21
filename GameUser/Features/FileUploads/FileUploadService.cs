@@ -1,11 +1,11 @@
-﻿using GameUser.Shared.Wrappers;
-using Microsoft.AspNetCore.Http;
-using Sentry;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using GameUser.Shared.Wrappers;
+using Microsoft.AspNetCore.Http;
+using Sentry;
 
 namespace GameUser.Features.FileUploads
 {
@@ -31,7 +31,7 @@ namespace GameUser.Features.FileUploads
             if (files != null)
             {
                 systemIOWrapper.CreateDirectory(baseDirectory);
-                result = (await Task.WhenAll(files.Select(async file => await SaveFile(file, baseDirectory)))).ToList();                
+                result = (await Task.WhenAll(files.Select(async file => await SaveFile(file, baseDirectory)))).ToList();
             }
 
             return result;
@@ -47,7 +47,7 @@ namespace GameUser.Features.FileUploads
 
                 return new UploadedFile(name: name, fullPath: filePath, file: file, savedSuccess: true);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 sentryClient.CaptureException(e);
                 return new UploadedFile(name: string.Empty, fullPath: string.Empty, file: file, savedSuccess: false);

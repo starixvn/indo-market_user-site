@@ -1,9 +1,9 @@
-﻿using FluentAssertions;
+﻿using System.IO;
+using System.Reflection;
+using FluentAssertions;
 using GameUser.Shared.Configurations;
 using GameUser.Web.Shared.Configurations;
 using NSubstitute;
-using System.IO;
-using System.Reflection;
 using Xunit;
 
 namespace GameUser.Web.Tests.Shared.Configurations
@@ -20,7 +20,7 @@ namespace GameUser.Web.Tests.Shared.Configurations
         [Fact]
         public void AppSettings_WhenInit_ReadAppSettings()
         {
-            // Arrange            
+            // Arrange
             configReader.GetValue<string>("ApiHost").Returns("api host");
             configReader.GetValue<string>("ResultUrl").Returns("result url");
             configReader.GetValue<string>("StoreFilePath").Returns("store file path");

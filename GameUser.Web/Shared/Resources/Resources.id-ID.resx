@@ -132,6 +132,9 @@
   <data name="BackToLobby" xml:space="preserve">
     <value>Kembali ke Lobi</value>
   </data>
+  <data name="Copyright" xml:space="preserve">
+    <value>Hak Cipta dilindungi Undang-Undang</value>
+  </data>
   <data name="Description" xml:space="preserve">
     <value>Deskripsi</value>
   </data>

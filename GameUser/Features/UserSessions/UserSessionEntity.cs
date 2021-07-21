@@ -1,12 +1,13 @@
-﻿using GameUser.Shared.Database;
+﻿using System;
+using System.Collections.Generic;
+using GameUser.Shared.Database;
 using MongoDB.Bson.Serialization.Attributes;
-using System;
 
 namespace GameUser.Features.UserSessions
 {
     [BsonIgnoreExtraElements]
     [BsonCollection("usersessions")]
-   public class UserSessionEntity : Document
+    public class UserSessionEntity : Document
     {
         [BsonElement("ssoToken")]
         public string SSOToken { get; set; }
@@ -60,5 +61,8 @@ namespace GameUser.Features.UserSessions
 
         [BsonElement("brandName")]
         public string BrandName { get; set; }
+
+        [BsonElement("oldSessionIds")]
+        public IEnumerable<string> OldSessionIds { get; set; }
     }
 }

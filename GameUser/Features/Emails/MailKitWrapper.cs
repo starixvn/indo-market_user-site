@@ -1,15 +1,12 @@
-﻿using GameUser.Shared.Wrappers;
-using NETCore.MailKit;
+﻿using NETCore.MailKit;
 using NETCore.MailKit.Infrastructure.Internal;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace GameUser.Features.Emails
 {
     public interface IMailKitWrapper
     {
         ISmtpClientWrapper GetSmtpClient();
+
         MailKitOptions Options { get; }
     }
 

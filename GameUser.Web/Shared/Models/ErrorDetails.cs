@@ -1,6 +1,7 @@
 ﻿namespace GameUser.Web.Shared.Models
 {
     using Newtonsoft.Json;
+
     public class ErrorDetails
     {
         public ErrorDetails(int statusCode, string message)

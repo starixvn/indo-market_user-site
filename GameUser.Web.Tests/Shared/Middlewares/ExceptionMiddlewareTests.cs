@@ -1,11 +1,11 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using FluentAssertions;
 using GameUser.Web.Shared.Middlewares;
 using GameUser.Web.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace GameUser.Web.Tests.Shared.Middlewares

@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Threading;
+using FluentAssertions;
 using GameUser.Web.Shared.Attributes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,8 +8,6 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
-using System.Collections.Generic;
-using System.Threading;
 using Xunit;
 
 namespace GameUser.Web.Tests.Shared.Attributes
@@ -35,7 +35,6 @@ namespace GameUser.Web.Tests.Shared.Attributes
                 new List<IFilterMetadata>(),
                 new Dictionary<string, object>(),
                 NSubstitute.Substitute.For<Controller>());
-
 
             // Act
             attribute.OnActionExecuting(context);
@@ -65,13 +64,12 @@ namespace GameUser.Web.Tests.Shared.Attributes
                 new Dictionary<string, object>(),
                 NSubstitute.Substitute.For<Controller>());
 
-
             // Act
             attribute.OnActionExecuting(context);
 
             // Assert
-            Thread.CurrentThread.CurrentCulture.Name.Should().Be("en");
-            Thread.CurrentThread.CurrentUICulture.Name.Should().Be("en");
+            Thread.CurrentThread.CurrentCulture.Name.Should().Be("en-US");
+            Thread.CurrentThread.CurrentUICulture.Name.Should().Be("en-US");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using GameUser.Features.ApiComminicators.Models;
+﻿using System.Threading.Tasks;
+using GameUser.Features.ApiComminicators.Models;
 using GameUser.Features.Authentications;
 using GameUser.Features.Authentications.Models;
 using GameUser.Shared.SessionFilterAuthentications;
@@ -8,7 +9,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace GameUser.Web.Features.APIs.Authentications
 {

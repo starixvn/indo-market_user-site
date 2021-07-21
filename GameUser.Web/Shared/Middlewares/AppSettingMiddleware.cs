@@ -1,5 +1,4 @@
 ﻿using GameUser.Web.Shared.Configurations;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GameUser.Web.Shared.Middlewares

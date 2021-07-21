@@ -1,16 +1,16 @@
-﻿using AutoFixture;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using AutoFixture;
 using FluentAssertions;
 using GameUser.Features.FileUploads;
 using GameUser.Shared.Wrappers;
 using Microsoft.AspNetCore.Http;
 using NSubstitute;
 using Sentry;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace GameUser.Tests.Features.FileUploads
@@ -42,7 +42,7 @@ namespace GameUser.Tests.Features.FileUploads
             // Assert
             result.Should().BeEquivalentTo(expectedResult);
         }
-       
+
         [Fact]
         public async Task UploadFiles_WhenSuccess_ReturnSuccessStatuses()
         {

@@ -1,13 +1,13 @@
-﻿using GameUser.Web.Shared.Attributes;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using GameUser.Web.Shared.Attributes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Moq;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace GameUser.Web.Tests.Shared.Attributes
@@ -57,6 +57,7 @@ namespace GameUser.Web.Tests.Shared.Attributes
             httpContextMock.Setup(x => x.User).Returns(new ClaimsPrincipal());
             httpContextMock.Setup(x => x.User.Identity).Returns(new ClaimsIdentity());
             httpContextMock.Setup(x => x.User.Identity.IsAuthenticated).Returns(false);
+            httpContextMock.Setup(x => x.Request.Headers["X-Requested-With"]).Returns(string.Empty);
 
             var attribute = new UserSessionValidationAttribute();
 
@@ -72,7 +73,7 @@ namespace GameUser.Web.Tests.Shared.Attributes
 
             await attribute.OnAuthorizationAsync(context);
 
-            Assert.Equal("/Error/NotAuthorized", ((RedirectResult)context.Result).Url);
+            Assert.Equal("//Error/NotAuthorized", ((RedirectResult)context.Result).Url);
         }
     }
 }

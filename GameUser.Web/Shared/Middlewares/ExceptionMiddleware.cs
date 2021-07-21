@@ -1,11 +1,11 @@
 ﻿namespace GameUser.Web.Shared.Middlewares
 {
-    using GameUser.Web.Shared.Models;
-    using Microsoft.AspNetCore.Http;
-    using Sentry;
     using System;
     using System.Net;
     using System.Threading.Tasks;
+    using GameUser.Web.Shared.Models;
+    using Microsoft.AspNetCore.Http;
+    using Sentry;
 
     public class ExceptionMiddleware
     {
@@ -36,7 +36,7 @@
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
             return context.Response.WriteAsync(new ErrorDetails(
-                statusCode: context.Response.StatusCode, 
+                statusCode: context.Response.StatusCode,
                 message: "Internal Server Error from the custom middleware.").ToString());
         }
     }

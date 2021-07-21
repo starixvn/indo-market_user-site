@@ -7,7 +7,12 @@ namespace GameUser.Features.UserSessions
     {
         public static void InitUserSession(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<IUserSessionService, UserSessionService>();            
+            var sessionSettings = new UserSessionSettings();
+
+            configuration.GetSection(nameof(UserSessionSettings)).Bind(sessionSettings);
+
+            services.AddSingleton(sessionSettings);
+            services.AddSingleton<IUserSessionService, UserSessionService>();
         }
     }
 }

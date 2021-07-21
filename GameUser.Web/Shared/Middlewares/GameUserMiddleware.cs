@@ -1,4 +1,6 @@
-﻿using Features.GameUser.GameServerApiComunicators;
+﻿using System;
+using System.Linq;
+using Features.GameUser.GameServerApiComunicators;
 using GameUser.Features.Announcements;
 using GameUser.Features.ApiComminicators;
 using GameUser.Features.Authentications;
@@ -8,7 +10,9 @@ using GameUser.Features.Emails;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
 using GameUser.Features.GameSettings;
+using GameUser.Features.MiddleSite;
 using GameUser.Features.UserInfos;
+using GameUser.Features.UserLanguages;
 using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Configurations;
@@ -19,8 +23,6 @@ using GameUser.Web.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Linq;
 
 namespace GameUser.Web.Shared.Middlewares
 {
@@ -46,7 +48,9 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitGameSettings();
             services.InitBackendAuthentication();
             services.InitAnnouncement(configuration);
-            services.InitUserInfo();
+            services.InitUserInfo(configuration);
+            services.InitMiddleSite(configuration);
+            services.InitUserLanguage();
         }
 
         public static void AddSharedServices(this IServiceCollection services)
@@ -78,7 +82,6 @@ namespace GameUser.Web.Shared.Middlewares
                     options
                         .WithOrigins(corsSettings.AllowUrls.ToArray());
                 }
-                
 
                 options
                     .AllowAnyHeader()

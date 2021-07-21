@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.Razor;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace GameUser.Web.Shared.Configurations
 {
@@ -32,6 +32,9 @@ namespace GameUser.Web.Shared.Configurations
             }
         }
 
-        public void PopulateValues(ViewLocationExpanderContext context) { /* no implementation*/ }
+        public void PopulateValues(ViewLocationExpanderContext context)
+        {
+            /* no implementation*/
+        }
     }
 }

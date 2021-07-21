@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.ComponentModel;
+using Microsoft.Extensions.Configuration;
 
 namespace GameUser.Shared.Configurations
 {

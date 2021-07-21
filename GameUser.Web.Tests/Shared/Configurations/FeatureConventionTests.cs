@@ -1,6 +1,9 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using FluentAssertions;
 using GameUser.Features.Avatars;
 using GameUser.Features.Feedbacks;
+using GameUser.Features.UserInfos;
 using GameUser.Features.UserSessions;
 using GameUser.Web.Features.Feedbacks;
 using GameUser.Web.Shared.Configurations;
@@ -9,8 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Extensions.Localization;
 using NSubstitute;
-using System.Collections.Generic;
-using System.Reflection;
 using Xunit;
 
 namespace GameUser.Web.Tests.Shared.Configurations
@@ -27,11 +28,12 @@ namespace GameUser.Web.Tests.Shared.Configurations
             var avatarService = Substitute.For<IAvatarService>();
             var userSessionService = Substitute.For<IUserSessionService>();
             var localizer = Substitute.For<IStringLocalizer<Resources>>();
+            var userInfoService = Substitute.For<IUserInfoService>();
 
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer, userInfoService);
             var typeInfo = controller.GetType().GetTypeInfo();
             var featureConvention = new FeatureConvention();
-            var controllerModel = new ControllerModel(typeInfo, NSubstitute.Substitute.For<IReadOnlyList<object>>());
+            var controllerModel = new ControllerModel(typeInfo, Substitute.For<IReadOnlyList<object>>());
 
             // Act
             featureConvention.Apply(controllerModel);
@@ -45,7 +47,7 @@ namespace GameUser.Web.Tests.Shared.Configurations
         {
             var typeInfo = "asdfad".GetType().GetTypeInfo();
             var featureConvention = new FeatureConvention();
-            var controllerModel = new ControllerModel(typeInfo, NSubstitute.Substitute.For<IReadOnlyList<object>>());
+            var controllerModel = new ControllerModel(typeInfo, Substitute.For<IReadOnlyList<object>>());
 
             // Act
             featureConvention.Apply(controllerModel);

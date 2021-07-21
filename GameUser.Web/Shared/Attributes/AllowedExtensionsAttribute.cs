@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace GameUser.Web.Shared.Attributes
 {
@@ -12,6 +11,7 @@ namespace GameUser.Web.Shared.Attributes
     public class AllowedExtensionsAttribute : ValidationAttribute
     {
         private readonly string[] extensions;
+
         public AllowedExtensionsAttribute(string[] extensions)
         {
             this.extensions = extensions;
@@ -21,9 +21,9 @@ namespace GameUser.Web.Shared.Attributes
         {
             var files = value as IList<IFormFile>;
 
-            if (files != null  && files.Any())
+            if (files != null && files.Any())
             {
-                foreach(var file in files)
+                foreach (var file in files)
                 {
                     var extension = Path.GetExtension(file.FileName);
 
@@ -31,7 +31,7 @@ namespace GameUser.Web.Shared.Attributes
                     {
                         return new ValidationResult(GetErrorMessage());
                     }
-                }                
+                }
             }
 
             return ValidationResult.Success;

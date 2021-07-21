@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace GameUser.Shared.Wrappers
 {
     public interface ISystemIOWrapper
     {
         Task WriteFile(IFormFile file, string filePath);
+
         DirectoryInfo CreateDirectory(string path);
     }
 

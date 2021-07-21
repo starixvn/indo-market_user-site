@@ -1,6 +1,9 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using FluentAssertions;
 using GameUser.Features.Avatars;
 using GameUser.Features.Feedbacks;
+using GameUser.Features.UserInfos;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Models;
 using GameUser.Web.Features.Feedbacks;
@@ -14,8 +17,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 using NSubstitute;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace GameUser.Web.Tests.Features.Feedbacks
@@ -28,6 +29,8 @@ namespace GameUser.Web.Tests.Features.Feedbacks
         private readonly IAvatarService avatarService;
         private readonly IUserSessionService userSessionService;
         private readonly IStringLocalizer<Resources> localizer;
+        private readonly IUserInfoService userInfoService;
+
         public FeedbackControllerTests()
         {
             this.httpContext = Substitute.For<IHttpContextAccessor>();
@@ -36,6 +39,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             this.avatarService = Substitute.For<IAvatarService>();
             this.userSessionService = Substitute.For<IUserSessionService>();
             this.localizer = Substitute.For<IStringLocalizer<Resources>>();
+            this.userInfoService = Substitute.For<IUserInfoService>();
         }
 
         [Theory]
@@ -50,9 +54,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             routeValues.Add(key, value);
             httpRequest.RouteValues.Returns(routeValues);
 
-            
-
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer, userInfoService);
 
             GetRequest feedbackRequest = new GetRequest { NickName = "nick name", SessionId = "sesssion id " };
 
@@ -63,10 +65,13 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             };
             feedbackService.GetTypes().Returns(feedbackTypes);
 
-            var expectedCulture = key == "culture" ? value : "en";
+            var expectedCulture = key == "culture" ? value : "en-US";
 
-            var userInfo = new UserInfoEntity { AvatarId = 1, Name = "abc", UserId = "123", Version = 123 };
-            userSessionService.GetUserInfo(feedbackRequest.SessionId).Returns(userInfo);
+            var userInfo = new UserInfoEntity { AvatarId = 1, Name = "abc", UserId = "123" };
+            var session = new UserSessionEntity();
+
+            userSessionService.GetUserSession(Arg.Any<string>()).Returns(session);
+            userInfoService.GetUserInfo(Arg.Any<string>()).Returns(userInfo);
 
             // Act
             var result = await controller.Add(feedbackRequest) as ViewResult;
@@ -82,7 +87,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
         public async Task AddPost_WhenCalled_AddFeedbackAndSendEmail()
         {
             // Arrange
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer, userInfoService);
 
             var request = new InsertRequest
             {
@@ -97,7 +102,6 @@ namespace GameUser.Web.Tests.Features.Feedbacks
                     files: request.Feedback.Files),
                 NickName = request.NickName
             };
-
 
             var expectedResult = new UpdateResult(true, string.Empty);
             feedbackService.AddFeedbackAsync(Arg.Any<Feedback>(), viewModel.NickName, Arg.Any<bool>(), Arg.Any<string>(), Arg.Any<int>(), Arg.Any<string>()).Returns(expectedResult);
@@ -115,7 +119,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
         public void RefreshToken()
         {
             // Arrange
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer, userInfoService);
 
             // Act
             var result = controller.RefreshToken() as PartialViewResult;

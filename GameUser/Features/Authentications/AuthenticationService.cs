@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GameUser.Features.ApiComminicators;
 using GameUser.Features.ApiComminicators.Models;
 using GameUser.Features.Authentications.Models;
+using GameUser.Features.UserInfos;
 using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
-using GameUser.Shared.Constants;
 using GameUser.Shared.Wrappers;
 using Newtonsoft.Json;
 using Sentry;
@@ -26,21 +27,24 @@ namespace GameUser.Features.Authentications
     public class AuthenticationService : IAuthenticationService
     {
         private const string UUSCurrencyName = "UUS";
-        private static readonly int sessionTimeout = 20;
         private readonly IApi api;
         private readonly IUserService userService;
         private readonly IUserSessionService userSessionService;
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly ICultureConfigs cultureConfigs;
         private readonly ISentryClient sentryClient;
+        private readonly UserSessionSettings userSessionSettings;
+        private readonly IUserInfoService userInfoService;
 
         public AuthenticationService(
-            IApi api, 
-            IUserService userService, 
-            IUserSessionService userSessionService, 
+            IApi api,
+            IUserService userService,
+            IUserSessionService userSessionService,
             IDateTimeProvider dateTimeProvider,
             ICultureConfigs cultureConfigs,
-            ISentryClient sentryClient)
+            ISentryClient sentryClient,
+            UserSessionSettings userSessionSettings,
+            IUserInfoService userInfoService)
         {
             this.api = api;
             this.userService = userService;
@@ -48,6 +52,8 @@ namespace GameUser.Features.Authentications
             this.dateTimeProvider = dateTimeProvider;
             this.cultureConfigs = cultureConfigs;
             this.sentryClient = sentryClient;
+            this.userSessionSettings = userSessionSettings;
+            this.userInfoService = userInfoService;
         }
 
         public async Task<UserSignInResponse> SignIn(VerificationTokenRequest request)
@@ -60,21 +66,21 @@ namespace GameUser.Features.Authentications
                 var machedBrandName = string.Equals(verificationResult.BrandName, user.Local.BrandName, StringComparison.OrdinalIgnoreCase);
                 var brandNameIsEmpty = string.IsNullOrEmpty(user.Local.BrandName);
 
+                await UpdateBrandName(user.Local.UserName, user.Local.BrandName, verificationResult.BrandName);
+
                 if (machedBrandName || brandNameIsEmpty)
                 {
-                    if (brandNameIsEmpty)
-                    {
-                        await userService.UpdateBrandName(user.Local.UserName, verificationResult.BrandName);
-                    }
-
                     var userSession = await AddSessionIfNotExist(user, verificationResult, request);
-                    var expiredIn = userSession.ReCheckInTime.AddMinutes(sessionTimeout);
-                    var language = ConvertLanguage(userSession.Language);
+                    var expiredIn = userSession.ReCheckInTime.AddMinutes(userSessionSettings.SessionDuration);
+                    var language = cultureConfigs.ConvertLanguage(userSession.Language);
 
                     return new UserSignInResponse(true, userSession.UserName, language, userSession.SessionId, userSession.Currency, expiredIn);
-                } else
+                }
+                else
                 {
-                    sentryClient.CaptureMessage($"Brand verification failed on {DateTime.UtcNow}. User: {JsonConvert.SerializeObject(user.Local)}. SSO Brand Name: {verificationResult.BrandName}", SentryLevel.Error);
+                    var message = $"Brand verification failed on {DateTime.UtcNow}. User: {JsonConvert.SerializeObject(user.Local)}. SSO Brand Name: {verificationResult.BrandName}";
+
+                    sentryClient.CaptureMessage(message, SentryLevel.Error);
                 }
             }
 
@@ -86,13 +92,13 @@ namespace GameUser.Features.Authentications
             var userSession = await userSessionService.GetUserSession(request.Session);
             var isValidRequest = userSession != null && Equals(request.BrowserUserAgent, userSession.BrowserUserAgent);
 
-            if (isValidRequest && !IsExpiredSession(userSession))
+            if (isValidRequest && !userSessionService.IsExpiredSession(userSession))
             {
                 var now = dateTimeProvider.Now();
 
                 await userSessionService.ReCheckIn(request.Session, now);
 
-                var expiredIn = now.AddMinutes(sessionTimeout);
+                var expiredIn = now.AddMinutes(userSessionSettings.SessionDuration);
 
                 return new RefreshSessionResponse(true, expiredIn);
             }
@@ -104,8 +110,9 @@ namespace GameUser.Features.Authentications
         {
             var userSession = await userSessionService.GetUserSession(request.Session);
             var isValidRequest = userSession != null && Equals(request.BrowserUserAgent, userSession.BrowserUserAgent);
+            var isUserExsited = await userInfoService.IsUserExisted(request.Session);
 
-            return !isValidRequest || IsExpiredSession(userSession) ? new VerificationSessionResult
+            return !isValidRequest || !isUserExsited || userSessionService.IsExpiredSession(userSession) ? new VerificationSessionResult
             {
                 IsSuccessful = false
             } : new VerificationSessionResult
@@ -151,7 +158,7 @@ namespace GameUser.Features.Authentications
 
             if (session == null)
             {
-                var sessionId = $"{Guid.NewGuid()}";
+                var sessionId = Guid.NewGuid().ToString();
                 var now = dateTimeProvider.Now();
                 var userSession = new UserSessionEntity
                 {
@@ -159,7 +166,7 @@ namespace GameUser.Features.Authentications
                     ClientId = verifyTokenResult.ClientId,
                     Currency = currency,
                     Ip = request.Ip,
-                    Language = ConvertLanguage(verifyTokenResult.Language),
+                    Language = cultureConfigs.ConvertLanguage(verifyTokenResult.Language),
                     MemberId = verifyTokenResult.MemberId,
                     MemberName = verifyTokenResult.MemberName,
                     OWSeq = verifyTokenResult.Seq,
@@ -170,7 +177,8 @@ namespace GameUser.Features.Authentications
                     UserId = user.Id.ToString(),
                     UserName = verifyTokenResult.MemberKey.ToLower(),
                     SessionId = sessionId,
-                    BrandName = verifyTokenResult.BrandName
+                    BrandName = verifyTokenResult.BrandName,
+                    OldSessionIds = new List<string>()
                 };
 
                 session = await userSessionService.CreateUserSession(userSession);
@@ -186,7 +194,7 @@ namespace GameUser.Features.Authentications
             if (!string.IsNullOrWhiteSpace(currency)
                 && currency.ToUpperInvariant() == UUSCurrencyName)
             {
-                if(!string.IsNullOrWhiteSpace(verifyTokenResult.Market))
+                if (!string.IsNullOrWhiteSpace(verifyTokenResult.Market))
                 {
                     currency = $"{currency}-{verifyTokenResult.Market.ToUpperInvariant()}";
                 }
@@ -203,31 +211,12 @@ namespace GameUser.Features.Authentications
             return currency;
         }
 
-        private static bool IsExpiredSession(UserSessionEntity userSession)
+        private async Task UpdateBrandName(string username, string oldBrandName, string newBrandName)
         {
-            if (userSession != null)
+            if (string.IsNullOrEmpty(oldBrandName) && !string.IsNullOrEmpty(newBrandName))
             {
-                var isExpired = userSession.ReCheckInTime.AddMinutes(sessionTimeout) < DateTime.UtcNow;
-
-                return isExpired;
+                await userService.UpdateBrandName(username, newBrandName);
             }
-
-            return true;
-        }
-
-        private string ConvertLanguage(string language)
-        {
-            if(language == Language.ChineseNewSimplifiedCode)
-            {
-                language = Language.ChineseSimplifiedCode;
-            }
-
-            if (string.IsNullOrWhiteSpace(language) || !cultureConfigs.SupportedCultures.Contains(language))
-            {
-                return cultureConfigs.DefaultCulture;
-            }
-
-            return language;
         }
     }
 }
