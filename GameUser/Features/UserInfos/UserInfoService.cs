@@ -30,6 +30,8 @@ namespace GameUser.Features.UserInfos
         Task<bool> CheckUserExistsAndEnterPortal(string sessionId);
 
         Task<CreateUserInfoResult> CreateUserInfo(string sessionId, string nickname);
+
+        Task<ChangeUserAvatarResult> UpdateUserAvatar(string sessionId, int avatarId);
     }
 
     public class UserInfoService : IUserInfoService
@@ -175,6 +177,39 @@ namespace GameUser.Features.UserInfos
             }
 
             return userExists;
+        }
+
+        public async Task<ChangeUserAvatarResult> UpdateUserAvatar(string sessionId, int avatarId)
+        {
+            var userSession = await userSessionService.GetUserSession(sessionId);
+
+            var queriedUser = await GetUserInfo(userSession.UserId);
+
+            var changedAvatar = await UpdateAvatarId(avatarId, queriedUser);
+            
+            if(!changedAvatar)
+            {
+                return new ChangeUserAvatarResult("Avatar not updated");
+            }
+
+            return new ChangeUserAvatarResult();
+        }
+
+        private async Task<bool> UpdateAvatarId (int avatarId, UserInfoEntity queriedUser)
+        {
+            try
+            {
+                var update = Builders<UserInfoEntity>.Update.Set(entity => entity.AvatarId, avatarId);
+
+                await repository.UpdateOneAsync(entity => entity.UserId == queriedUser.UserId, update);
+            }
+            catch (Exception exception)
+            {
+                sentryClient.CaptureException(exception);
+
+                return false;
+            }
+            return true;
         }
 
         private async Task<int> GetLatestUID()
