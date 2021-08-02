@@ -192,8 +192,10 @@ namespace GameUser.Features.UserInfos
                 return new ChangeUserAvatarResult("Avatar not updated");
             }
 
-            return new ChangeUserAvatarResult();
+            return new ChangeUserAvatarResult(avatarId);
         }
+
+        
 
         private async Task<bool> UpdateAvatarId (int avatarId, UserInfoEntity queriedUser)
         {
