@@ -12,5 +12,8 @@ namespace GameUser.Features.ApiComminicators
 
         [Post("/Member/EnterPortal")]
         Task<MemberApiResponse<EnterPortalResponse>> EnterPortal(EnterPortalRequest request);
+
+        [Get("/Member/GetBalance")]
+        Task<MemberApiResponse<GetBalanceResponse>> GetBalance(GetBalanceRequest request);
     }
 }

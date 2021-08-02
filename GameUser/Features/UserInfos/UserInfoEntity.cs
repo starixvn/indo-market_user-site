@@ -33,7 +33,7 @@ namespace GameUser.Features.UserInfos
         public bool Type { get; set; }
 
         [BsonElement("isCash")]
-        public bool IsCash { get; set; }
+        public bool? IsCash { get; set; }
 
         [BsonElement("brandName")]
         public string BrandName { get; set; }

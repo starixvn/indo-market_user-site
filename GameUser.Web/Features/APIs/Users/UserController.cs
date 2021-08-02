@@ -89,5 +89,17 @@ namespace GameUser.Web.Features.APIs.Users
 
             return Json(result);
         }
+
+        [HttpGet("balance")]
+        [Authorize(AuthenticationSchemes = SessionFilterAuthenticationDefaults.AuthenticationScheme)]
+        public async Task<JsonResult> GetUserBalance ()
+        {
+            var session = httpRequestWrapper.GetAuthorizationToken(accessor);
+
+            var result = await userInfoService.GetUserBalance(session);
+
+            return Json(result);
+        }
+
     }
 }

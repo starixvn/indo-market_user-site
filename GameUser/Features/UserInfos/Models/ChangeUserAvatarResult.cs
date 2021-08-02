@@ -6,17 +6,19 @@
 
         public string Message { get; set; }
 
-        public int SavedAvatarId { get; set; }
+        public int AvatarId { get; set; }
 
-        public ChangeUserAvatarResult(int savedAvatarId)
+        public ChangeUserAvatarResult(int avatarId)
         {
             IsSuccessful = true;
-            SavedAvatarId = savedAvatarId;
+
+            AvatarId = avatarId;
         }
 
         public ChangeUserAvatarResult(string message)
         {
             IsSuccessful = false;
+
             Message = message;
         }
     }

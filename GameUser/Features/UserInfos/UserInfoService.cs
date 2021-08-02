@@ -32,6 +32,8 @@ namespace GameUser.Features.UserInfos
         Task<CreateUserInfoResult> CreateUserInfo(string sessionId, string nickname);
 
         Task<ChangeUserAvatarResult> UpdateUserAvatar(string sessionId, int avatarId);
+
+        Task<GetUserBalanceResult> GetUserBalance(string sessionId);
     }
 
     public class UserInfoService : IUserInfoService
@@ -195,8 +197,64 @@ namespace GameUser.Features.UserInfos
             return new ChangeUserAvatarResult(avatarId);
         }
 
-        
+        public async Task<GetUserBalanceResult> GetUserBalance(string sessionId)
+        {
+            var userSession = await userSessionService.GetUserSession(sessionId);
 
+            if (userSession != null)
+            {
+                var response = await GetBalance(userSession);
+
+                var queriedUser = await GetUserInfo(userSession.UserId);
+
+                if (queriedUser.IsCash.GetValueOrDefault())
+                {
+                    return new GetUserBalanceResult(response.Result.Balance, true);
+                }
+
+                return new GetUserBalanceResult(response.Result.Balance, false);
+
+            }
+            return new GetUserBalanceResult("Unabled to retrieve balance");
+        }
+        protected async Task<MemberApiResponse<GetBalanceResponse>> GetBalance(UserSessionEntity userSession)
+        {
+            var response = new MemberApiResponse<GetBalanceResponse>();
+
+            var request = new GetBalanceRequest
+            {
+                ObCustId = userSession.MemberId,
+                SiteId = userSession.SiteId,
+            };
+
+            try
+            {
+                response = await api.GetBalance(request);
+
+                var result = response.Result != null && response.Result.IsSuccessful();
+
+                if (!result)
+                {
+                    var message = $"Notify Get Balance Failure at {DateTime.Now}\n\t" +
+                       $"Session: {JsonConvert.SerializeObject(userSession)}\n\t" +
+                       $"Request: {JsonConvert.SerializeObject(request)}\n\t" +
+                       $"Response: {JsonConvert.SerializeObject(response)}";
+
+                    sentryClient.CaptureMessage(message, SentryLevel.Error);
+                }
+            }
+            catch (Exception exception)
+            {
+                var message = $"Notify Get Balace Error at {DateTime.Now}\n\t" +
+                    $"Session: {JsonConvert.SerializeObject(userSession)}\n\t" +
+                    $"Request: {JsonConvert.SerializeObject(request)}\n\t" +
+                    $"Error: {JsonConvert.SerializeObject(exception)}";
+
+                sentryClient.CaptureMessage(message, SentryLevel.Error);
+            }
+
+            return response;
+        }
         private async Task<bool> UpdateAvatarId (int avatarId, UserInfoEntity queriedUser)
         {
             try
@@ -213,7 +271,7 @@ namespace GameUser.Features.UserInfos
             }
             return true;
         }
-
+       
         private async Task<int> GetLatestUID()
         {
             var uidAssending = Builders<UserInfoEntity>.Sort.Descending(user => user.UID);
@@ -280,6 +338,7 @@ namespace GameUser.Features.UserInfos
 
             return result;
         }
+
 
         private Task<UserInfoEntity> GetUserInfoFromDB(string userId) => repository.FindOneAsync(info => info.UserId == userId);
 
