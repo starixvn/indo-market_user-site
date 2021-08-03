@@ -6,15 +6,12 @@
 
         public string Message { get; set; }
 
-        public bool IsDeposit { get; set; }
-
         public decimal Balance { get; set; }
 
-        public GetUserBalanceResult(decimal balance, bool isDeposit)
+        public GetUserBalanceResult(decimal balance)
         {
             IsSuccessful = true;
 
-            IsDeposit = isDeposit;
 
             Balance = balance;
         }

@@ -34,6 +34,8 @@ namespace GameUser.Features.UserInfos
         Task<ChangeUserAvatarResult> UpdateUserAvatar(string sessionId, int avatarId);
 
         Task<GetUserBalanceResult> GetUserBalance(string sessionId);
+
+        Task<GetUserInfoLobbyResult> GetUserInfoLobby(string sessionId);
     }
 
     public class UserInfoService : IUserInfoService
@@ -207,15 +209,28 @@ namespace GameUser.Features.UserInfos
 
                 var queriedUser = await GetUserInfo(userSession.UserId);
 
-                if (queriedUser.IsCash.GetValueOrDefault())
+                if (queriedUser.IsCash)
                 {
-                    return new GetUserBalanceResult(response.Result.Balance, true);
+                    return new GetUserBalanceResult(response.Result.Balance);
                 }
 
-                return new GetUserBalanceResult(response.Result.Balance, false);
-
+                return new GetUserBalanceResult(response.Result.Balance);
             }
-            return new GetUserBalanceResult("Unabled to retrieve balance");
+
+            return new GetUserBalanceResult("Error retrieving data");
+        }
+
+        public async Task<GetUserInfoLobbyResult> GetUserInfoLobby(string sessionId)
+        {
+            var userSession = await userSessionService.GetUserSession(sessionId);
+
+            var queriedUser = await GetUserInfo(userSession.UserId);
+
+            if(queriedUser != null)
+            {
+                return new GetUserInfoLobbyResult(queriedUser.AvatarId, queriedUser.Name);
+            }
+            return new GetUserInfoLobbyResult("Error retrieving data");
         }
         protected async Task<MemberApiResponse<GetBalanceResponse>> GetBalance(UserSessionEntity userSession)
         {

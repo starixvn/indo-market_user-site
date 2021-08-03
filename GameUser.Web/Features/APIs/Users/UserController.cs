@@ -101,5 +101,15 @@ namespace GameUser.Web.Features.APIs.Users
             return Json(result);
         }
 
+        [HttpGet("LobbyInfo")]
+        [Authorize(AuthenticationSchemes = SessionFilterAuthenticationDefaults.AuthenticationScheme)]
+        public async Task<JsonResult> GetUserInfoLobby()
+        {
+            var session = httpRequestWrapper.GetAuthorizationToken(accessor);
+
+            var result = await userInfoService.GetUserInfoLobby(session);
+
+            return Json(result);
+        }
     }
 }
