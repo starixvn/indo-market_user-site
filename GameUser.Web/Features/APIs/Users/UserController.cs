@@ -92,11 +92,11 @@ namespace GameUser.Web.Features.APIs.Users
 
         [HttpGet("balance")]
         [Authorize(AuthenticationSchemes = SessionFilterAuthenticationDefaults.AuthenticationScheme)]
-        public async Task<JsonResult> GetUserBalance ()
+        public async Task<JsonResult> GetUserBalance (GetUserBalanceRequest request)
         {
             var session = httpRequestWrapper.GetAuthorizationToken(accessor);
 
-            var result = await userInfoService.GetUserBalance(session);
+            var result = await userInfoService.GetUserBalance(session, request.EnterLobby);
 
             return Json(result);
         }

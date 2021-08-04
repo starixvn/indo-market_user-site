@@ -33,7 +33,7 @@ namespace GameUser.Features.UserInfos
 
         Task<ChangeUserAvatarResult> UpdateUserAvatar(string sessionId, int avatarId);
 
-        Task<GetUserBalanceResult> GetUserBalance(string sessionId);
+        Task<GetUserBalanceResult> GetUserBalance(string sessionId, bool enterLobby);
 
         Task<GetUserInfoLobbyResult> GetUserInfoLobby(string sessionId);
     }
@@ -190,8 +190,8 @@ namespace GameUser.Features.UserInfos
             var queriedUser = await GetUserInfo(userSession.UserId);
 
             var changedAvatar = await UpdateAvatarId(avatarId, queriedUser);
-            
-            if(!changedAvatar)
+
+            if (!changedAvatar)
             {
                 return new ChangeUserAvatarResult("Avatar not updated");
             }
@@ -199,26 +199,69 @@ namespace GameUser.Features.UserInfos
             return new ChangeUserAvatarResult(avatarId);
         }
 
-        public async Task<GetUserBalanceResult> GetUserBalance(string sessionId)
+        public async Task<GetUserBalanceResult> GetUserBalance(string sessionId, bool enterLobby)
         {
+            const string getBalanceFailedMessage =
+                "apiError" +
+                "message: Cannot update your account balance." +
+                "Error Code:  SB1902";
+
+            var errorMessage = "";
+
             var userSession = await userSessionService.GetUserSession(sessionId);
 
             if (userSession != null)
             {
-                var response = await GetBalance(userSession);
-
                 var queriedUser = await GetUserInfo(userSession.UserId);
 
-                if (queriedUser.IsCash)
+                var response = await GetBalance(userSession, queriedUser.Name);
+
+                var getBalanceSuccessful = response.Result != null && response.Result.IsSuccessful();
+
+                if (!getBalanceSuccessful)
                 {
-                    return new GetUserBalanceResult(response.Result.Balance);
+                    return new GetUserBalanceResult(getBalanceFailedMessage);
                 }
 
-                return new GetUserBalanceResult(response.Result.Balance);
+                if (response.Result.ErrorCode != 0 && response.Result.ErrorMessage != null)
+                {
+
+                    errorMessage = ComposeGetBalanceErrorMessage(response.Result.ErrorCode, response.Result.ErrorMessage);
+
+                    return new GetUserBalanceResult(errorMessage);
+                }
+
+                var redUpdated = await UpdateUserRed((double)response.Result.Balance, queriedUser);
+
+                if (!redUpdated)
+                {
+                    sentryClient.CaptureMessage("User red not updated", SentryLevel.Error);
+                }
+
+                return new GetUserBalanceResult(response.Result.Balance, queriedUser.Currency);
             }
 
             return new GetUserBalanceResult("Error retrieving data");
         }
+
+        private Task<bool> UpdateUserRed(double balance, UserInfoEntity queriedUser)
+        => Task.Run(() =>
+        {
+            try
+            {
+                var update = Builders<UserInfoEntity>.Update.Set(entity => entity.Red, balance);
+
+                repository.UpdateOneAsync(entity => entity.UserId == queriedUser.UserId, update);
+            }
+            catch (Exception exception)
+            {
+                sentryClient.CaptureException(exception);
+
+                return false;
+            }
+
+            return true;
+        });
 
         public async Task<GetUserInfoLobbyResult> GetUserInfoLobby(string sessionId)
         {
@@ -226,51 +269,14 @@ namespace GameUser.Features.UserInfos
 
             var queriedUser = await GetUserInfo(userSession.UserId);
 
-            if(queriedUser != null)
+            if (queriedUser != null)
             {
                 return new GetUserInfoLobbyResult(queriedUser.AvatarId, queriedUser.Name);
             }
             return new GetUserInfoLobbyResult("Error retrieving data");
         }
-        protected async Task<MemberApiResponse<GetBalanceResponse>> GetBalance(UserSessionEntity userSession)
-        {
-            var response = new MemberApiResponse<GetBalanceResponse>();
 
-            var request = new GetBalanceRequest
-            {
-                ObCustId = userSession.MemberId,
-                SiteId = userSession.SiteId,
-            };
-
-            try
-            {
-                response = await api.GetBalance(request);
-
-                var result = response.Result != null && response.Result.IsSuccessful();
-
-                if (!result)
-                {
-                    var message = $"Notify Get Balance Failure at {DateTime.Now}\n\t" +
-                       $"Session: {JsonConvert.SerializeObject(userSession)}\n\t" +
-                       $"Request: {JsonConvert.SerializeObject(request)}\n\t" +
-                       $"Response: {JsonConvert.SerializeObject(response)}";
-
-                    sentryClient.CaptureMessage(message, SentryLevel.Error);
-                }
-            }
-            catch (Exception exception)
-            {
-                var message = $"Notify Get Balace Error at {DateTime.Now}\n\t" +
-                    $"Session: {JsonConvert.SerializeObject(userSession)}\n\t" +
-                    $"Request: {JsonConvert.SerializeObject(request)}\n\t" +
-                    $"Error: {JsonConvert.SerializeObject(exception)}";
-
-                sentryClient.CaptureMessage(message, SentryLevel.Error);
-            }
-
-            return response;
-        }
-        private async Task<bool> UpdateAvatarId (int avatarId, UserInfoEntity queriedUser)
+        private async Task<bool> UpdateAvatarId(int avatarId, UserInfoEntity queriedUser)
         {
             try
             {
@@ -286,7 +292,7 @@ namespace GameUser.Features.UserInfos
             }
             return true;
         }
-       
+
         private async Task<int> GetLatestUID()
         {
             var uidAssending = Builders<UserInfoEntity>.Sort.Descending(user => user.UID);
@@ -354,6 +360,43 @@ namespace GameUser.Features.UserInfos
             return result;
         }
 
+        protected async Task<MemberApiResponse<GetBalanceResponse>> GetBalance(
+            UserSessionEntity userSession,
+            string characterName)
+        {
+            var response = new MemberApiResponse<GetBalanceResponse>();
+
+            var request = new GetBalanceRequest
+            {
+                ObCustId = userSession.MemberId,
+                SiteId = userSession.SiteId,
+            };
+
+            var beforeCallMessage = ComposeBeforeCallGetBalanceMessage(userSession, characterName);
+
+            try
+            {
+                response = await api.GetBalance(request);
+
+                var afterCallMessage = ComposeAfterCallGetBalanceMessage(
+                    userSession,
+                    beforeCallMessage,
+                    response);
+
+                sentryClient.CaptureMessage(afterCallMessage, SentryLevel.Warning);
+            }
+            catch (Exception exception)
+            {
+                var message = $"Notify Get Balace Error at {DateTime.Now}\n\t" +
+                    $"Session: {JsonConvert.SerializeObject(userSession)}\n\t" +
+                    $"Request: {JsonConvert.SerializeObject(request)}\n\t" +
+                    $"Error: {JsonConvert.SerializeObject(exception)}";
+
+                sentryClient.CaptureMessage(message, SentryLevel.Error);
+            }
+
+            return response;
+        }
 
         private Task<UserInfoEntity> GetUserInfoFromDB(string userId) => repository.FindOneAsync(info => info.UserId == userId);
 
@@ -386,6 +429,66 @@ namespace GameUser.Features.UserInfos
                 var isNicknameExisted = await middleSiteService.IsNicknameExisted(nickname);
 
                 return isNicknameExisted ? characterNameExistedKey : string.Empty;
+            }
+        }
+
+        private string ComposeBeforeCallGetBalanceMessage(
+            UserSessionEntity userSession, string characterName)
+        {
+            var beforeCallMessage = $"Before Action at {DateTime.Now}\n\t" +
+                       $"Session: {JsonConvert.SerializeObject(userSession)}\n\t" +
+                       $"Character Name: {JsonConvert.SerializeObject(characterName)}\n\t" +
+                       $"Language: {JsonConvert.SerializeObject(userSession.Language)}\n\t" +
+                       $"ObCustId: {JsonConvert.SerializeObject(userSession.MemberId)}\n\t" +
+                       $"Seq: {JsonConvert.SerializeObject(userSession.OWSeq)}\n\t" +
+                       $"SiteId: {JsonConvert.SerializeObject(userSession.SiteId)}\n\t"
+                       ;
+
+            return beforeCallMessage;
+        }
+
+        private string ComposeAfterCallGetBalanceMessage(
+            UserSessionEntity userSession,
+            string beforeCallMessage,
+            MemberApiResponse<GetBalanceResponse> response)
+        {
+            var afterCallMessage = $"Account {JsonConvert.SerializeObject(userSession.SiteId)}_" +
+                       $"{JsonConvert.SerializeObject(userSession.MemberId)}" +
+                       $"performs Get Balance at {DateTime.Now}\n\t" +
+                       beforeCallMessage +
+                       $"Action Result: {JsonConvert.SerializeObject(response.Result)}\n\t"
+                       ;
+
+            return afterCallMessage;
+        }
+
+        private string ComposeGetBalanceErrorMessage(
+            int errorCode,
+            string errorMessage)
+        {
+            const string disableAccountMessage = "Account has been closed. " +
+                            "Please contact your upline for details, thank you.";
+
+            const int insufficientFundsError = 3002;
+
+            const int disabledAccountError = 2002;
+
+            var insufficientFundsMesssage =
+                $"apiError" +
+                $"message: { JsonConvert.SerializeObject(errorMessage) }" +
+                $"Error Code:  { JsonConvert.SerializeObject(errorCode) }";
+
+            if (errorCode == disabledAccountError)
+            {
+                return disableAccountMessage;
+            }
+            else if (errorCode == insufficientFundsError && errorMessage != null)
+            {
+                return insufficientFundsMesssage;
+            }
+            else
+            {
+                return string.Empty;
             }
         }
     }

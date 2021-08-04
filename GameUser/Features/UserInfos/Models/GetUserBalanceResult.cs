@@ -8,13 +8,16 @@
 
         public decimal Balance { get; set; }
 
-        public GetUserBalanceResult(decimal balance)
+        public string Currency { get; set; }
+
+        public GetUserBalanceResult(decimal balance, string currency)
         {
             IsSuccessful = true;
 
-
             Balance = balance;
-        }
+
+            Currency = currency;
+    }
 
         public GetUserBalanceResult(string message)
         {
