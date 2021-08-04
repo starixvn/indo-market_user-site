@@ -68,5 +68,14 @@ namespace GameUser.Web.Features.APIs.Authentications
 
             return Json(result);
         }
+
+        [HttpPost("verifySessionAndGetUserInfo")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<JsonResult> VerifySessionAndGetUserInfo(VerificationSessionRequest request)
+        {
+            var result = await authenticationService.VerifySessionAndGetUserInfo(request);
+
+            return Json(result);
+        }
     }
 }

@@ -22,6 +22,8 @@ namespace GameUser.Features.Authentications
         Task<RefreshSessionResponse> Refresh(RefreshSessionRequest request);
 
         Task<VerificationSessionResult> Verify(VerificationSessionRequest request);
+
+        Task<VerificationSessionAndGetUserInfoResponse> VerifySessionAndGetUserInfo(VerificationSessionRequest request);
     }
 
     public class AuthenticationService : IAuthenticationService
@@ -118,6 +120,25 @@ namespace GameUser.Features.Authentications
                 IsSuccessful = true,
                 Session = userSession
             };
+        }
+
+        public async Task<VerificationSessionAndGetUserInfoResponse> VerifySessionAndGetUserInfo(VerificationSessionRequest request)
+        {
+            var result = await Verify(request);
+            if (result.IsSuccessful)
+            {
+                var userInfo = await userInfoService.GetUserInfo(result.Session.UserId);
+                return new VerificationSessionAndGetUserInfoResponse
+                {
+                    IsSuccessful = true,
+                    Session = result.Session,
+                    UserInfo = userInfo
+                };
+            }
+            else
+            {
+                return new VerificationSessionAndGetUserInfoResponse { IsSuccessful = false };
+            }
         }
 
         private async Task<UserEntity> CreateUserIfNotExist(VerificationTokenResponse verifyTokenResult)
