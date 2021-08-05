@@ -13,7 +13,7 @@ namespace GameUser.Features.ApiComminicators
         [Post("/Member/EnterPortal")]
         Task<MemberApiResponse<EnterPortalResponse>> EnterPortal(EnterPortalRequest request);
 
-        [Get("/Member/GetBalance")]
+        [Post("/Member/Balance")]
         Task<MemberApiResponse<GetBalanceResponse>> GetBalance(GetBalanceRequest request);
     }
 }
