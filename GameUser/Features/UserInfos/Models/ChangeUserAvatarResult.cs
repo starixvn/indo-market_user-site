@@ -2,11 +2,11 @@
 {
     public class ChangeUserAvatarResult
     {
-        public bool IsSuccessful { get; set; }
+        public bool IsSuccessful { get; }
 
-        public string Message { get; set; }
+        public string Message { get; }
 
-        public int AvatarId { get; set; }
+        public int AvatarId { get; }
 
         public ChangeUserAvatarResult(int avatarId)
         {

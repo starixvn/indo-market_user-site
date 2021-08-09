@@ -202,9 +202,7 @@ namespace GameUser.Features.UserInfos
         public async Task<GetUserBalanceResult> GetUserBalance(string sessionId)
         {
             const string getBalanceFailedMessage =
-                @"apiError: message: Cannot update your account balance. Error Code:  SB1902";
-
-            var clientErrorMessage = "";
+                @"apiError: message: Cannot update your account balance. Error Code: SB1902";
 
             var userSession = await userSessionService.GetUserSession(sessionId);
 
@@ -226,7 +224,7 @@ namespace GameUser.Features.UserInfos
                 if (apiErrorCode != 0 && apiErrorMessage != null)
                 {
 
-                    clientErrorMessage = ComposeGetBalanceErrorMessage
+                    var clientErrorMessage = ComposeGetBalanceErrorMessage
                         (apiErrorCode, 
                         apiErrorMessage);
 
@@ -479,7 +477,9 @@ namespace GameUser.Features.UserInfos
             }
             else
             {
-                return string.Empty;
+                return 
+                $@"apiError: message: { JsonConvert.SerializeObject(errorMessage) }. 
+                Error Code:  { JsonConvert.SerializeObject(errorCode) }";
             }
         }
     }

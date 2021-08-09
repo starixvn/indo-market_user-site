@@ -2,13 +2,13 @@
 {
     public class GetUserBalanceResult
     {
-        public bool IsSuccessful { get; set; } = true;
+        public bool IsSuccessful { get; }
 
-        public string Message { get; set; }
+        public string Message { get; }
 
-        public decimal Balance { get; set; }
+        public decimal Balance { get; }
 
-        public string Currency { get; set; }
+        public string Currency { get; }
 
         public GetUserBalanceResult(decimal balance, string currency)
         {
@@ -17,7 +17,7 @@
             Balance = balance;
 
             Currency = currency;
-    }
+        }
 
         public GetUserBalanceResult(string message)
         {

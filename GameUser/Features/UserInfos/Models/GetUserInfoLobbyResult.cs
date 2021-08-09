@@ -2,13 +2,13 @@
 {
     public class GetUserInfoLobbyResult
     {
-        public bool IsSuccessful { get; set; } = true;
+        public bool IsSuccessful { get; }
 
-        public string Message { get; set; }
+        public string Message { get; }
 
-        public int AvatarId { get; set; }
+        public int AvatarId { get; }
 
-        public string Nickname { get; set; } 
+        public string Nickname { get; }
 
         public GetUserInfoLobbyResult(int avatarId, string nickName)
         {
