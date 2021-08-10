@@ -6,7 +6,9 @@ using GameUser.Features.ApiComminicators;
 using GameUser.Features.Authentications;
 using GameUser.Features.Avatars;
 using GameUser.Features.BackendAuthentications;
+using GameUser.Features.CategoryConfigs;
 using GameUser.Features.Emails;
+using GameUser.Features.FavoriteGame;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
 using GameUser.Features.GameSettings;
@@ -51,6 +53,8 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitUserInfo(configuration);
             services.InitMiddleSite(configuration);
             services.InitUserLanguage();
+            services.InitFavoriteGame();
+            services.InitCategoryConfig();
         }
 
         public static void AddSharedServices(this IServiceCollection services)
