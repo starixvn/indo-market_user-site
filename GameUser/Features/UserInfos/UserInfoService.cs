@@ -187,16 +187,21 @@ namespace GameUser.Features.UserInfos
         {
             var userSession = await userSessionService.GetUserSession(sessionId);
 
-            var queriedUser = await GetUserInfo(userSession.UserId);
-
-            var changedAvatar = await UpdateAvatarId(avatarId, queriedUser);
-
-            if (!changedAvatar)
+            if (userSession != null)
             {
-                return new ChangeUserAvatarResult("Avatar not updated");
+                var queriedUser = await GetUserInfo(userSession.UserId);
+
+                var changedAvatar = await UpdateAvatarId(avatarId, queriedUser);
+
+                if (!changedAvatar)
+                {
+                    return new ChangeUserAvatarResult("Avatar not updated");
+                }
+
+                return new ChangeUserAvatarResult(avatarId);
             }
 
-            return new ChangeUserAvatarResult(avatarId);
+            return new ChangeUserAvatarResult("Error changing avatar");
         }
 
         public async Task<GetUserBalanceResult> GetUserBalance(string sessionId)
@@ -211,31 +216,29 @@ namespace GameUser.Features.UserInfos
                 var queriedUser = await GetUserInfo(userSession.UserId);
                 var currency = queriedUser.Currency;
                 var response = await GetBalance(userSession, queriedUser.Name);
-                var apiErrorMessage = response.Result.ErrorMessage;
-                var apiErrorCode = response.Result.ErrorCode;
-                var balance = response.Result.Balance;
-                var getBalanceSuccessful = response.Result != null && response.Result.IsSuccessful();
+                var callApiSuccessful = response.Result != null;
 
-                if (!getBalanceSuccessful)
+                if (callApiSuccessful)
                 {
-                    return new GetUserBalanceResult(getBalanceFailedMessage);
+                    var apiErrorMessage = response.Result.ErrorMessage;
+                    var apiErrorCode = response.Result.ErrorCode;
+                    var balance = response.Result.Balance;
+
+                    if (apiErrorCode != 0 && apiErrorMessage != null)
+                    {
+                        var clientErrorMessage = ComposeGetBalanceErrorMessage
+                            (apiErrorCode,
+                            apiErrorMessage);
+
+                        return new GetUserBalanceResult(clientErrorMessage);
+                    }
+
+                    UpdateUserBalanceToDatabase((double)balance, queriedUser);
+
+                    return new GetUserBalanceResult(balance, currency);
                 }
-
-                if (apiErrorCode != 0 && apiErrorMessage != null)
-                {
-
-                    var clientErrorMessage = ComposeGetBalanceErrorMessage
-                        (apiErrorCode, 
-                        apiErrorMessage);
-
-                    return new GetUserBalanceResult(clientErrorMessage);
-                }
-
-                UpdateUserBalanceToDatabase((double)balance, queriedUser);
-
-                return new GetUserBalanceResult(balance, currency);
+                return new GetUserBalanceResult(getBalanceFailedMessage);
             }
-
             return new GetUserBalanceResult("Error retrieving data");
         }
 
@@ -258,11 +261,14 @@ namespace GameUser.Features.UserInfos
         {
             var userSession = await userSessionService.GetUserSession(sessionId);
 
-            var queriedUser = await GetUserInfo(userSession.UserId);
-
-            if (queriedUser != null)
+            if (userSession != null)
             {
-                return new GetUserInfoLobbyResult(queriedUser.AvatarId, queriedUser.Name);
+                var queriedUser = await GetUserInfoFromDB(userSession.UserId);
+
+                if (queriedUser != null)
+                {
+                    return new GetUserInfoLobbyResult(queriedUser.AvatarId, queriedUser.Name);
+                }
             }
             return new GetUserInfoLobbyResult("Error retrieving data");
         }
@@ -277,7 +283,11 @@ namespace GameUser.Features.UserInfos
             }
             catch (Exception exception)
             {
-                sentryClient.CaptureException(exception);
+                var message = $"Notify Update Avatar Error at {DateTime.Now}\n\t" +
+                    $"User: {JsonConvert.SerializeObject(queriedUser)}\n\t" +
+                    $"Error: {JsonConvert.SerializeObject(exception)}";
+
+                sentryClient.CaptureMessage(message, SentryLevel.Error);
 
                 return false;
             }
@@ -366,7 +376,9 @@ namespace GameUser.Features.UserInfos
 
             try
             {
-                var beforeCallMessage = ComposeBeforeCallGetBalanceMessage(userSession, characterName);
+                var beforeCallMessage = ComposeBeforeCallGetBalanceMessage(
+                    userSession,
+                    characterName);
 
                 response = await api.GetBalance(request);
 
@@ -443,7 +455,7 @@ namespace GameUser.Features.UserInfos
             string beforeCallMessage,
             MemberApiResponse<GetBalanceResponse> response)
         {
-            var afterCallMessage = $@"Account {JsonConvert.SerializeObject(userSession.SiteId)}_ 
+            var afterCallMessage = $@"Account {JsonConvert.SerializeObject(userSession.SiteId)}_
                                     {JsonConvert.SerializeObject(userSession.MemberId)}
                                     performs Get Balance at {DateTime.Now},
                                     {beforeCallMessage}
@@ -460,11 +472,11 @@ namespace GameUser.Features.UserInfos
 
             const int insufficientFundsError = 3002;
 
-            const string disableAccountMessage = 
+            const string disableAccountMessage =
                 @"Account has been closed. Please contact your upline for details, thank you.";
 
             var insufficientFundsMesssage =
-                $@"apiError: message: { JsonConvert.SerializeObject(errorMessage) }. 
+                $@"apiError: message: { JsonConvert.SerializeObject(errorMessage) }.
                 Error Code:  { JsonConvert.SerializeObject(errorCode) }";
 
             if (errorCode == disabledAccountError)
@@ -477,8 +489,8 @@ namespace GameUser.Features.UserInfos
             }
             else
             {
-                return 
-                $@"apiError: message: { JsonConvert.SerializeObject(errorMessage) }. 
+                return
+                $@"apiError: message: { JsonConvert.SerializeObject(errorMessage) }.
                 Error Code:  { JsonConvert.SerializeObject(errorCode) }";
             }
         }
