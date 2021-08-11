@@ -207,7 +207,7 @@ namespace GameUser.Features.UserInfos
         public async Task<GetUserBalanceResult> GetUserBalance(string sessionId)
         {
             const string getBalanceFailedMessage =
-                @"apiError: message: Cannot update your account balance. Error Code: SB1902";
+                @"Cannot update your account balance. Error Code: SB1902";
 
             var userSession = await userSessionService.GetUserSession(sessionId);
 
@@ -476,8 +476,8 @@ namespace GameUser.Features.UserInfos
                 @"Account has been closed. Please contact your upline for details, thank you.";
 
             var insufficientFundsMesssage =
-                $@"apiError: message: { JsonConvert.SerializeObject(errorMessage) }.
-                Error Code:  { JsonConvert.SerializeObject(errorCode) }";
+                $@"{JsonConvert.SerializeObject(errorMessage) }.
+                ({ JsonConvert.SerializeObject(errorCode) })";
 
             if (errorCode == disabledAccountError)
             {
@@ -490,8 +490,8 @@ namespace GameUser.Features.UserInfos
             else
             {
                 return
-                $@"apiError: message: { JsonConvert.SerializeObject(errorMessage) }.
-                Error Code:  { JsonConvert.SerializeObject(errorCode) }";
+                $@"{ JsonConvert.SerializeObject(errorMessage) }.
+                ({ JsonConvert.SerializeObject(errorCode) })";
             }
         }
     }
