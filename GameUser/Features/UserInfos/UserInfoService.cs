@@ -230,14 +230,14 @@ namespace GameUser.Features.UserInfos
                             (apiErrorCode,
                             apiErrorMessage);
 
-                        return new GetUserBalanceResult(clientErrorMessage);
+                        return new GetUserBalanceResult(clientErrorMessage, currency);
                     }
 
                     UpdateUserBalanceToDatabase((double)balance, queriedUser);
 
                     return new GetUserBalanceResult(balance, currency);
                 }
-                return new GetUserBalanceResult(getBalanceFailedMessage);
+                return new GetUserBalanceResult(getBalanceFailedMessage, currency);
             }
             return new GetUserBalanceResult("Error retrieving data");
         }
@@ -267,7 +267,11 @@ namespace GameUser.Features.UserInfos
 
                 if (queriedUser != null)
                 {
-                    return new GetUserInfoLobbyResult(queriedUser.AvatarId, queriedUser.Name);
+                    return new GetUserInfoLobbyResult(
+                        queriedUser.AvatarId, 
+                        queriedUser.Name, 
+                        userSession.Language,
+                        queriedUser.IsCash);
                 }
             }
             return new GetUserInfoLobbyResult("Error retrieving data");
