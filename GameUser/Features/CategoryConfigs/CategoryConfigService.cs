@@ -65,26 +65,66 @@ namespace GameUser.Features.CategoryConfigs
                     {
                         new CategoryGameConfig
                         {
+                            GameId = 1,
+                            Name = "TaiXiu",
+                            IconSize = "small",
+                            SortOrder = 1,
+                            Tag = string.Empty
+                        },
+                        new CategoryGameConfig
+                        {
+                            GameId = 2,
+                            Name = "XocXoc",
+                            IconSize = "small",
+                            SortOrder = 2,
+                            Tag = string.Empty
+                        },
+                        new CategoryGameConfig
+                        {
                             GameId = 3,
                             Name = "BauCua",
                             IconSize = "small",
-                            SortOrder = 1,
-                            Tag = "hot"
+                            SortOrder = 3,
+                            Tag = string.Empty
+                        },
+                        new CategoryGameConfig
+                        {
+                            GameId = 4,
+                            Name = "TaiXiuTurbo",
+                            IconSize = "small",
+                            SortOrder = 4,
+                            Tag = string.Empty
                         },
                         new CategoryGameConfig
                         {
                             GameId = 5,
                             Name = "ChanLe",
                             IconSize = "small",
-                            SortOrder = 2,
-                            Tag = "new"
+                            SortOrder = 5,
+                            Tag = string.Empty
+                        },
+                        new CategoryGameConfig
+                        {
+                            GameId = 6,
+                            Name = "ChanLeTurbo",
+                            IconSize = "small",
+                            SortOrder = 6,
+                            Tag = string.Empty
                         },
                         new CategoryGameConfig
                         {
                             GameId = 7,
                             Name = "RongHo",
                             IconSize = "small",
-                            SortOrder = 3,
+                            SortOrder = 7,
+                            Tag = string.Empty
+                        },
+                        new CategoryGameConfig
+                        {
+                            GameId = 8,
+                            Name = "KenoProMax",
+                            IconSize = "small",
+                            SortOrder = 8,
                             Tag = string.Empty
                         },
                         new CategoryGameConfig
@@ -92,7 +132,23 @@ namespace GameUser.Features.CategoryConfigs
                             GameId = 10,
                             Name = "Baccarat",
                             IconSize = "small",
-                            SortOrder = 4,
+                            SortOrder = 10,
+                            Tag = string.Empty
+                        },
+                        new CategoryGameConfig
+                        {
+                            GameId = 12,
+                            Name = "KenoMax",
+                            IconSize = "small",
+                            SortOrder = 12,
+                            Tag = string.Empty
+                        },
+                        new CategoryGameConfig
+                        {
+                            GameId = 21,
+                            Name = "Roulette",
+                            IconSize = "small",
+                            SortOrder = 21,
                             Tag = string.Empty
                         },
                         new CategoryGameConfig
@@ -100,7 +156,23 @@ namespace GameUser.Features.CategoryConfigs
                             GameId = 23,
                             Name = "Blackjack",
                             IconSize = "small",
-                            SortOrder = 1,
+                            SortOrder = 23,
+                            Tag =  string.Empty
+                        },
+                        new CategoryGameConfig
+                        {
+                            GameId = 25,
+                            Name = "SicBo",
+                            IconSize = "small",
+                            SortOrder = 25,
+                            Tag =  string.Empty
+                        },
+                        new CategoryGameConfig
+                        {
+                            GameId = 30,
+                            Name = "FishPrawnCrabPro",
+                            IconSize = "small",
+                            SortOrder = 30,
                             Tag =  string.Empty
                         }
                     }
