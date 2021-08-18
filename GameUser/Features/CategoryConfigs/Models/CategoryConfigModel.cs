@@ -7,9 +7,9 @@ namespace GameUser.Features.CategoryConfigs.Models
     {
         public CategoryEntity Category { get; }
 
-        public IList<GameIconEntity> Games { get; }
+        public IEnumerable<GameIconEntity> Games { get; }
 
-        public CategoryConfigModel(CategoryEntity category, IList<GameIconEntity> games)
+        public CategoryConfigModel(CategoryEntity category, IEnumerable<GameIconEntity> games)
         {
             Category = category;
             Games = games;

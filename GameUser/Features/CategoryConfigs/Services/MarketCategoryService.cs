@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using GameUser.Features.CategoryConfigs.Entities;
 using GameUser.Features.CategoryConfigs.Models;
 using GameUser.Shared.Database;
+using MongoDB.Driver;
 
 namespace GameUser.Features.CategoryConfigs.Services
 {
@@ -30,7 +31,7 @@ namespace GameUser.Features.CategoryConfigs.Services
 
         public async Task<IEnumerable<CategoryConfigModel>> GetConfigs(string marketId)
         {
-            var mappings = await repository.FindAsync(mapping => mapping.MarketId == marketId);
+            var mappings = await GetMappingsByMarket(marketId);
             var categories = await categoryService.GetAll();
             var result = new List<CategoryConfigModel>();
 
@@ -54,6 +55,13 @@ namespace GameUser.Features.CategoryConfigs.Services
                 .FirstOrDefault();
 
             return config;
+        }
+
+        private async Task<IList<MarketCategoryEntity>> GetMappingsByMarket(string marketId)
+        {
+            var mappings = await repository.FindAsync(mapping => mapping.MarketId == marketId);
+
+            return mappings.ToList();
         }
     }
 }
