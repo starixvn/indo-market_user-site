@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GameUser.Features.CategoryConfigs.Entities;
@@ -6,6 +7,8 @@ using GameUser.Features.CategoryConfigs.Models;
 using GameUser.Features.CategoryConfigs.Services;
 using GameUser.Features.FavoriteGame;
 using GameUser.Features.MarketManagement;
+using Microsoft.Extensions.Caching.Memory;
+using Sentry;
 
 namespace GameUser.Features.CategoryConfigs
 {
@@ -19,15 +22,24 @@ namespace GameUser.Features.CategoryConfigs
         private readonly IFavoriteGameService favoriteGameService;
         private readonly IMarketCategoryService marketCategoryService;
         private readonly IMarketService marketService;
+        private readonly IMemoryCache memoryCache;
+        private readonly CategoryConfigSettings settings;
+        private readonly ISentryClient sentry;
 
         public GameCategoryService(
             IFavoriteGameService favoriteGameService,
             IMarketCategoryService marketCategoryService,
-            IMarketService marketService)
+            IMarketService marketService,
+            IMemoryCache memoryCache,
+            CategoryConfigSettings settings,
+             ISentryClient sentry)
         {
             this.favoriteGameService = favoriteGameService;
             this.marketCategoryService = marketCategoryService;
             this.marketService = marketService;
+            this.memoryCache = memoryCache;
+            this.settings = settings;
+            this.sentry = sentry;
         }
 
         public async Task<IList<CategoryConfigModel>> GetConfigs(string userId)
@@ -43,7 +55,34 @@ namespace GameUser.Features.CategoryConfigs
         }
 
         public Task<IEnumerable<CategoryConfigModel>> GetConfigsByMarket(string marketId)
-            => marketCategoryService.GetConfigs(marketId);
+            => memoryCache.GetOrCreateAsync(marketId, CacheFactory);
+
+        internal async Task<IEnumerable<CategoryConfigModel>> CacheFactory(ICacheEntry cache)
+        {
+            IEnumerable<CategoryConfigModel> result = new List<CategoryConfigModel>();
+
+            try
+            {
+                result = await marketCategoryService.GetConfigs(cache.Key.ToString());
+
+                if (settings.CacheTimeout > 0)
+                {
+                    cache.SetAbsoluteExpiration(TimeSpan.FromMinutes(settings.CacheTimeout));
+                }
+                else
+                {
+                    cache.Dispose();
+                };
+            }
+            catch (Exception exception)
+            {
+                sentry.CaptureException(exception);
+
+                cache.Dispose();
+            }
+
+            return result;
+        }
 
         private async Task<CategoryConfigModel> GetFavoriteCategoryConfigs(IEnumerable<CategoryConfigModel> configs, string userId)
         {

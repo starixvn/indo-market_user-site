@@ -55,7 +55,7 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitMiddleSite(configuration);
             services.InitUserLanguage();
             services.InitFavoriteGame();
-            services.InitCategoryConfig();
+            services.InitCategoryConfig(configuration);
             services.InitMarket();
         }
 
