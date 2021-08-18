@@ -54,7 +54,7 @@ namespace GameUser.Features.CategoryConfigs
             return result;
         }
 
-        public Task<IEnumerable<CategoryConfigModel>> GetConfigsByMarket(string marketId)
+        private Task<IEnumerable<CategoryConfigModel>> GetConfigsByMarket(string marketId)
             => memoryCache.GetOrCreateAsync(marketId, CacheFactory);
 
         internal async Task<IEnumerable<CategoryConfigModel>> CacheFactory(ICacheEntry cache)
