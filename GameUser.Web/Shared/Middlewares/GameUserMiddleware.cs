@@ -12,6 +12,7 @@ using GameUser.Features.FavoriteGame;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
 using GameUser.Features.GameSettings;
+using GameUser.Features.MarketManagement;
 using GameUser.Features.MiddleSite;
 using GameUser.Features.UserInfos;
 using GameUser.Features.UserLanguages;
@@ -55,6 +56,7 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitUserLanguage();
             services.InitFavoriteGame();
             services.InitCategoryConfig();
+            services.InitMarket();
         }
 
         public static void AddSharedServices(this IServiceCollection services)

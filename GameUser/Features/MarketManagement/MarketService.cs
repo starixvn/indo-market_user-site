@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using GameUser.Features.UserInfos;
 using GameUser.Shared.Database;
 
 namespace GameUser.Features.MarketManagement
@@ -6,21 +8,32 @@ namespace GameUser.Features.MarketManagement
     public interface IMarketService
     {
         Task<MarketEntity> GetMarketByCurrency(string currency);
+
+        Task<MarketEntity> GetMarketByUser(string userId);
     }
 
     public class MarketService : IMarketService
     {
-        private readonly IGenericRepository<MarketEntity> marketRepository;
+        private readonly IGenericRepository<MarketEntity> repository;
+        private readonly IUserInfoService userInfoService;
 
         public MarketService(
-            IGenericRepository<MarketEntity> marketRepository)
+            IGenericRepository<MarketEntity> repository,
+            IUserInfoService userInfoService)
         {
-            this.marketRepository = marketRepository;
+            this.repository = repository;
+            this.userInfoService = userInfoService;
         }
 
-        public async Task<MarketEntity> GetMarketByCurrency(string currency)
+        public Task<MarketEntity> GetMarketByCurrency(string currency)
+            => repository.FindOneAsync(entity => entity.Enabled && entity.Currencies.Contains(currency));
+
+        public async Task<MarketEntity> GetMarketByUser(string userId)
         {
-            return null;
+            var userInfo = await userInfoService.GetUserInfo(userId);
+            var market = await GetMarketByCurrency(userInfo.Currency);
+
+            return market;
         }
     }
 }

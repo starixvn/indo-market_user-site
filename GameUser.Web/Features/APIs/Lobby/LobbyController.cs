@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GameUser.Features.CategoryConfigs;
+using GameUser.Features.CategoryConfigs.Models;
 using GameUser.Features.FavoriteGame;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.SessionFilterAuthentications;
@@ -20,31 +21,31 @@ namespace GameUser.Web.Features.APIs.Lobby
         private readonly IHttpContextAccessor accessor;
         private readonly IHttpRequestWrapper httpRequestWrapper;
         private readonly IUserSessionService userSessionService;
-        private readonly ICategoryConfigService categoryConfigService;
+        private readonly IGameCategoryService gameCategoryService;
 
         public LobbyController(
             IFavoriteGameService favoriteGameService,
             IUserSessionService userSessionService,
             IHttpContextAccessor accessor,
             IHttpRequestWrapper httpRequestWrapper,
-            ICategoryConfigService categoryConfigService)
+            IGameCategoryService gameCategoryService)
         {
             this.favoriteGameService = favoriteGameService;
             this.accessor = accessor;
             this.httpRequestWrapper = httpRequestWrapper;
             this.userSessionService = userSessionService;
-            this.categoryConfigService = categoryConfigService;
+            this.gameCategoryService = gameCategoryService;
         }
 
         [HttpGet("Configs")]
         [Authorize(AuthenticationSchemes = SessionFilterAuthenticationDefaults.AuthenticationScheme)]
-        public async Task<IList<CategoryConfig>> GetLobbyConfigs()
+        public async Task<IList<CategoryConfigModel>> GetLobbyConfigs()
         {
             var sessionId = httpRequestWrapper.GetAuthorizationToken(accessor);
             var session = await userSessionService.GetUserSession(sessionId);
             var userId = session.UserId;
 
-            return await categoryConfigService.GetConfigs(userId);
+            return await gameCategoryService.GetConfigs(userId);
         }
 
         [HttpPost("FavoriteGame")]

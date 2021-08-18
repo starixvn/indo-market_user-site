@@ -6,7 +6,7 @@ namespace GameUser.Features.MarketManagement
     {
         public static void InitMarket(this IServiceCollection services)
         {
-            services.AddScoped<IMarketService, MarketService>();
+            services.AddSingleton<IMarketService, MarketService>();
         }
     }
 }
