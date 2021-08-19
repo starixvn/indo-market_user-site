@@ -26,26 +26,15 @@
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var requestSessionId = context.HttpContext.Request.Query[sessionIdKey].ToString();
+            var sessionToValidate = GetRequestSessionId(context);
 
-            if (!UserPreviouslySignedIn(context))
+            if (UserPreviouslySignedIn(context) 
+                && (string.IsNullOrWhiteSpace(sessionToValidate) || UnchangedSessionId(sessionToValidate, GetClaimSessionId(context))))
             {
-                await ValidateUserRequest(context, requestSessionId);
-
-                return;
+                sessionToValidate = GetClaimSessionId(context);
             }
 
-            var claimSessionId = context.HttpContext.User.Claims
-                        .FirstOrDefault(x => x.Type == sessionIdKey).Value;
-
-            var sessionToValidate =
-                (SessionIdChanged(requestSessionId, claimSessionId) 
-                && !string.IsNullOrWhiteSpace(requestSessionId)) 
-                ? requestSessionId 
-                : claimSessionId;
-
             await ValidateUserRequest(context, sessionToValidate);
-
         }
 
         private async Task ValidateUserRequest(AuthorizationFilterContext context, string sessionId)
@@ -125,14 +114,19 @@
             }
         }
 
+        private bool UnchangedSessionId(string requestSessionId, string claimSessionId)
+        => requestSessionId == claimSessionId;
+
+        private string GetRequestSessionId(AuthorizationFilterContext context)
+        => context.HttpContext.Request.Query[sessionIdKey].ToString();
+
+        private string GetClaimSessionId(AuthorizationFilterContext context)
+        => context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == sessionIdKey).Value;
+
         private static bool UserPreviouslySignedIn(AuthorizationFilterContext context)
         => context.HttpContext.User.Identity.IsAuthenticated;
 
-        private static bool SessionIdChanged(string requestSessionId, string claimSessionId)
-        => requestSessionId != claimSessionId;
-
         private static async Task<bool> SessionValidated(AuthorizationFilterContext context, string sessionId)
         => !string.IsNullOrWhiteSpace(sessionId) && await VerifyUserSession(sessionId, context);
-
     }
 }
