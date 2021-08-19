@@ -28,8 +28,7 @@
         {
             var sessionToValidate = GetRequestSessionId(context);
 
-            if (UserPreviouslySignedIn(context) 
-                && (string.IsNullOrWhiteSpace(sessionToValidate) || UnchangedSessionId(sessionToValidate, GetClaimSessionId(context))))
+            if (UserPreviouslySignedIn(context) && UnchangedSessionId(sessionToValidate, GetClaimSessionId(context)))
             {
                 sessionToValidate = GetClaimSessionId(context);
             }

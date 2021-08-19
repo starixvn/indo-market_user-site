@@ -36,7 +36,7 @@ class Feedback {
     refreshAntiforgeryToken(culture, submitForm) {
         $.ajax({
             method: "GET",
-            url: `${window.rootUrl}${culture}/feedback/RefreshToken`
+            url: `${window.rootUrl}${culture}/feedback/RefreshToken?sessionId=${sessionStorage.getItem("sessionId")}`
         }).then(function (result) {
             if (!!result["unauthorized"]) {
                 window.location.href = `${window.rootUrl}Error/NotAuthorized`
@@ -53,7 +53,7 @@ class Feedback {
         let formData = new FormData(this.mainForm[0]);
         $.ajax({
             method: "POST",
-            url: `${window.rootUrl}${culture}/feedback/Add`,
+            url: `${window.rootUrl}${culture}/feedback/Add?sessionId=${sessionStorage.getItem("sessionId")}`,
             data: formData,
             processData: false,
             contentType: false
@@ -104,6 +104,10 @@ class Feedback {
 
     clearSessionFromUrl() {
         var url = location.href;
+
+        const sessionId = url.split('?')[1].split('=')[1];
+
+        sessionStorage.setItem('sessionId', sessionId);
 
         history.pushState(null, "", url.split('?')[0]);
     }
