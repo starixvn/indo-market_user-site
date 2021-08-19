@@ -26,40 +26,35 @@
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            if (context.HttpContext.User.Identity.IsAuthenticated)
+            var requestSessionId = context.HttpContext.Request.Query[sessionIdKey].ToString();
+
+            if (!UserPreviouslySignedIn(context))
             {
-                var requestSessionId = context.HttpContext.Request.Query[sessionIdKey].ToString();
+                await ValidateUserRequest(context, requestSessionId);
 
-                var claimSessionId = context.HttpContext.User.Claims
-                    .FirstOrDefault(x => x.Type == sessionIdKey).Value;
-
-                if (requestSessionId == claimSessionId)
-                {
-                    await ValidateUserRequest(context, claimSessionId);
-                }
-                else
-                {
-                    await ValidateUserRequest(context, requestSessionId);
-                }
+                return;
             }
-            else
-            {
-                var sessionId = context.HttpContext.Request.Query[sessionIdKey].ToString();
 
-                await ValidateUserRequest(context, sessionId);
-            }
+            var claimSessionId = context.HttpContext.User.Claims
+                        .FirstOrDefault(x => x.Type == sessionIdKey).Value;
+
+            var sessionToValidate =
+                (SessionIdChanged(requestSessionId, claimSessionId) 
+                && !string.IsNullOrWhiteSpace(requestSessionId)) 
+                ? requestSessionId 
+                : claimSessionId;
+
+            await ValidateUserRequest(context, sessionToValidate);
+
         }
 
         private async Task ValidateUserRequest(AuthorizationFilterContext context, string sessionId)
         {
-            if (!string.IsNullOrWhiteSpace(sessionId))
-            {
-                var verifiedUserSession = await VerifyUserSession(sessionId, context);
+            var validSession = await SessionValidated(context, sessionId);
 
-                if (verifiedUserSession)
-                {
-                    await SignIn(sessionId, context);
-                }
+            if (validSession)
+            {
+                await SignIn(sessionId, context);
             }
             else
             {
@@ -129,5 +124,15 @@
                 return new RedirectResult(string.Format("/{0}/Error/NotAuthorized", context.RouteData.Values["culture"]));
             }
         }
+
+        private static bool UserPreviouslySignedIn(AuthorizationFilterContext context)
+        => context.HttpContext.User.Identity.IsAuthenticated;
+
+        private static bool SessionIdChanged(string requestSessionId, string claimSessionId)
+        => requestSessionId != claimSessionId;
+
+        private static async Task<bool> SessionValidated(AuthorizationFilterContext context, string sessionId)
+        => !string.IsNullOrWhiteSpace(sessionId) && await VerifyUserSession(sessionId, context);
+
     }
 }
