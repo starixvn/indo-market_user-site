@@ -22,8 +22,6 @@
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class UserSessionValidationAttribute : Attribute, IUserSessionValidationAttribute
     {
-        private readonly double expiredMinuteUserSession = 1;
-
         private readonly int expiredMinuteCookie = 30;
 
         private readonly string sessionIdKey = "sessionid";
@@ -32,9 +30,17 @@
         {
             if (context.HttpContext.User.Identity.IsAuthenticated)
             {
-                var sessionId = context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == sessionIdKey).Value;
+                var requestSessionId = context.HttpContext.Request.Query[sessionIdKey].ToString();
 
-                await SetCookie(context, sessionId);
+                var claimSessionId = context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == sessionIdKey).Value;
+
+                if (requestSessionId == claimSessionId)
+                {
+                    await SetCookie(context, claimSessionId);
+                }
+
+                await SetCookie(context, requestSessionId);
+
             }
             else
             {
@@ -73,24 +79,15 @@
         {
             if (context != null)
             {
-                var currentDateUTC = DateTime.UtcNow;
-
                 var userSessionService = context.HttpContext.RequestServices.GetService(typeof(IUserSessionService)) as UserSessionService;
 
                 var userSession = await userSessionService.GetUserSession(sessionId);
 
-                if (userSession == null)
+                var sessionExpired = userSessionService.IsExpiredSession(userSession);
+
+                if (sessionExpired)
                 {
                     return false;
-                }
-                else
-                {
-                    var totalMinutes = currentDateUTC.Subtract(userSession.ReCheckInTime).TotalMinutes;
-
-                    if (totalMinutes > expiredMinuteUserSession)
-                    {
-                        return false;
-                    }
                 }
 
                 return true;
