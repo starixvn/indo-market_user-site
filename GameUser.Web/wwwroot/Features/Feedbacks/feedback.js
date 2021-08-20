@@ -33,23 +33,7 @@ class Feedback {
         this.submitButton.prop('disabled', isDisabled);
     }
 
-    refreshAntiforgeryToken(culture, submitForm) {
-        $.ajax({
-            method: "GET",
-            url: `${window.rootUrl}${culture}/feedback/RefreshToken?sessionId=${sessionStorage.getItem("sessionId")}`
-        }).then(function (result) {
-            if (!!result["unauthorized"]) {
-                window.location.href = `${window.rootUrl}Error/NotAuthorized`
-            }
-            else {
-                var tokenValue = $('<div />').html(result).find('input[type="hidden"]').val();
-                submitForm(culture, tokenValue);
-            }
-        });
-    }
-
-    submitForm(culture, tokenValue) {
-        $('input[name="__RequestVerificationToken"]').val(tokenValue);
+    submitForm(culture) {
         let formData = new FormData(this.mainForm[0]);
         $.ajax({
             method: "POST",
@@ -78,7 +62,7 @@ class Feedback {
         this.disableSubmitButton(true);        
         this.showLoading();
         let culture = $("#Culture").val();
-        this.refreshAntiforgeryToken(culture, this.submitForm.bind(this));
+        this.submitForm(culture);
     }
 
     resetForm() {
