@@ -28,7 +28,8 @@
         {
             var sessionToValidate = GetRequestSessionId(context);
 
-            if (UserPreviouslySignedIn(context) && UnchangedSessionId(sessionToValidate, GetClaimSessionId(context)))
+            if (UserPreviouslySignedIn(context) && 
+                (UnchangedSessionId(sessionToValidate, GetClaimSessionId(context)) || string.IsNullOrWhiteSpace(sessionToValidate)))
             {
                 sessionToValidate = GetClaimSessionId(context);
             }
@@ -113,7 +114,7 @@
             }
         }
 
-        private bool UnchangedSessionId(string requestSessionId, string claimSessionId)
+        private static bool UnchangedSessionId(string requestSessionId, string claimSessionId)
         => requestSessionId == claimSessionId;
 
         private string GetRequestSessionId(AuthorizationFilterContext context)
