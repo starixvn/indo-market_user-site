@@ -45,11 +45,17 @@ namespace GameUser.Features.CategoryConfigs
         public async Task<IList<CategoryConfigModel>> GetConfigs(string userId)
         {
             var market = await marketService.GetMarketByUser(userId);
-            var configs = await GetConfigsByMarket(market.Id.ToString());
-            var favoriteCateogryConfig = await GetFavoriteCategoryConfigs(configs, userId);
-            var result = configs?.ToList() ?? new List<CategoryConfigModel>();
+            var result = new List<CategoryConfigModel>();
 
-            result.Add(favoriteCateogryConfig);
+            if (market != null)
+            {
+                var configs = await GetConfigsByMarket(market.Id.ToString());
+                var favoriteCateogryConfig = await GetFavoriteCategoryConfigs(configs, userId);
+                
+                result = configs?.ToList() ?? result;
+
+                result.Add(favoriteCateogryConfig);
+            }
 
             return result;
         }
