@@ -472,8 +472,8 @@ namespace GameUser.Features.UserInfos
                 @"Account has been closed. Please contact your upline for details, thank you.";
 
             var insufficientFundsMesssage =
-                $@"{JsonConvert.SerializeObject(errorMessage) }.
-                ({ JsonConvert.SerializeObject(errorCode) })";
+                $@"{JsonConvert.SerializeObject(errorMessage)}.
+                ({JsonConvert.SerializeObject(errorCode)})";
 
             if (errorCode == disabledAccountError)
             {
@@ -486,8 +486,8 @@ namespace GameUser.Features.UserInfos
             else
             {
                 return
-                $@"{ JsonConvert.SerializeObject(errorMessage) }.
-                ({ JsonConvert.SerializeObject(errorCode) })";
+                $@"{JsonConvert.SerializeObject(errorMessage)}.
+                ({JsonConvert.SerializeObject(errorCode)})";
             }
         }
     }

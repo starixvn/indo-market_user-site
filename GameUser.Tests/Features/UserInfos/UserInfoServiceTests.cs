@@ -458,7 +458,6 @@ namespace GameUser.Tests.Features.UserInfos
                 .Be
                 ($@"{JsonConvert.SerializeObject(unsuccesfulResponse.Result.ErrorMessage)}.
                 ({JsonConvert.SerializeObject(unsuccesfulResponse.Result.ErrorCode)})");
-
             result.IsSuccessful.Should().BeFalse();
             result.Balance.Should().Be(0);
             result.Currency.Should().Be(userInfo.Currency);
