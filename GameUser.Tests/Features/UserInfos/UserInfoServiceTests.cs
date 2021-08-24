@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using FluentAssertions;
 using GameUser.Features.ApiComminicators;
+using GameUser.Features.ApiComminicators.Models;
 using GameUser.Features.MiddleSite;
 using GameUser.Features.UserInfos;
 using GameUser.Features.Users;
@@ -11,6 +12,7 @@ using GameUser.Shared.Database;
 using GameUser.Shared.Wrappers;
 using MemoryCache.Testing.NSubstitute;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 using NSubstitute;
 using Sentry;
 using Xunit;
@@ -190,7 +192,6 @@ namespace GameUser.Tests.Features.UserInfos
             result.Should().BeNull();
         }
 
-
         [Fact]
         public async Task UserInfoCacheFactory_WhenCalled_ReturnStatus()
         {
@@ -231,5 +232,236 @@ namespace GameUser.Tests.Features.UserInfos
         }
 
         private static int RandomFunc(int min, int max) => min + max;
+
+        [Fact]
+        public async Task UpdateUserAvatar_WhenCalled_ReturnChangedAvatarSuccess()
+        {
+            //Arrange
+            var userSession = new UserSessionEntity
+            {
+                SessionId = "sessionId",
+                UserId = "userId"
+            };
+
+            var newAvatarId = 2;
+
+            userSessionService.GetUserSession(Arg.Any<string>()).Returns(userSession);
+
+            //Act
+            var result = await service.UpdateUserAvatar(userSession.SessionId, newAvatarId);
+
+            //Assert
+            result.IsSuccessful.Should().BeTrue();
+            result.AvatarId.Should().Be(newAvatarId);
+            result.Message.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task UpdateUserAvatar_WhenUserSessionIsNull_ReturnNotSuccessfulResult()
+        {
+            var sessionId = "id";
+
+            UserSessionEntity userSession = null;
+
+            var newAvatarId = 2;
+
+            userSessionService.GetUserSession(Arg.Any<string>()).Returns(userSession);
+
+            var result = await service.UpdateUserAvatar(sessionId, newAvatarId);
+
+            result.IsSuccessful.Should().BeFalse();
+            result.Message.Should().Be("Error changing avatar");
+        }
+
+        [Fact]
+        public async Task GetUserInfoLobby_WhenCalled_ReturnSuccessfulResult()
+
+        {
+            //Arrange
+            var userSession = new UserSessionEntity
+            {
+                SessionId = "id",
+            };
+
+            var userInfo = new UserInfoEntity
+            {
+                AvatarId = 1,
+                IsCash = false,
+                Name = "Name",
+                UserId = "id"
+            };
+
+            userSessionService.GetUserSession(Arg.Any<string>()).Returns(userSession);
+            repository.FindOneAsync(Arg.Any<Expression<Func<UserInfoEntity, bool>>>()).Returns(userInfo);
+
+            //Act
+            var result = await service.GetUserInfoLobby(userSession.SessionId);
+
+            //Assert
+            result.IsSuccessful.Should().BeTrue();
+            result.Message.Should().BeNull();
+            result.AvatarId.Should().Be(userInfo.AvatarId);
+            result.Nickname.Should().Be(userInfo.Name);
+            result.Language.Should().Be(userSession.Language);
+            result.IsCash.Should().Be(userInfo.IsCash);
+        }
+
+        [Fact]
+        public async Task GetUserInfoLobby_WhenUserInfoIsNull_ReturnNotSuccessfulResult()
+        {
+            //Arrange
+            var userSession = new UserSessionEntity
+            {
+                SessionId = "id",
+                Language = "en"
+            };
+
+            UserInfoEntity userInfo = null;
+
+            userSessionService.GetUserSession(Arg.Any<string>()).Returns(userSession);
+            repository.FindOneAsync(Arg.Any<Expression<Func<UserInfoEntity, bool>>>()).Returns(userInfo);
+
+            //Act
+            var result = await service.GetUserInfoLobby(userSession.SessionId);
+
+            //Assert
+            result.IsSuccessful.Should().BeFalse();
+            result.Message.Should().Be("Error retrieving data");
+        }
+
+        [Fact]
+        public async Task GetUserBalance_WhenCalled_ReturnsSuccessfulResult()
+        {
+
+            var userSession = new UserSessionEntity
+            {
+                SessionId = "id",
+                UserId = "userId"
+            };
+
+            var userInfo = new UserInfoEntity
+            {
+                Currency = "IN",
+                Name = "Name",
+                UserId = "userId"
+            };
+
+            var succesfulResponse = new MemberApiResponse<GetBalanceResponse>
+            {
+                Result = new GetBalanceResponse
+                {
+                    Balance = 1995,
+                    ErrorCode = 0,
+                    ErrorDescription = "",
+                    ErrorMessage = "",
+                }
+            };
+
+            userSessionService.GetUserSession(Arg.Any<string>()).Returns(userSession);
+            repository.FindOneAsync(Arg.Any<Expression<Func<UserInfoEntity, bool>>>()).Returns(userInfo);
+            api.GetBalance(Arg.Any<GetBalanceRequest>()).Returns(succesfulResponse);
+
+            var result = await service.GetUserBalance(userSession.SessionId);
+
+            result.Balance.Should().Be(succesfulResponse.Result.Balance);
+            result.Currency.Should().Be(userInfo.Currency);
+            result.IsSuccessful.Should().BeTrue();
+            result.Message.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task GetUserBalance_WhenUserSessionIsNull_ReturnsUnsuccesfulResult()
+        {
+            var sessionId = "id";
+
+            UserSessionEntity userSession = null;
+
+
+            userSessionService.GetUserSession(Arg.Any<string>()).Returns(userSession);
+
+            var result = await service.GetUserBalance(sessionId);
+
+            result.Message.Should().Be("Error retrieving data");
+            result.IsSuccessful.Should().BeFalse();
+            result.Balance.Should().Be(0);
+            result.Currency.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task GetUserBalance_WhenCallingGetBalanceApiFailed_ReturnsUnsuccesfulResult()
+        {
+            var userSession = new UserSessionEntity
+            {
+                SessionId = "id",
+                UserId = "userId"
+            };
+
+            var userInfo = new UserInfoEntity
+            {
+                Currency = "IN",
+                Name = "Name",
+                UserId = "userId"
+            };
+
+            var nullResponse = new MemberApiResponse<GetBalanceResponse>
+            {
+                Result = null
+            };
+
+            userSessionService.GetUserSession(Arg.Any<string>()).Returns(userSession);
+            repository.FindOneAsync(Arg.Any<Expression<Func<UserInfoEntity, bool>>>()).Returns(userInfo);
+            api.GetBalance(Arg.Any<GetBalanceRequest>()).Returns(nullResponse);
+
+            var result = await service.GetUserBalance(userSession.SessionId);
+
+            result.Message.Should().Be("Cannot update your account balance. Error Code: SB1902");
+            result.IsSuccessful.Should().BeFalse();
+            result.Balance.Should().Be(0);
+            result.Currency.Should().Be(userInfo.Currency);
+        }
+
+        [Fact]
+        public async Task GetUserBalance_WhenApiReturnsErrors_ReturnsUnsuccesfulResult()
+        {
+            var userSession = new UserSessionEntity
+            {
+                SessionId = "id",
+                UserId = "userId"
+            };
+
+            var userInfo = new UserInfoEntity
+            {
+                Currency = "IN",
+                Name = "Name",
+                UserId = "userId"
+            };
+
+            var unsuccesfulResponse = new MemberApiResponse<GetBalanceResponse>
+            {
+                Result = new GetBalanceResponse
+                {
+                    Balance = 0,
+                    ErrorCode = 1,
+                    ErrorDescription = "errorDescription",
+                    ErrorMessage = "errorMessage"
+                }
+            };
+
+            userSessionService.GetUserSession(Arg.Any<string>()).Returns(userSession);
+            repository.FindOneAsync(Arg.Any<Expression<Func<UserInfoEntity, bool>>>()).Returns(userInfo);
+            api.GetBalance(Arg.Any<GetBalanceRequest>()).Returns(unsuccesfulResponse);
+
+            var result = await service.GetUserBalance(userSession.SessionId);
+
+            result.Message
+                .Should()
+                .Be
+                ($@"{JsonConvert.SerializeObject(unsuccesfulResponse.Result.ErrorMessage)}.
+                ({JsonConvert.SerializeObject(unsuccesfulResponse.Result.ErrorCode)})");
+
+            result.IsSuccessful.Should().BeFalse();
+            result.Balance.Should().Be(0);
+            result.Currency.Should().Be(userInfo.Currency);
+        }
     }
 }

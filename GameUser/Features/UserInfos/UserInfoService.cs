@@ -189,14 +189,7 @@ namespace GameUser.Features.UserInfos
 
             if (userSession != null)
             {
-                var queriedUser = await GetUserInfo(userSession.UserId);
-
-                var changedAvatar = await UpdateAvatarId(avatarId, queriedUser);
-
-                if (!changedAvatar)
-                {
-                    return new ChangeUserAvatarResult("Avatar not updated");
-                }
+                await UpdateAvatarIdToDatabase(avatarId, userSession.UserId);
 
                 return new ChangeUserAvatarResult(avatarId);
             }
@@ -242,21 +235,6 @@ namespace GameUser.Features.UserInfos
             return new GetUserBalanceResult("Error retrieving data");
         }
 
-        private void UpdateUserBalanceToDatabase(double balance, UserInfoEntity queriedUser)
-        => Task.Run(async () =>
-        {
-            try
-            {
-                var update = Builders<UserInfoEntity>.Update.Set(entity => entity.Red, balance);
-
-                await repository.UpdateOneAsync(entity => entity.UserId == queriedUser.UserId, update);
-            }
-            catch (Exception exception)
-            {
-                sentryClient.CaptureException(exception);
-            }
-        });
-
         public async Task<GetUserInfoLobbyResult> GetUserInfoLobby(string sessionId)
         {
             var userSession = await userSessionService.GetUserSession(sessionId);
@@ -275,27 +253,6 @@ namespace GameUser.Features.UserInfos
                 }
             }
             return new GetUserInfoLobbyResult("Error retrieving data");
-        }
-
-        private async Task<bool> UpdateAvatarId(int avatarId, UserInfoEntity queriedUser)
-        {
-            try
-            {
-                var update = Builders<UserInfoEntity>.Update.Set(entity => entity.AvatarId, avatarId);
-
-                await repository.UpdateOneAsync(entity => entity.UserId == queriedUser.UserId, update);
-            }
-            catch (Exception exception)
-            {
-                var message = $"Notify Update Avatar Error at {DateTime.Now}\n\t" +
-                    $"User: {JsonConvert.SerializeObject(queriedUser)}\n\t" +
-                    $"Error: {JsonConvert.SerializeObject(exception)}";
-
-                sentryClient.CaptureMessage(message, SentryLevel.Error);
-
-                return false;
-            }
-            return true;
         }
 
         private async Task<int> GetLatestUID()
@@ -453,6 +410,41 @@ namespace GameUser.Features.UserInfos
 
             return beforeCallMessage;
         }
+
+        private async Task<bool> UpdateAvatarIdToDatabase(int avatarId, string userId)
+        {
+            try
+            {
+                var update = Builders<UserInfoEntity>.Update.Set(entity => entity.AvatarId, avatarId);
+
+                await repository.UpdateOneAsync(entity => entity.UserId == userId, update);
+            }
+            catch (Exception exception)
+            {
+                var message = $"Notify Update Avatar Error at {DateTime.Now}\n\t" +
+                    $"UserID: {JsonConvert.SerializeObject(userId)}\n\t" +
+                    $"Error: {JsonConvert.SerializeObject(exception)}";
+
+                sentryClient.CaptureMessage(message, SentryLevel.Error);
+
+                return false;
+            }
+            return true;
+        }
+        private void UpdateUserBalanceToDatabase(double balance, UserInfoEntity queriedUser)
+        => Task.Run(async () =>
+        {
+            try
+            {
+                var update = Builders<UserInfoEntity>.Update.Set(entity => entity.Red, balance);
+
+                await repository.UpdateOneAsync(entity => entity.UserId == queriedUser.UserId, update);
+            }
+            catch (Exception exception)
+            {
+                sentryClient.CaptureException(exception);
+            }
+        });
 
         private string ComposeAfterCallGetBalanceMessage(
             UserSessionEntity userSession,
