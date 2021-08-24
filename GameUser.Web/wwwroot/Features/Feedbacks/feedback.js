@@ -89,7 +89,7 @@ class Feedback {
     clearSessionFromUrl() {
         var url = location.href;
 
-        const sessionId = url.split('?')[1].split('=')[1];
+        const sessionId = url.split('?')[1]?.split('=')[1];
 
         sessionStorage.setItem('sessionId', sessionId);
 
