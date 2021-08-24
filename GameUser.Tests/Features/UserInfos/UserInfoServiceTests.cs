@@ -332,7 +332,7 @@ namespace GameUser.Tests.Features.UserInfos
         [Fact]
         public async Task GetUserBalance_WhenCalled_ReturnsSuccessfulResult()
         {
-
+            //Arrange
             var userSession = new UserSessionEntity
             {
                 SessionId = "id",
@@ -361,8 +361,11 @@ namespace GameUser.Tests.Features.UserInfos
             repository.FindOneAsync(Arg.Any<Expression<Func<UserInfoEntity, bool>>>()).Returns(userInfo);
             api.GetBalance(Arg.Any<GetBalanceRequest>()).Returns(succesfulResponse);
 
+            //Act
             var result = await service.GetUserBalance(userSession.SessionId);
 
+
+            //Assert
             result.Balance.Should().Be(succesfulResponse.Result.Balance);
             result.Currency.Should().Be(userInfo.Currency);
             result.IsSuccessful.Should().BeTrue();
@@ -372,15 +375,17 @@ namespace GameUser.Tests.Features.UserInfos
         [Fact]
         public async Task GetUserBalance_WhenUserSessionIsNull_ReturnsUnsuccesfulResult()
         {
+            //Arrange
             var sessionId = "id";
 
             UserSessionEntity userSession = null;
 
-
             userSessionService.GetUserSession(Arg.Any<string>()).Returns(userSession);
 
+            //Act
             var result = await service.GetUserBalance(sessionId);
 
+            //Assert
             result.Message.Should().Be("Error retrieving data");
             result.IsSuccessful.Should().BeFalse();
             result.Balance.Should().Be(0);
@@ -390,6 +395,7 @@ namespace GameUser.Tests.Features.UserInfos
         [Fact]
         public async Task GetUserBalance_WhenCallingGetBalanceApiFailed_ReturnsUnsuccesfulResult()
         {
+            //Arrange
             var userSession = new UserSessionEntity
             {
                 SessionId = "id",
@@ -412,8 +418,11 @@ namespace GameUser.Tests.Features.UserInfos
             repository.FindOneAsync(Arg.Any<Expression<Func<UserInfoEntity, bool>>>()).Returns(userInfo);
             api.GetBalance(Arg.Any<GetBalanceRequest>()).Returns(nullResponse);
 
+            //Act
             var result = await service.GetUserBalance(userSession.SessionId);
 
+
+            //Assert
             result.Message.Should().Be("Cannot update your account balance. Error Code: SB1902");
             result.IsSuccessful.Should().BeFalse();
             result.Balance.Should().Be(0);
@@ -423,6 +432,7 @@ namespace GameUser.Tests.Features.UserInfos
         [Fact]
         public async Task GetUserBalance_WhenApiReturnsErrors_ReturnsUnsuccesfulResult()
         {
+            //Arrange
             var userSession = new UserSessionEntity
             {
                 SessionId = "id",
@@ -451,13 +461,14 @@ namespace GameUser.Tests.Features.UserInfos
             repository.FindOneAsync(Arg.Any<Expression<Func<UserInfoEntity, bool>>>()).Returns(userInfo);
             api.GetBalance(Arg.Any<GetBalanceRequest>()).Returns(unsuccesfulResponse);
 
+            //Act
             var result = await service.GetUserBalance(userSession.SessionId);
 
+            //Assert
             result.Message
-                .Should()
-                .Be
-                ($@"{JsonConvert.SerializeObject(unsuccesfulResponse.Result.ErrorMessage)}.
-                ({JsonConvert.SerializeObject(unsuccesfulResponse.Result.ErrorCode)})");
+                .Should().Contain(unsuccesfulResponse.Result.ErrorMessage);
+            result.Message
+                .Should().Contain($"{JsonConvert.SerializeObject(unsuccesfulResponse.Result.ErrorCode)}");
             result.IsSuccessful.Should().BeFalse();
             result.Balance.Should().Be(0);
             result.Currency.Should().Be(userInfo.Currency);
