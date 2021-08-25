@@ -33,5 +33,7 @@
         public string SiteName { get; set; }
 
         public string BrandName { get; set; }
+
+        public byte System { get; set; }
     }
 }

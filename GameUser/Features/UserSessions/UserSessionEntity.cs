@@ -64,5 +64,8 @@ namespace GameUser.Features.UserSessions
 
         [BsonElement("oldSessionIds")]
         public IEnumerable<string> OldSessionIds { get; set; }
+
+        [BsonElement("system")]
+        public int System { get; set; }
     }
 }

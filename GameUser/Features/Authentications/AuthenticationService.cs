@@ -8,6 +8,7 @@ using GameUser.Features.Authentications.Models;
 using GameUser.Features.UserInfos;
 using GameUser.Features.Users;
 using GameUser.Features.UserSessions;
+using GameUser.Shared.Constants;
 using GameUser.Shared.Wrappers;
 using Newtonsoft.Json;
 using Sentry;
@@ -197,7 +198,8 @@ namespace GameUser.Features.Authentications
                     UserName = verifyTokenResult.MemberKey.ToLower(),
                     SessionId = sessionId,
                     BrandName = verifyTokenResult.BrandName,
-                    OldSessionIds = new List<string>()
+                    OldSessionIds = new List<string>(),
+                    System = verifyTokenResult.System == 0 ? (byte)SystemType.Main : verifyTokenResult.System
                 };
 
                 session = await userSessionService.CreateUserSession(userSession);
