@@ -114,18 +114,5 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             modelResult.IsSuccess.Should().Be(expectedResult.IsSuccess);
             modelResult.Message.Should().Be(expectedResult.Message);
         }
-
-        [Fact]
-        public void RefreshToken()
-        {
-            // Arrange
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer, userInfoService);
-
-            // Act
-            var result = controller.RefreshToken() as PartialViewResult;
-
-            // Assert
-            result.ViewName.Should().Be("_AntiForgeryToken");
-        }
     }
 }
