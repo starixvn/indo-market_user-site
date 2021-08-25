@@ -110,18 +110,24 @@ namespace GameUser.Tests.Features.Authentications
         public async Task Refresh_WhenCall_ReturnRecheckInSuccess()
         {
             // Arrange
-            var session = new UserSessionEntity {
-                BrowserUserAgent = "userAgent"
-            };
+            var sessionId = "userSessionId";
             var now = DateTime.Now;
+            var session = new UserSessionEntity {
+                BrowserUserAgent = "userAgent",
+                SessionId= sessionId,
+                ReCheckInTime = now
+            };
             var request = new RefreshSessionRequest
             {
-                BrowserUserAgent = "userAgent"
+                BrowserUserAgent = "userAgent",
+                Session = sessionId
             };
 
-            userSessionService.GetUserSession(Arg.Any<string>()).Returns(session);
-            userSessionService.IsExpiredSession(Arg.Any<UserSessionEntity>()).Returns(false);
-
+            userSessionService.GetUserSession(sessionId).Returns(session);
+            userSessionService.ReCheckIn(sessionId, now).Returns(session);
+            userSessionService
+                .IsExpiredSession(Arg.Is<UserSessionEntity>(sessionParam => sessionParam.SessionId == sessionId))
+                .Returns(false);
             dateTimeProvider.Now().Returns(now);
 
             cultureConfigs.ConvertLanguage(Arg.Any<string>()).Returns(x => x.Arg<string>());

@@ -95,10 +95,8 @@ namespace GameUser.Features.Authentications
             if (isValidRequest && !userSessionService.IsExpiredSession(userSession))
             {
                 var now = dateTimeProvider.Now();
-
-                await userSessionService.ReCheckIn(request.Session, now);
-
-                var expiredIn = now.AddMinutes(userSessionSettings.SessionDuration);
+                var updatedUserSession = await userSessionService.ReCheckIn(request.Session, now);
+                var expiredIn = updatedUserSession.ReCheckInTime.AddMinutes(userSessionSettings.SessionDuration);
 
                 return new RefreshSessionResponse(true, expiredIn);
             }
