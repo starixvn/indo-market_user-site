@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using FluentAssertions;
-using GameUser.Features.Avatars;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.UserInfos;
 using GameUser.Features.UserSessions;
@@ -25,12 +24,11 @@ namespace GameUser.Web.Tests.Shared.Configurations
             var httpContext = Substitute.For<IHttpContextAccessor>();
             var feedbackService = Substitute.For<IFeedbackService>();
             var appSetting = Substitute.For<IAppSettings>();
-            var avatarService = Substitute.For<IAvatarService>();
             var userSessionService = Substitute.For<IUserSessionService>();
             var localizer = Substitute.For<IStringLocalizer<Resources>>();
             var userInfoService = Substitute.For<IUserInfoService>();
 
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer, userInfoService);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, userSessionService, localizer, userInfoService);
             var typeInfo = controller.GetType().GetTypeInfo();
             var featureConvention = new FeatureConvention();
             var controllerModel = new ControllerModel(typeInfo, Substitute.For<IReadOnlyList<object>>());

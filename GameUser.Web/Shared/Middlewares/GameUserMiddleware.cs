@@ -4,7 +4,6 @@ using Features.GameUser.GameServerApiComunicators;
 using GameUser.Features.Announcements;
 using GameUser.Features.ApiComminicators;
 using GameUser.Features.Authentications;
-using GameUser.Features.Avatars;
 using GameUser.Features.BackendAuthentications;
 using GameUser.Features.CategoryConfigs;
 using GameUser.Features.Emails;
@@ -42,7 +41,6 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitFeedback(configuration);
             services.InitFileUpload(configuration);
             services.InitUserSession(configuration);
-            services.InitAvatar(configuration);
             services.InitBackendAuthentication(configuration);
             services.InitApi(configuration);
             services.InitUser();

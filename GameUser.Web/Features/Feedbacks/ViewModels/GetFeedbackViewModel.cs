@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using GameUser.Features.Avatars;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GameUser.Web.Features.Feedbacks.ViewModels
@@ -14,7 +13,7 @@ namespace GameUser.Web.Features.Feedbacks.ViewModels
 
         public string Culture { get; set; }
 
-        public AvatarObject Avatar { get; set; }
+        public int AvatarId { get; set; }
 
         public int CustId { get; set; }
     }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
-using GameUser.Features.Avatars;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.UserInfos;
 using GameUser.Features.UserSessions;
@@ -26,7 +25,6 @@ namespace GameUser.Web.Tests.Features.Feedbacks
         private readonly IHttpContextAccessor httpContext;
         private readonly IFeedbackService feedbackService;
         private readonly IAppSettings appSetting;
-        private readonly IAvatarService avatarService;
         private readonly IUserSessionService userSessionService;
         private readonly IStringLocalizer<Resources> localizer;
         private readonly IUserInfoService userInfoService;
@@ -36,7 +34,6 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             this.httpContext = Substitute.For<IHttpContextAccessor>();
             this.feedbackService = Substitute.For<IFeedbackService>();
             this.appSetting = Substitute.For<IAppSettings>();
-            this.avatarService = Substitute.For<IAvatarService>();
             this.userSessionService = Substitute.For<IUserSessionService>();
             this.localizer = Substitute.For<IStringLocalizer<Resources>>();
             this.userInfoService = Substitute.For<IUserInfoService>();
@@ -54,7 +51,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
             routeValues.Add(key, value);
             httpRequest.RouteValues.Returns(routeValues);
 
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer, userInfoService);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, userSessionService, localizer, userInfoService);
 
             GetRequest feedbackRequest = new GetRequest { NickName = "nick name", SessionId = "sesssion id " };
 
@@ -87,7 +84,7 @@ namespace GameUser.Web.Tests.Features.Feedbacks
         public async Task AddPost_WhenCalled_AddFeedbackAndSendEmail()
         {
             // Arrange
-            var controller = new FeedbackController(httpContext, feedbackService, appSetting, avatarService, userSessionService, localizer, userInfoService);
+            var controller = new FeedbackController(httpContext, feedbackService, appSetting, userSessionService, localizer, userInfoService);
 
             var request = new InsertRequest
             {

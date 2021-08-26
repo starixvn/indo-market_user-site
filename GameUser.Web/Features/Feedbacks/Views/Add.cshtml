@@ -137,7 +137,7 @@
             Attachment_Max_Size: '@Localizer["Attachment_Max_Size"]',
             Attachment_Supported_Types: '@Localizer["Attachment_Supported_Types"]'
         };
-        var avatar = @Html.Raw(Json.Serialize(Model.Avatar));
+        var avatar = @Model.AvatarId;
     </script>
 
     <script src="~/Shared/jquery-unobtrusive-ajax/jquery.unobtrusive-ajax.js"></script>

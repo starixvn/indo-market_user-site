@@ -26,7 +26,7 @@ class Feedback {
 
     loadAvatar(avatar) {
         let canvas = document.getElementById("avatar");
-        canvas.style.backgroundPosition = ` -${avatar.trimX*46/128}px -${avatar.trimY*46/128}px`;
+        canvas.style.backgroundImage = `url('../../Features/Feedbacks/Images/profile-pictures/${avatar}.png')`;
     }
 
     disableSubmitButton(isDisabled) {

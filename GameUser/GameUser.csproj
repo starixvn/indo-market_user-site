@@ -17,17 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Features\Avatars\profile-picture.plist.meta.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <AdditionalFiles Include="..\.sonarlint\l3-game-user\CSharp\SonarLint.xml" Link="SonarLint.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Features\Avatars\profile-picture.plist.meta.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
