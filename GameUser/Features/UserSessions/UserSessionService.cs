@@ -19,7 +19,7 @@ namespace GameUser.Features.UserSessions
 
         Task<UserSessionEntity> CreateUserSession(UserSessionEntity userSession);
 
-        Task ReCheckIn(string sessionId, DateTime time);
+        Task<UserSessionEntity> ReCheckIn(string sessionId, DateTime time);
 
         bool IsExpiredSession(UserSessionEntity userSession);
 
@@ -65,12 +65,15 @@ namespace GameUser.Features.UserSessions
             return await userSessionRepository.FindOneAsync(x => x.SSOToken == token);
         }
 
-        public async Task ReCheckIn(string sessionId, DateTime time)
+        public async Task<UserSessionEntity> ReCheckIn(string sessionId, DateTime time)
         {
             var update = Builders<UserSessionEntity>.Update
                 .Set(session => session.ReCheckInTime, time);
 
             await userSessionRepository.UpdateOneAsync(session => session.SessionId == sessionId, update);
+            memoryCache.Remove(sessionId);
+
+            return await GetUserSession(sessionId);
         }
 
         public bool IsExpiredSession(UserSessionEntity userSession)

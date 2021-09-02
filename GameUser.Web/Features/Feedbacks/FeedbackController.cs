@@ -17,7 +17,6 @@ using Microsoft.Extensions.Localization;
 namespace GameUser.Web.Features.Feedbacks
 {
     [UserSessionValidation]
-    [AutoValidateAntiforgeryToken]
     [Internationalization]
     public class FeedbackController : Controller
     {
@@ -95,12 +94,6 @@ namespace GameUser.Web.Features.Feedbacks
             }
 
             return Json(new UpdateResult(false, this.localizer.GetString("Something_Wrong_On_Attachment")));
-        }
-
-        [HttpGet]
-        public ActionResult RefreshToken()
-        {
-            return PartialView("_AntiForgeryToken");
         }
     }
 }

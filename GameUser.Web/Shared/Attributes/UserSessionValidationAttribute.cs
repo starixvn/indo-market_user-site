@@ -14,52 +14,36 @@
 
     public interface IUserSessionValidationAttribute : IAsyncAuthorizationFilter
     {
-        public Task<bool> VerifyUserSessionAndCheckInTime(string sessionId, AuthorizationFilterContext context);
-
         public Task SignIn(string sessionId, AuthorizationFilterContext context);
     }
 
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class UserSessionValidationAttribute : Attribute, IUserSessionValidationAttribute
     {
-        private readonly double expiredMinuteUserSession = 1;
-
         private readonly int expiredMinuteCookie = 30;
 
         private readonly string sessionIdKey = "sessionid";
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            if (context.HttpContext.User.Identity.IsAuthenticated)
-            {
-                var sessionId = context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == sessionIdKey).Value;
+            var sessionToValidate = GetRequestSessionId(context);
 
-                await SetCookie(context, sessionId);
-            }
-            else
+            if (UserPreviouslySignedIn(context) && 
+                (UnchangedSessionId(sessionToValidate, GetClaimSessionId(context)) || string.IsNullOrWhiteSpace(sessionToValidate)))
             {
-                var sessionId = context.HttpContext.Request.Query[sessionIdKey].ToString();
-
-                await SetCookie(context, sessionId);
+                sessionToValidate = GetClaimSessionId(context);
             }
+
+            await ValidateUserRequest(context, sessionToValidate);
         }
 
-        private async Task SetCookie(AuthorizationFilterContext context, string sessionId)
+        private async Task ValidateUserRequest(AuthorizationFilterContext context, string sessionId)
         {
-            if (!string.IsNullOrWhiteSpace(sessionId))
+            var validSession = await SessionValidated(context, sessionId);
+
+            if (validSession)
             {
-                var verifiedUserSession = await VerifyUserSessionAndCheckInTime(sessionId, context);
-
-                if (verifiedUserSession)
-                {
-                    await SignIn(sessionId, context);
-                }
-                else
-                {
-                    await SignOut(context);
-
-                    context.Result = Redirect(context);
-                }
+                await SignIn(sessionId, context);
             }
             else
             {
@@ -69,31 +53,19 @@
             }
         }
 
-        public async Task<bool> VerifyUserSessionAndCheckInTime(string sessionId, AuthorizationFilterContext context)
+        private static async Task<bool> VerifyUserSession(string sessionId, AuthorizationFilterContext context)
         {
             if (context != null)
             {
-                var currentDateUTC = DateTime.UtcNow;
-
-                var userSessionService = context.HttpContext.RequestServices.GetService(typeof(IUserSessionService)) as UserSessionService;
+                var userSessionService = context.HttpContext.RequestServices.GetService(
+                    typeof(IUserSessionService))
+                    as UserSessionService;
 
                 var userSession = await userSessionService.GetUserSession(sessionId);
 
-                if (userSession == null)
-                {
-                    return false;
-                }
-                else
-                {
-                    var totalMinutes = currentDateUTC.Subtract(userSession.ReCheckInTime).TotalMinutes;
+                var sessionExpired = userSessionService.IsExpiredSession(userSession);
 
-                    if (totalMinutes > expiredMinuteUserSession)
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
+                return !sessionExpired;
             }
 
             return false;
@@ -120,7 +92,7 @@
                 authProperties);
         }
 
-        public async Task SignOut(AuthorizationFilterContext context)
+        private static async Task SignOut(AuthorizationFilterContext context)
         {
             if (context.HttpContext.User.Identity.IsAuthenticated)
             {
@@ -141,5 +113,20 @@
                 return new RedirectResult(string.Format("/{0}/Error/NotAuthorized", context.RouteData.Values["culture"]));
             }
         }
+
+        private static bool UnchangedSessionId(string requestSessionId, string claimSessionId)
+        => requestSessionId == claimSessionId;
+
+        private string GetRequestSessionId(AuthorizationFilterContext context)
+        => context.HttpContext.Request.Query[sessionIdKey].ToString();
+
+        private string GetClaimSessionId(AuthorizationFilterContext context)
+        => context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == sessionIdKey).Value;
+
+        private static bool UserPreviouslySignedIn(AuthorizationFilterContext context)
+        => context.HttpContext.User.Identity.IsAuthenticated;
+
+        private static async Task<bool> SessionValidated(AuthorizationFilterContext context, string sessionId)
+        => !string.IsNullOrWhiteSpace(sessionId) && await VerifyUserSession(sessionId, context);
     }
 }
