@@ -430,7 +430,7 @@ namespace GameUser.Tests.Features.UserInfos
         }
 
         [Fact]
-        public async Task GetUserBalance_WhenApiReturnsErrors_ReturnsUnsuccesfulResult()
+        public async Task GetUserBalance_WhenGetBalanceApiReturnsErrors_ReturnsUnsuccesfulResult()
         {
             //Arrange
             var userSession = new UserSessionEntity
@@ -443,14 +443,14 @@ namespace GameUser.Tests.Features.UserInfos
             {
                 Currency = "IN",
                 Name = "Name",
-                UserId = "userId"
+                UserId = "userId",
+                Red = 1995,
             };
 
             var unsuccesfulResponse = new MemberApiResponse<GetBalanceResponse>
             {
                 Result = new GetBalanceResponse
                 {
-                    Balance = 0,
                     ErrorCode = 1,
                     ErrorDescription = "errorDescription",
                     ErrorMessage = "errorMessage"
@@ -470,7 +470,7 @@ namespace GameUser.Tests.Features.UserInfos
             result.Message
                 .Should().Contain($"{JsonConvert.SerializeObject(unsuccesfulResponse.Result.ErrorCode)}");
             result.IsSuccessful.Should().BeFalse();
-            result.Balance.Should().Be(0);
+            result.Balance.Should().Be((decimal)userInfo.Red);
             result.Currency.Should().Be(userInfo.Currency);
         }
     }
