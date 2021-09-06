@@ -24,13 +24,15 @@
             Message = message;
         }
 
-        public GetUserBalanceResult(string message, string currency)
+        public GetUserBalanceResult(string message, string currency, decimal balance)
         {
             IsSuccessful = false;
 
             Message = message;
 
             Currency = currency;
+
+            Balance = balance;
         }
     }
 }

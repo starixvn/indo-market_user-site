@@ -223,14 +223,14 @@ namespace GameUser.Features.UserInfos
                             (apiErrorCode,
                             apiErrorMessage);
 
-                        return new GetUserBalanceResult(clientErrorMessage, currency);
+                      return new GetUserBalanceResult(clientErrorMessage, currency, (decimal)queriedUser.Red);
                     }
 
                     UpdateUserBalanceToDatabase((double)balance, queriedUser);
 
                     return new GetUserBalanceResult(balance, currency);
                 }
-                return new GetUserBalanceResult(getBalanceFailedMessage, currency);
+                return new GetUserBalanceResult(getBalanceFailedMessage, currency, 0);
             }
             return new GetUserBalanceResult("Error retrieving data");
         }
