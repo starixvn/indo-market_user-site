@@ -25,12 +25,13 @@ namespace GameUser.Tests.Features.CategoryConfigs
         private readonly IMarketCategoryService marketCategoryService;
         private readonly IMarketService marketService;
         private readonly IMemoryCache memoryCache;
+        private readonly CategoryConfigSettings settings;
 
         public GameCategoryServiceTests()
         {
             var sentry = Substitute.For<ISentryClient>();
-            var settings = new CategoryConfigSettings();
 
+            settings = new CategoryConfigSettings();
             favoriteGameService = Substitute.For<IFavoriteGameService>();
             marketCategoryService = Substitute.For<IMarketCategoryService>();
             marketService = Substitute.For<IMarketService>();
@@ -147,8 +148,10 @@ namespace GameUser.Tests.Features.CategoryConfigs
             result.Should().BeEmpty();
         }
 
-        [Fact]
-        public async Task CacheFactory_WhenCalled_ReturnListOfCategory()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        public async Task CacheFactory_WhenCalled_ReturnListOfCategory(int cacheTimeout)
         {
             // Arrange
             CacheEntryFake cacheEntry = new CacheEntryFake(string.Empty, memoryCache);
@@ -171,7 +174,7 @@ namespace GameUser.Tests.Features.CategoryConfigs
 
             games.Add(game);
             categories.Add(new CategoryConfigModel(category, games));
-
+            settings.CacheTimeout = cacheTimeout;
 
             marketCategoryService.GetConfigs(Arg.Any<string>()).Returns(categories);
 

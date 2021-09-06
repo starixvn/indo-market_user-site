@@ -51,9 +51,8 @@ namespace GameUser.Features.CategoryConfigs
             {
                 var configs = await GetConfigsByMarket(market.Id.ToString());
                 var favoriteCateogryConfig = await GetFavoriteCategoryConfigs(configs, userId);
-                
-                result = configs?.ToList() ?? result;
 
+                result.AddRange(configs);
                 result.Add(favoriteCateogryConfig);
             }
 
