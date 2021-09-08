@@ -229,6 +229,7 @@ namespace GameUser.Tests.Features.UserInfos
 
             // Assert
             result.IsSuccessful.Should().BeTrue();
+            result.Message.Should().BeNullOrEmpty();
         }
 
         private static int RandomFunc(int min, int max) => min + max;

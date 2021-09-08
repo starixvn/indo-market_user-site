@@ -15,7 +15,7 @@ using Xunit;
 
 namespace GameUser.Tests.Features.Authentications
 {
-    public class AuthenticationTests
+    public class AuthenticationServiceTests
     {
         private readonly IApi api;
         private readonly IUserService userService;
@@ -25,7 +25,7 @@ namespace GameUser.Tests.Features.Authentications
         private readonly IUserInfoService userInfoService;
         private readonly AuthenticationService service;
 
-        public AuthenticationTests()
+        public AuthenticationServiceTests()
         {
             var sentry = Substitute.For<ISentryClient>();
             var sessionSettings = new UserSessionSettings { SessionDuration = 10 };
@@ -67,7 +67,7 @@ namespace GameUser.Tests.Features.Authentications
             {
                 IsSuccessful = true,
                 ClientId = "clientId",
-                Currency = "currency",
+                Currency = "UUS",
                 MemberId = 1,
                 MemberName = "name",
                 MemberKey = "memberKey",
@@ -75,7 +75,12 @@ namespace GameUser.Tests.Features.Authentications
                 BrandName = "brandName",
                 SiteName = "siteName",
                 Market = "market",
-                Language = "Language"
+                Language = "Language",
+                Code = 0,
+                Domain = "domain",
+                Message = "message",
+                Seq = "Seq",
+                SiteId = "id"
             };
             var request = new VerificationTokenRequest
             {
@@ -83,6 +88,7 @@ namespace GameUser.Tests.Features.Authentications
                 Ip = "ip",
                 Token = "token"
             };
+            var currency = "UUS-MARKET";
 
             api.VerifyToken(Arg.Any<VerificationTokenRequest>()).Returns(verifyResult);
 
@@ -102,19 +108,144 @@ namespace GameUser.Tests.Features.Authentications
             result.IsAuthenticated.Should().BeTrue();
             result.Username.Should().Be(verifyResult.MemberKey.ToLower());
             result.Language.Should().Be(verifyResult.Language);
-            result.Currency.Should().Be(verifyResult.Currency);
+            result.Currency.Should().Be(currency);
             result.ExpiredIn.Should().Be(now.AddMinutes(10));
         }
-    
+
+        [Fact]
+        public async Task SignIn_UUSMember_ReturnSignInSuccess()
+        {
+            // Arrange
+            var user = new UserEntity
+            {
+                Local = new LocalUserEntity
+                {
+                    BrandName = ""
+                },
+                Version = 0
+            };
+            UserSessionEntity undefinedSession = null;
+            var now = DateTime.Now;
+
+            var verifyResult = new VerificationTokenResponse
+            {
+                IsSuccessful = true,
+                ClientId = "clientId",
+                Currency = "UUS",
+                MemberId = 1,
+                MemberName = "name",
+                MemberKey = "memberKey",
+                IsCash = true,
+                BrandName = "brandName",
+                SiteName = "siteName",
+                Market = "",
+                Language = "Language",
+                Code = 0,
+                Domain = "domain",
+                Message = "message",
+                Seq = "Seq,MARKET",
+                SiteId = "id"
+            };
+            var request = new VerificationTokenRequest
+            {
+                BrowserUserAgent = "userAgent",
+                Ip = "ip",
+                Token = "token"
+            };
+            var currency = "UUS-MARKET";
+
+            api.VerifyToken(Arg.Any<VerificationTokenRequest>()).Returns(verifyResult);
+
+            dateTimeProvider.Now().Returns(now);
+
+            userService.GetUser(Arg.Any<string>()).Returns(user);
+            userService.CreateUser(Arg.Any<UserEntity>()).Returns(x => x.Arg<UserEntity>());
+
+            userSessionService.GetUserSessionByToken(Arg.Any<string>()).Returns(undefinedSession);
+            userSessionService.CreateUserSession(Arg.Any<UserSessionEntity>()).Returns(x => x.Arg<UserSessionEntity>());
+
+            cultureConfigs.ConvertLanguage(Arg.Any<string>()).Returns(x => x.Arg<string>());
+            // Act
+            var result = await service.SignIn(request);
+
+            // Assert
+            result.IsAuthenticated.Should().BeTrue();
+            result.Username.Should().Be(verifyResult.MemberKey.ToLower());
+            result.Language.Should().Be(verifyResult.Language);
+            result.Currency.Should().Be(currency);
+            result.ExpiredIn.Should().Be(now.AddMinutes(10));
+            result.Session.Should().NotBeNullOrWhiteSpace();
+        }
+
+        [Fact]
+        public async Task SignIn_TheBrandNameIsNotMatch_ReturnRecheckInFailure()
+        {
+            // Arrange
+            var user = new UserEntity
+            {
+                Local = new LocalUserEntity
+                {
+                    BrandName = "otherBrandName"
+                },
+                Version = 0
+            };
+            UserSessionEntity undefinedSession = null;
+            var now = DateTime.Now;
+
+            var verifyResult = new VerificationTokenResponse
+            {
+                IsSuccessful = true,
+                ClientId = "clientId",
+                Currency = "currency",
+                MemberId = 1,
+                MemberName = "name",
+                MemberKey = "memberKey",
+                IsCash = true,
+                BrandName = "brandName",
+                SiteName = "siteName",
+                Market = "market",
+                Language = "Language",
+                Code = 0,
+                Domain = "domain",
+                Message = "message",
+                Seq = "Seq",
+                SiteId = "id"
+            };
+            var request = new VerificationTokenRequest
+            {
+                BrowserUserAgent = "userAgent",
+                Ip = "ip",
+                Token = "token"
+            };
+
+            api.VerifyToken(Arg.Any<VerificationTokenRequest>()).Returns(verifyResult);
+
+            dateTimeProvider.Now().Returns(now);
+
+            userService.GetUser(Arg.Any<string>()).Returns(user);
+            userService.CreateUser(Arg.Any<UserEntity>()).Returns(x => x.Arg<UserEntity>());
+
+            userSessionService.GetUserSessionByToken(Arg.Any<string>()).Returns(undefinedSession);
+            userSessionService.CreateUserSession(Arg.Any<UserSessionEntity>()).Returns(x => x.Arg<UserSessionEntity>());
+
+            cultureConfigs.ConvertLanguage(Arg.Any<string>()).Returns(x => x.Arg<string>());
+            // Act
+            var result = await service.SignIn(request);
+
+            // Assert
+            result.IsAuthenticated.Should().BeFalse();
+        }
+
         [Fact]
         public async Task Refresh_WhenCall_ReturnRecheckInSuccess()
         {
             // Arrange
             var sessionId = "userSessionId";
             var now = DateTime.Now;
-            var session = new UserSessionEntity {
+            var session = new UserSessionEntity
+            {
                 BrowserUserAgent = "userAgent",
-                SessionId= sessionId,
+                SessionId = sessionId,
                 ReCheckInTime = now
             };
             var request = new RefreshSessionRequest
@@ -190,6 +321,30 @@ namespace GameUser.Tests.Features.Authentications
             result.IsSuccessful.Should().BeFalse();
         }
 
+        [Fact]
+        public async Task Refresh_SessionIsNull_ReturnRecheckInFailure()
+        {
+            // Arrange
+            UserSessionEntity session = null;
+            var now = DateTime.Now;
+            var request = new RefreshSessionRequest
+            {
+                BrowserUserAgent = "userAgent"
+            };
+
+            userSessionService.GetUserSession(Arg.Any<string>()).Returns(session);
+            userSessionService.IsExpiredSession(Arg.Any<UserSessionEntity>()).Returns(true);
+
+            dateTimeProvider.Now().Returns(now);
+
+            cultureConfigs.ConvertLanguage(Arg.Any<string>()).Returns(x => x.Arg<string>());
+            // Act
+            var result = await service.Refresh(request);
+
+            // Assert
+            result.IsSuccessful.Should().BeFalse();
+        }
+
         [Theory]
         [InlineData("", false, true)]
         [InlineData("userAgent", false, false)]
@@ -222,6 +377,32 @@ namespace GameUser.Tests.Features.Authentications
         }
 
         [Fact]
+        public async Task Verify_SessionIsNull_ReturnFailure()
+        {
+            // Arrange
+            UserSessionEntity session = null;
+            var now = DateTime.Now;
+            var request = new VerificationSessionRequest
+            {
+                BrowserUserAgent = "Agent"
+            };
+
+            userSessionService.GetUserSession(Arg.Any<string>()).Returns(session);
+            userSessionService.IsExpiredSession(Arg.Any<UserSessionEntity>()).Returns(false);
+            userInfoService.IsUserExisted(Arg.Any<string>()).Returns(true);
+
+            dateTimeProvider.Now().Returns(now);
+
+            cultureConfigs.ConvertLanguage(Arg.Any<string>()).Returns(x => x.Arg<string>());
+            // Act
+            var result = await service.Verify(request);
+
+            // Assert
+            result.IsSuccessful.Should().BeFalse();
+        }
+
+
+        [Fact]
         public async Task Verify_WhenCalled_ReturnSussess()
         {
             // Arrange
@@ -248,6 +429,64 @@ namespace GameUser.Tests.Features.Authentications
             // Assert
             result.IsSuccessful.Should().BeTrue();
             result.Session.Should().Be(session);
+        }
+
+
+        [Fact]
+        public async Task VerifySessionAndGetUserInfo_VerifySessionIsNotSuccessful_ReturnFailure()
+        {
+            // Arrange
+            UserSessionEntity session = null;
+            var now = DateTime.Now;
+            var request = new VerificationSessionRequest
+            {
+                BrowserUserAgent = "Agent"
+            };
+
+            userSessionService.GetUserSession(Arg.Any<string>()).Returns(session);
+            userSessionService.IsExpiredSession(Arg.Any<UserSessionEntity>()).Returns(false);
+            userInfoService.IsUserExisted(Arg.Any<string>()).Returns(true);
+
+            dateTimeProvider.Now().Returns(now);
+
+            cultureConfigs.ConvertLanguage(Arg.Any<string>()).Returns(x => x.Arg<string>());
+            // Act
+            var result = await service.VerifySessionAndGetUserInfo(request);
+
+            // Assert
+            result.IsSuccessful.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task VerifySessionAndGetUserInfo_WhenCalled_ReturnSussess()
+        {
+            // Arrange
+            var session = new UserSessionEntity
+            {
+                BrowserUserAgent = "userAgent"
+            };
+            var now = DateTime.Now;
+            var request = new VerificationSessionRequest
+            {
+                BrowserUserAgent = "userAgent"
+            };
+            var userInfo = new UserInfoEntity();
+
+            userSessionService.GetUserSession(Arg.Any<string>()).Returns(session);
+            userSessionService.IsExpiredSession(Arg.Any<UserSessionEntity>()).Returns(false);
+            userInfoService.IsUserExisted(Arg.Any<string>()).Returns(true);
+            userInfoService.GetUserInfo(Arg.Any<string>()).Returns(userInfo);
+
+            dateTimeProvider.Now().Returns(now);
+
+            cultureConfigs.ConvertLanguage(Arg.Any<string>()).Returns(x => x.Arg<string>());
+            // Act
+            var result = await service.VerifySessionAndGetUserInfo(request);
+
+            // Assert
+            result.IsSuccessful.Should().BeTrue();
+            result.Session.Should().Be(session);
+            result.UserInfo.Should().Be(userInfo);
         }
     }
 }
