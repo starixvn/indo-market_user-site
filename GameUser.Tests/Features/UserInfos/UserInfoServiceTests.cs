@@ -474,5 +474,91 @@ namespace GameUser.Tests.Features.UserInfos
             result.Balance.Should().Be((decimal)userInfo.Red);
             result.Currency.Should().Be(userInfo.Currency);
         }
+
+        [Fact]
+        public async Task GetUserBalance_WhenGetBalanceApiReturnsDisabledAccountError_ReturnsUnsuccesfulResult()
+        {
+            //Arrange
+            var userSession = new UserSessionEntity
+            {
+                SessionId = "id",
+                UserId = "userId"
+            };
+
+            var userInfo = new UserInfoEntity
+            {
+                Currency = "IN",
+                Name = "Name",
+                UserId = "userId",
+                Red = 1995,
+            };
+
+            var unsuccesfulResponse = new MemberApiResponse<GetBalanceResponse>
+            {
+                Result = new GetBalanceResponse
+                {
+                    ErrorCode = 2002,
+                    ErrorDescription = "errorDescription",
+                    ErrorMessage = "Account has been closed. Please contact your upline for details, thank you."
+                }
+            };
+
+            userSessionService.GetUserSession(Arg.Any<string>()).Returns(userSession);
+            repository.FindOneAsync(Arg.Any<Expression<Func<UserInfoEntity, bool>>>()).Returns(userInfo);
+            api.GetBalance(Arg.Any<GetBalanceRequest>()).Returns(unsuccesfulResponse);
+
+            //Act
+            var result = await service.GetUserBalance(userSession.SessionId);
+
+            //Assert
+            result.Message
+                .Should().Contain(unsuccesfulResponse.Result.ErrorMessage);
+            result.IsSuccessful.Should().BeFalse();
+            result.Balance.Should().Be((decimal)userInfo.Red);
+            result.Currency.Should().Be(userInfo.Currency);
+        }
+
+        [Fact]
+        public async Task GetUserBalance_WhenGetBalanceApiReturnsInsufficientFundsError_ReturnsUnsuccesfulResult()
+        {
+            //Arrange
+            var userSession = new UserSessionEntity
+            {
+                SessionId = "id",
+                UserId = "userId"
+            };
+
+            var userInfo = new UserInfoEntity
+            {
+                Currency = "IN",
+                Name = "Name",
+                UserId = "userId",
+                Red = 1995,
+            };
+
+            var unsuccesfulResponse = new MemberApiResponse<GetBalanceResponse>
+            {
+                Result = new GetBalanceResponse
+                {
+                    ErrorCode = 3002,
+                    ErrorDescription = "errorDescription",
+                    ErrorMessage = "errorMessage"
+                }
+            };
+
+            userSessionService.GetUserSession(Arg.Any<string>()).Returns(userSession);
+            repository.FindOneAsync(Arg.Any<Expression<Func<UserInfoEntity, bool>>>()).Returns(userInfo);
+            api.GetBalance(Arg.Any<GetBalanceRequest>()).Returns(unsuccesfulResponse);
+
+            //Act
+            var result = await service.GetUserBalance(userSession.SessionId);
+
+            //Assert
+            result.Message
+                .Should().Contain(unsuccesfulResponse.Result.ErrorMessage);
+            result.IsSuccessful.Should().BeFalse();
+            result.Balance.Should().Be((decimal)userInfo.Red);
+            result.Currency.Should().Be(userInfo.Currency);
+        }
     }
 }
