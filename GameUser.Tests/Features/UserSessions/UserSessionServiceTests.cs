@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using GameUser.Features.UserSessions;
 using GameUser.Shared.Database;
+using GameUser.Shared.Wrappers;
 using MemoryCache.Testing.NSubstitute;
 using Microsoft.Extensions.Caching.Memory;
 using NSubstitute;
@@ -16,6 +17,7 @@ namespace GameUser.Tests.Features.UserSessions
         private readonly UserSessionService service;
         private readonly IGenericRepository<UserSessionEntity> repository;
         private readonly IMemoryCache cache;
+        private readonly IDateTimeProvider dateTimeProvider;
 
         public UserSessionServiceTests()
         {
@@ -23,7 +25,8 @@ namespace GameUser.Tests.Features.UserSessions
 
             cache = Create.MockedMemoryCache();
             repository = Substitute.For<IGenericRepository<UserSessionEntity>>();
-            service = new UserSessionService(cache, repository, settings);
+            dateTimeProvider = Substitute.For<IDateTimeProvider>();
+            service = new UserSessionService(cache, repository, settings, dateTimeProvider);
         }
 
         [Fact]

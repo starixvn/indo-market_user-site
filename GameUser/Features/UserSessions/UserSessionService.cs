@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using GameUser.Shared.Database;
+using GameUser.Shared.Wrappers;
 using Microsoft.Extensions.Caching.Memory;
 using MongoDB.Driver;
 
@@ -33,15 +34,18 @@ namespace GameUser.Features.UserSessions
         private readonly IGenericRepository<UserSessionEntity> userSessionRepository;
         private readonly UserSessionSettings sessionSettings;
         private readonly IMemoryCache memoryCache;
+        private readonly IDateTimeProvider dateTimeProvider;
 
         public UserSessionService(
             IMemoryCache memoryCache,
             IGenericRepository<UserSessionEntity> userSessionRepository,
-            UserSessionSettings userSessionSettings)
+            UserSessionSettings userSessionSettings,
+            IDateTimeProvider dateTimeProvider)
         {
             this.userSessionRepository = userSessionRepository;
             this.memoryCache = memoryCache;
             this.sessionSettings = userSessionSettings;
+            this.dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<UserSessionEntity> CreateUserSession(UserSessionEntity userSession)
@@ -147,7 +151,7 @@ namespace GameUser.Features.UserSessions
             else
             {
                 var timeout = currentSession.ReCheckInTime.AddMinutes(sessionSettings.SessionDuration);
-                var relative = timeout.Subtract(currentSession.ReCheckInTime);
+                var relative = timeout.Subtract(dateTimeProvider.UtcNow());
 
                 RemoveOldSession(currentSession.OldSessionIds);
 
