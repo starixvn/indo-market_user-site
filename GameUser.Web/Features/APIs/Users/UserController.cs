@@ -78,5 +78,38 @@ namespace GameUser.Web.Features.APIs.Users
 
             return Json(result);
         }
+
+        [HttpPost("avatar")]
+        [Authorize(AuthenticationSchemes = SessionFilterAuthenticationDefaults.AuthenticationScheme)]
+        public async Task<JsonResult> ChangeUserAvatar (ChangeUserAvatarRequest request)
+        {
+            var session = httpRequestWrapper.GetAuthorizationToken(accessor);
+
+            var result = await userInfoService.UpdateUserAvatar(session, request.AvatarId);
+
+            return Json(result);
+        }
+
+        [HttpGet("balance")]
+        [Authorize(AuthenticationSchemes = SessionFilterAuthenticationDefaults.AuthenticationScheme)]
+        public async Task<JsonResult> GetUserBalance()
+        {
+            var session = httpRequestWrapper.GetAuthorizationToken(accessor);
+
+            var result = await userInfoService.GetUserBalance(session);
+
+            return Json(result);
+        }
+
+        [HttpGet("LobbyInfo")]
+        [Authorize(AuthenticationSchemes = SessionFilterAuthenticationDefaults.AuthenticationScheme)]
+        public async Task<JsonResult> GetUserInfoLobby()
+        {
+            var session = httpRequestWrapper.GetAuthorizationToken(accessor);
+
+            var result = await userInfoService.GetUserInfoLobby(session);
+
+            return Json(result);
+        }
     }
 }

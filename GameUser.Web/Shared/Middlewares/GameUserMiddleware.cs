@@ -4,12 +4,14 @@ using Features.GameUser.GameServerApiComunicators;
 using GameUser.Features.Announcements;
 using GameUser.Features.ApiComminicators;
 using GameUser.Features.Authentications;
-using GameUser.Features.Avatars;
 using GameUser.Features.BackendAuthentications;
+using GameUser.Features.CategoryConfigs;
 using GameUser.Features.Emails;
+using GameUser.Features.FavoriteGame;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
 using GameUser.Features.GameSettings;
+using GameUser.Features.MarketManagement;
 using GameUser.Features.MiddleSite;
 using GameUser.Features.UserInfos;
 using GameUser.Features.UserLanguages;
@@ -39,7 +41,6 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitFeedback(configuration);
             services.InitFileUpload(configuration);
             services.InitUserSession(configuration);
-            services.InitAvatar(configuration);
             services.InitBackendAuthentication(configuration);
             services.InitApi(configuration);
             services.InitUser();
@@ -51,6 +52,9 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitUserInfo(configuration);
             services.InitMiddleSite(configuration);
             services.InitUserLanguage();
+            services.InitFavoriteGame();
+            services.InitCategoryConfig(configuration);
+            services.InitMarket();
         }
 
         public static void AddSharedServices(this IServiceCollection services)

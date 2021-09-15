@@ -30,6 +30,12 @@ namespace GameUser.Features.UserInfos
         Task<bool> CheckUserExistsAndEnterPortal(string sessionId);
 
         Task<CreateUserInfoResult> CreateUserInfo(string sessionId, string nickname);
+
+        Task<ChangeUserAvatarResult> UpdateUserAvatar(string sessionId, int avatarId);
+
+        Task<GetUserBalanceResult> GetUserBalance(string sessionId);
+
+        Task<GetUserInfoLobbyResult> GetUserInfoLobby(string sessionId);
     }
 
     public class UserInfoService : IUserInfoService
@@ -177,6 +183,78 @@ namespace GameUser.Features.UserInfos
             return userExists;
         }
 
+        public async Task<ChangeUserAvatarResult> UpdateUserAvatar(string sessionId, int avatarId)
+        {
+            var userSession = await userSessionService.GetUserSession(sessionId);
+
+            if (userSession != null)
+            {
+                await UpdateAvatarIdToDatabase(avatarId, userSession.UserId);
+
+                return new ChangeUserAvatarResult(avatarId);
+            }
+
+            return new ChangeUserAvatarResult("Error changing avatar");
+        }
+
+        public async Task<GetUserBalanceResult> GetUserBalance(string sessionId)
+        {
+            const string getBalanceFailedMessage =
+                @"Cannot update your account balance. Error Code: SB1902";
+
+            var userSession = await userSessionService.GetUserSession(sessionId);
+
+            if (userSession != null)
+            {
+                var queriedUser = await GetUserInfo(userSession.UserId);
+                var currency = queriedUser.Currency;
+                var response = await GetBalance(userSession, queriedUser.Name);
+                var callApiSuccessful = response.Result != null;
+
+                if (callApiSuccessful)
+                {
+                    var apiErrorMessage = response.Result.ErrorMessage;
+                    var apiErrorCode = response.Result.ErrorCode;
+                    var balance = response.Result.Balance;
+
+                    if (apiErrorCode != 0 && apiErrorMessage != null)
+                    {
+                        var clientErrorMessage = ComposeGetBalanceErrorMessage
+                            (apiErrorCode,
+                            apiErrorMessage);
+
+                      return new GetUserBalanceResult(clientErrorMessage, currency, (decimal)queriedUser.Red);
+                    }
+
+                    UpdateUserBalanceToDatabase((double)balance, queriedUser);
+
+                    return new GetUserBalanceResult(balance, currency);
+                }
+                return new GetUserBalanceResult(getBalanceFailedMessage, currency, 0);
+            }
+            return new GetUserBalanceResult("Error retrieving data");
+        }
+
+        public async Task<GetUserInfoLobbyResult> GetUserInfoLobby(string sessionId)
+        {
+            var userSession = await userSessionService.GetUserSession(sessionId);
+
+            if (userSession != null)
+            {
+                var queriedUser = await GetUserInfoFromDB(userSession.UserId);
+
+                if (queriedUser != null)
+                {
+                    return new GetUserInfoLobbyResult(
+                        queriedUser.AvatarId, 
+                        queriedUser.Name, 
+                        userSession.Language,
+                        queriedUser.IsCash);
+                }
+            }
+            return new GetUserInfoLobbyResult("Error retrieving data");
+        }
+
         private async Task<int> GetLatestUID()
         {
             var uidAssending = Builders<UserInfoEntity>.Sort.Descending(user => user.UID);
@@ -244,6 +322,47 @@ namespace GameUser.Features.UserInfos
             return result;
         }
 
+        protected async Task<MemberApiResponse<GetBalanceResponse>> GetBalance(
+            UserSessionEntity userSession,
+            string characterName)
+        {
+            var response = new MemberApiResponse<GetBalanceResponse>();
+
+            var request = new GetBalanceRequest
+            {
+                ObCustId = userSession.MemberId,
+                SiteId = userSession.SiteId,
+                Seq = userSession.OWSeq
+            };
+
+            try
+            {
+                var beforeCallMessage = ComposeBeforeCallGetBalanceMessage(
+                    userSession,
+                    characterName);
+
+                response = await api.GetBalance(request);
+
+                var afterCallMessage = ComposeAfterCallGetBalanceMessage(
+                    userSession,
+                    beforeCallMessage,
+                    response);
+
+                sentryClient.CaptureMessage(afterCallMessage, SentryLevel.Warning);
+            }
+            catch (Exception exception)
+            {
+                var message = $@"Notify Get Balace Error at {DateTime.Now}
+                                Session: {JsonConvert.SerializeObject(userSession)}
+                                Request: {JsonConvert.SerializeObject(request)}
+                                Error: {JsonConvert.SerializeObject(exception)}";
+
+                sentryClient.CaptureMessage(message, SentryLevel.Error);
+            }
+
+            return response;
+        }
+
         private Task<UserInfoEntity> GetUserInfoFromDB(string userId) => repository.FindOneAsync(info => info.UserId == userId);
 
         private int GetAvatarId() => randomFunc(1, maximumAvatarId);
@@ -275,6 +394,100 @@ namespace GameUser.Features.UserInfos
                 var isNicknameExisted = await middleSiteService.IsNicknameExisted(nickname);
 
                 return isNicknameExisted ? characterNameExistedKey : string.Empty;
+            }
+        }
+
+        private string ComposeBeforeCallGetBalanceMessage(
+            UserSessionEntity userSession, string characterName)
+        {
+            var beforeCallMessage = $@"Before Action at {DateTime.Now}
+                                     Session: {JsonConvert.SerializeObject(userSession)}
+                                     Character Name: {JsonConvert.SerializeObject(characterName)}
+                                     Language: {JsonConvert.SerializeObject(userSession.Language)}
+                                     ObCustId: {JsonConvert.SerializeObject(userSession.MemberId)}
+                                     Seq: {JsonConvert.SerializeObject(userSession.OWSeq)}
+                                     SiteId: {JsonConvert.SerializeObject(userSession.SiteId)}";
+
+            return beforeCallMessage;
+        }
+
+        private async Task<bool> UpdateAvatarIdToDatabase(int avatarId, string userId)
+        {
+            try
+            {
+                var update = Builders<UserInfoEntity>.Update.Set(entity => entity.AvatarId, avatarId);
+
+                await repository.UpdateOneAsync(entity => entity.UserId == userId, update);
+            }
+            catch (Exception exception)
+            {
+                var message = $"Notify Update Avatar Error at {DateTime.Now}\n\t" +
+                    $"UserID: {JsonConvert.SerializeObject(userId)}\n\t" +
+                    $"Error: {JsonConvert.SerializeObject(exception)}";
+
+                sentryClient.CaptureMessage(message, SentryLevel.Error);
+
+                return false;
+            }
+            return true;
+        }
+        private void UpdateUserBalanceToDatabase(double balance, UserInfoEntity queriedUser)
+        => Task.Run(async () =>
+        {
+            try
+            {
+                var update = Builders<UserInfoEntity>.Update.Set(entity => entity.Red, balance);
+
+                await repository.UpdateOneAsync(entity => entity.UserId == queriedUser.UserId, update);
+            }
+            catch (Exception exception)
+            {
+                sentryClient.CaptureException(exception);
+            }
+        });
+
+        private string ComposeAfterCallGetBalanceMessage(
+            UserSessionEntity userSession,
+            string beforeCallMessage,
+            MemberApiResponse<GetBalanceResponse> response)
+        {
+            var afterCallMessage = $@"Account {JsonConvert.SerializeObject(userSession.SiteId)}_
+                                    {JsonConvert.SerializeObject(userSession.MemberId)}
+                                    performs Get Balance at {DateTime.Now},
+                                    {beforeCallMessage}
+                                    Action Result: {JsonConvert.SerializeObject(response.Result)}";
+
+            return afterCallMessage;
+        }
+
+        private string ComposeGetBalanceErrorMessage(
+            int errorCode,
+            string errorMessage)
+        {
+            const int disabledAccountError = 2002;
+
+            const int insufficientFundsError = 3002;
+
+            const string disableAccountMessage =
+                @"Account has been closed. Please contact your upline for details, thank you.";
+
+            var insufficientFundsMesssage =
+                $@"{JsonConvert.SerializeObject(errorMessage)}.
+                ({JsonConvert.SerializeObject(errorCode)})";
+
+            if (errorCode == disabledAccountError)
+            {
+                return disableAccountMessage;
+            }
+            else if (errorCode == insufficientFundsError && errorMessage != null)
+            {
+                return insufficientFundsMesssage;
+            }
+            else
+            {
+                return
+                $@"{JsonConvert.SerializeObject(errorMessage)}.
+                ({JsonConvert.SerializeObject(errorCode)})";
             }
         }
     }

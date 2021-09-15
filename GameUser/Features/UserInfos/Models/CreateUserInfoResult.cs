@@ -13,6 +13,7 @@
         public CreateUserInfoResult(string message)
         {
             IsSuccessful = false;
+
             Message = message;
         }
     }

@@ -368,6 +368,12 @@ MigrationBackup/
 /cireport
 UnitTestCoverage*
 
+# NCrunch
+*.ncrunch*.user
+_NCrunch_*
+*.crunch.xml
+nCrunchTemp_*
+
 # next.js
 /.next/
 /out/

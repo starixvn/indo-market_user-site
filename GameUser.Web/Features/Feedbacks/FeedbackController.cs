@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using GameUser.Features.Avatars;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.UserInfos;
 using GameUser.Features.UserSessions;
@@ -23,7 +22,6 @@ namespace GameUser.Web.Features.Feedbacks
         private readonly IHttpContextAccessor httpContext;
         private readonly IFeedbackService feedbackService;
         private readonly IAppSettings appSetting;
-        private readonly IAvatarService avatarService;
         private readonly IUserSessionService userSessionService;
         private readonly IStringLocalizer<Resources> localizer;
         private readonly IUserInfoService userInfoService;
@@ -32,7 +30,6 @@ namespace GameUser.Web.Features.Feedbacks
             IHttpContextAccessor httpContext,
             IFeedbackService feedbackService,
             IAppSettings appSetting,
-            IAvatarService avatarService,
             IUserSessionService userSessionService,
             IStringLocalizer<Resources> localizer,
             IUserInfoService userInfoService)
@@ -40,7 +37,6 @@ namespace GameUser.Web.Features.Feedbacks
             this.httpContext = httpContext;
             this.feedbackService = feedbackService;
             this.appSetting = appSetting;
-            this.avatarService = avatarService;
             this.userSessionService = userSessionService;
             this.localizer = localizer;
             this.userInfoService = userInfoService;
@@ -60,7 +56,7 @@ namespace GameUser.Web.Features.Feedbacks
                 FeedbackTypeOptions = feedbackTypes.ToList(),
                 NickName = userInfo.Name,
                 Culture = (string)httpContext.HttpContext.Request.RouteValues["culture"] ?? "en-US",
-                Avatar = await avatarService.GetAvatar(userInfo.AvatarId.ToString()),
+                AvatarId = userInfo.AvatarId,
                 CustId = userSession.MemberId
             };
 
