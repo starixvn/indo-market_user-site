@@ -342,13 +342,6 @@ namespace GameUser.Features.UserInfos
                     characterName);
 
                 response = await api.GetBalance(request);
-
-                var afterCallMessage = ComposeAfterCallGetBalanceMessage(
-                    userSession,
-                    beforeCallMessage,
-                    response);
-
-                sentryClient.CaptureMessage(afterCallMessage, SentryLevel.Warning);
             }
             catch (Exception exception)
             {
@@ -445,20 +438,6 @@ namespace GameUser.Features.UserInfos
                 sentryClient.CaptureException(exception);
             }
         });
-
-        private string ComposeAfterCallGetBalanceMessage(
-            UserSessionEntity userSession,
-            string beforeCallMessage,
-            MemberApiResponse<GetBalanceResponse> response)
-        {
-            var afterCallMessage = $@"Account {JsonConvert.SerializeObject(userSession.SiteId)}_
-                                    {JsonConvert.SerializeObject(userSession.MemberId)}
-                                    performs Get Balance at {DateTime.Now},
-                                    {beforeCallMessage}
-                                    Action Result: {JsonConvert.SerializeObject(response.Result)}";
-
-            return afterCallMessage;
-        }
 
         private string ComposeGetBalanceErrorMessage(
             int errorCode,
