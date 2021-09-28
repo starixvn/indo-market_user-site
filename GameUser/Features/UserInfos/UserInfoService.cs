@@ -40,7 +40,7 @@ namespace GameUser.Features.UserInfos
 
     public class UserInfoService : IUserInfoService
     {
-        private const int maximumAvatarId = 40;
+        private const int maximumAvatarId = 87;
 
         private readonly IApi api;
         private readonly IGenericRepository<UserInfoEntity> repository;
