@@ -199,7 +199,9 @@ namespace GameUser.Features.Authentications
                     SessionId = sessionId,
                     BrandName = verifyTokenResult.BrandName,
                     OldSessionIds = new List<string>(),
-                    System = verifyTokenResult.System == 0 ? (byte)SystemType.Main : verifyTokenResult.System
+                    System = verifyTokenResult.System == 0 ? (byte)SystemType.Main : verifyTokenResult.System,
+                    IsCash = verifyTokenResult.IsCash,
+                    SiteName = verifyTokenResult.SiteName
                 };
 
                 session = await userSessionService.CreateUserSession(userSession);
