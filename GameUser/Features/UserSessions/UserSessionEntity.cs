@@ -67,5 +67,11 @@ namespace GameUser.Features.UserSessions
 
         [BsonElement("system")]
         public int System { get; set; }
+
+        [BsonElement("isCash")]
+        public bool IsCash { get; set; }
+
+        [BsonElement("siteName")]
+        public string SiteName { get; set; }
     }
 }
