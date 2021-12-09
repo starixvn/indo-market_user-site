@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using GameUser.Features.CategoryConfigs.Entities;
 using GameUser.Features.CategoryConfigs.Models;
 using GameUser.Features.CategoryConfigs.Services;
 using GameUser.Features.FavoriteGame;
+using GameUser.Features.GameExtraConfigs;
 using GameUser.Features.MarketManagement;
+using GameUser.Features.UserSessions;
+using GameUser.Shared.Helpers;
 using Microsoft.Extensions.Caching.Memory;
 using Sentry;
 
@@ -14,7 +18,7 @@ namespace GameUser.Features.CategoryConfigs
 {
     public interface IGameCategoryService
     {
-        Task<IList<CategoryConfigModel>> GetConfigs(string userId);
+        Task<IList<CategoryConfigModel>> GetConfigs(UserSessionEntity userSession);
     }
 
     public class GameCategoryService : IGameCategoryService
@@ -25,6 +29,7 @@ namespace GameUser.Features.CategoryConfigs
         private readonly IMemoryCache memoryCache;
         private readonly CategoryConfigSettings settings;
         private readonly ISentryClient sentry;
+        private readonly IGameExtraConfigService gameExtraConfigService;
 
         public GameCategoryService(
             IFavoriteGameService favoriteGameService,
@@ -32,7 +37,8 @@ namespace GameUser.Features.CategoryConfigs
             IMarketService marketService,
             IMemoryCache memoryCache,
             CategoryConfigSettings settings,
-             ISentryClient sentry)
+            ISentryClient sentry,
+            IGameExtraConfigService gameExtraConfigService)
         {
             this.favoriteGameService = favoriteGameService;
             this.marketCategoryService = marketCategoryService;
@@ -40,17 +46,19 @@ namespace GameUser.Features.CategoryConfigs
             this.memoryCache = memoryCache;
             this.settings = settings;
             this.sentry = sentry;
+            this.gameExtraConfigService = gameExtraConfigService;
         }
 
-        public async Task<IList<CategoryConfigModel>> GetConfigs(string userId)
+        public async Task<IList<CategoryConfigModel>> GetConfigs(UserSessionEntity userSession)
         {
-            var market = await marketService.GetMarketByUser(userId);
+            var market = await marketService.GetMarketByUser(userSession.UserId);
             var result = new List<CategoryConfigModel>();
 
             if (market != null)
             {
-                var configs = await GetConfigsByMarket(market.Id.ToString());
-                var favoriteCateogryConfig = await GetFavoriteCategoryConfigs(configs, userId);
+                var configs = await GetConfigsByMarket(market.Id.ToString(), userSession.IsCash);
+                await FilterCategoryConfigs(configs, userSession);
+                var favoriteCateogryConfig = await GetFavoriteCategoryConfigs(configs, userSession.UserId);
 
                 result.AddRange(configs);
                 result.Add(favoriteCateogryConfig);
@@ -59,8 +67,21 @@ namespace GameUser.Features.CategoryConfigs
             return result;
         }
 
-        private Task<IEnumerable<CategoryConfigModel>> GetConfigsByMarket(string marketId)
-            => memoryCache.GetOrCreateAsync(marketId, CacheFactory);
+        private async Task FilterCategoryConfigs(IEnumerable<CategoryConfigModel> configs, UserSessionEntity userSession)
+        {
+            var gameExtraConfigs = await gameExtraConfigService.GetGameExtraConfigs();
+            var gameExtraConfigsToList = gameExtraConfigs.ToList();
+            foreach (var config in configs)
+            {
+                config.Games = config.Games
+                      .Where(game => !ExcludeGameHelper.ShouldExcludeGameBySiteName(game.GameId, gameExtraConfigsToList, userSession)
+                                     && !ExcludeGameHelper.ShouldExcludeGameByCustomerType(game.GameId, gameExtraConfigsToList, userSession)).ToList();
+            }
+        }
+      
+        private Task<IEnumerable<CategoryConfigModel>> GetConfigsByMarket(string marketId, bool isCash)
+            => memoryCache.GetOrCreateAsync(new UserType(marketId, isCash), CacheFactory);
+
 
         internal async Task<IEnumerable<CategoryConfigModel>> CacheFactory(ICacheEntry cache)
         {
@@ -68,7 +89,10 @@ namespace GameUser.Features.CategoryConfigs
 
             try
             {
-                result = await marketCategoryService.GetConfigs(cache.Key.ToString());
+                IList<PropertyInfo> filterModelProps = new List<PropertyInfo>(cache.Key.GetType().GetProperties());
+                var marketId = filterModelProps[0].GetValue(cache.Key, null);
+                var isCash = (bool)filterModelProps[1].GetValue(cache.Key, null);
+                result = await marketCategoryService.GetConfigs(marketId.ToString(), isCash);
 
                 if (settings.CacheTimeout > 0)
                 {
