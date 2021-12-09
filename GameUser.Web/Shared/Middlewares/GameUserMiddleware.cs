@@ -10,6 +10,7 @@ using GameUser.Features.Emails;
 using GameUser.Features.FavoriteGame;
 using GameUser.Features.Feedbacks;
 using GameUser.Features.FileUploads;
+using GameUser.Features.GameExtraConfigs;
 using GameUser.Features.GameSettings;
 using GameUser.Features.MarketManagement;
 using GameUser.Features.MiddleSite;
@@ -55,6 +56,7 @@ namespace GameUser.Web.Shared.Middlewares
             services.InitFavoriteGame();
             services.InitCategoryConfig(configuration);
             services.InitMarket();
+            services.InitGameExtraConfig();
         }
 
         public static void AddSharedServices(this IServiceCollection services)

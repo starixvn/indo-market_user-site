@@ -43,9 +43,8 @@ namespace GameUser.Web.Features.APIs.Lobby
         {
             var sessionId = httpRequestWrapper.GetAuthorizationToken(accessor);
             var session = await userSessionService.GetUserSession(sessionId);
-            var userId = session.UserId;
 
-            return await gameCategoryService.GetConfigs(userId);
+            return await gameCategoryService.GetConfigs(session);
         }
 
         [HttpPost("FavoriteGame")]
