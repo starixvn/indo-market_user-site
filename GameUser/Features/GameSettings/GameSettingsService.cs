@@ -53,11 +53,11 @@ namespace GameUser.Features.GameSettings
         private static void FilterSupportedGameByCurrency(AllGamesConfigurations allGameConfigs, string currency)
         {
             var marketByCurrency = allGameConfigs.MarketConfigs.FirstOrDefault(m => m.Currencies.Any(c => Equals(c, currency)));
-            var gameIds = marketByCurrency.Settings.Select(x => x.GameId).Distinct();
+            var gameIds = marketByCurrency?.Settings.Select(x => x.GameId).Distinct();
             foreach (var game in allGameConfigs.SupportedGameByCurrency)
             {
-                var anyGameSupportCurrency = gameIds.Any(e => e.ToString() == game.Key);
-                if (!anyGameSupportCurrency)
+                var anyGameSupportCurrency = gameIds?.Any(e => e.ToString() == game.Key);
+                if (anyGameSupportCurrency == null || (bool)!anyGameSupportCurrency)
                 {
                     game.Value.Remove(currency);
                 }
