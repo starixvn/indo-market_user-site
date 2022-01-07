@@ -85,7 +85,7 @@ namespace GameUser.Tests.Features.CategoryConfigs
 
             await memoryCache.GetOrCreateAsync(market.Id.ToString(), (cache) => Task.FromResult(categories));
             favoriteGameService.GetFavoriteGames(Arg.Any<string>()).Returns(favoriteGames);
-            marketService.GetMarketByUser(Arg.Any<string>()).Returns(market);
+            marketService.GetMarketByCurrency(Arg.Any<string>()).Returns(market);
 
             // Act
             var result = await service.GetConfigs(userSession);
@@ -151,7 +151,7 @@ namespace GameUser.Tests.Features.CategoryConfigs
             await memoryCache.GetOrCreateAsync(userType, (cache) => Task.FromResult(categories));
             gameExtraConfigService.GetGameExtraConfigs().Returns(extraConfigs);
             favoriteGameService.GetFavoriteGames(Arg.Any<string>()).Returns(favoriteGames);
-            marketService.GetMarketByUser(Arg.Any<string>()).Returns(market);
+            marketService.GetMarketByCurrency(Arg.Any<string>()).Returns(market);
             marketCategoryService.GetConfigs(Arg.Any<string>(), Arg.Any<bool>()).Returns(categories);
 
             // Act
@@ -270,7 +270,7 @@ namespace GameUser.Tests.Features.CategoryConfigs
             await memoryCache.GetOrCreateAsync(new UserType(market.Id.ToString(), userSession.IsCash), (cache) => Task.FromResult(categories));
             gameExtraConfigService.GetGameExtraConfigs().Returns(extraConfigs);
             favoriteGameService.GetFavoriteGames(Arg.Any<string>()).Returns(favoriteGames);
-            marketService.GetMarketByUser(Arg.Any<string>()).Returns(market);
+            marketService.GetMarketByCurrency(Arg.Any<string>()).Returns(market);
             marketCategoryService.GetConfigs(Arg.Any<string>(), Arg.Any<bool>()).Returns(categories);
 
             // Act
@@ -331,7 +331,7 @@ namespace GameUser.Tests.Features.CategoryConfigs
             await memoryCache.GetOrCreateAsync(userType, (cache) => Task.FromResult(categories));
             gameExtraConfigService.GetGameExtraConfigs().Returns(extraConfigs);
             favoriteGameService.GetFavoriteGames(Arg.Any<string>()).Returns(favoriteGames);
-            marketService.GetMarketByUser(Arg.Any<string>()).Returns(market);
+            marketService.GetMarketByCurrency(Arg.Any<string>()).Returns(market);
             marketCategoryService.GetConfigs(Arg.Any<string>(), Arg.Any<bool>()).Returns(categories);
 
             // Act

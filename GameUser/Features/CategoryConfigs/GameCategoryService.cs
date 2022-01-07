@@ -51,7 +51,7 @@ namespace GameUser.Features.CategoryConfigs
 
         public async Task<IList<CategoryConfigModel>> GetConfigs(UserSessionEntity userSession)
         {
-            var market = await marketService.GetMarketByUser(userSession.UserId);
+            var market = await marketService.GetMarketByCurrency(userSession.Currency); 
             var result = new List<CategoryConfigModel>();
 
             if (market != null)
