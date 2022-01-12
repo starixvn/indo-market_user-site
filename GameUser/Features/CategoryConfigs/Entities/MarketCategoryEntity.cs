@@ -12,5 +12,8 @@ namespace GameUser.Features.CategoryConfigs.Entities
 
         [BsonElement("categoryConfigId")]
         public string CategoryConfigId { get; set; }
+
+        [BsonElement("offeredCustomerType")]
+        public string OfferedCustomerType { get; set; }
     }
 }
