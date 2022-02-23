@@ -7,6 +7,7 @@ using GameUser.Features.UserSessions;
 using Microsoft.Extensions.Caching.Memory;
 using System.Linq;
 using GameUser.Shared.Helpers;
+using Newtonsoft.Json;
 
 namespace GameUser.Features.GameSettings
 {
@@ -44,10 +45,14 @@ namespace GameUser.Features.GameSettings
                  return gameServerApi.GetGameSettings();
              });
 
-           
-            await FilterMarketConfigs(result, userSession);
-            FilterSupportedGameByCurrency(result, userSession.Currency);
-            return result;
+            // Because the result object is cached in the memory, if we modify this object, it will affect for other users,
+            // So I decide to clone a new game setting object to filter for each user
+            var resultJson = JsonConvert.SerializeObject(result);
+            var clonedResult = JsonConvert.DeserializeObject<AllGamesConfigurations>(resultJson);
+            
+            await FilterMarketConfigs(clonedResult, userSession);
+            FilterSupportedGameByCurrency(clonedResult, userSession.Currency);
+            return clonedResult;
         }
 
         private static void FilterSupportedGameByCurrency(AllGamesConfigurations allGameConfigs, string currency)
