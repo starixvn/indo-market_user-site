@@ -221,13 +221,9 @@ namespace GameUser.Features.Authentications
                 {
                     currency = $"{currency}-{verifyTokenResult.Market.ToUpperInvariant()}";
                 }
-                else if (!string.IsNullOrWhiteSpace(verifyTokenResult.Seq) && verifyTokenResult.Seq.Contains(','))
+                else if (!string.IsNullOrWhiteSpace(verifyTokenResult.SiteName))
                 {
-                    var seqWords = verifyTokenResult.Seq.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
-                    if (seqWords.Any())
-                    {
-                        currency = $"{currency}-{seqWords.Last()}";
-                    }
+                    currency = $"{currency}-{verifyTokenResult.SiteName}";
                 }
             }
 
