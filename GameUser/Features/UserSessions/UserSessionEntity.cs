@@ -73,5 +73,8 @@ namespace GameUser.Features.UserSessions
 
         [BsonElement("siteName")]
         public string SiteName { get; set; }
+        
+        [BsonElement("operatorToken")]
+        public string OperatorToken { get; set; }
     }
 }

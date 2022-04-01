@@ -201,7 +201,8 @@ namespace GameUser.Features.Authentications
                     OldSessionIds = new List<string>(),
                     System = verifyTokenResult.System == 0 ? (byte)SystemType.Main : verifyTokenResult.System,
                     IsCash = verifyTokenResult.IsCash,
-                    SiteName = verifyTokenResult.SiteName
+                    SiteName = verifyTokenResult.SiteName,
+                    OperatorToken = verifyTokenResult.OperatorToken
                 };
 
                 session = await userSessionService.CreateUserSession(userSession);
