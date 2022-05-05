@@ -152,7 +152,7 @@ namespace GameUser.Tests.Features.Authentications
                 Ip = "ip",
                 Token = "token"
             };
-            var currency = "UUS-MARKET";
+            var currency = "UUS-siteName";
 
             api.VerifyToken(Arg.Any<VerificationTokenRequest>()).Returns(verifyResult);
 

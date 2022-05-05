@@ -35,5 +35,7 @@
         public string BrandName { get; set; }
 
         public byte System { get; set; }
+
+        public string OperatorToken { get; set; }
     }
 }
